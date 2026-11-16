@@ -121,6 +121,10 @@ USE_TZ = True
 
 # Archivos estáticos y media
 STATIC_URL = '/static/'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'inicio'
+LOGOUT_REDIRECT_URL = 'login'
 STATIC_ROOT = BASE_DIR / 'farmasur_static'
 
 MEDIA_URL = '/media/'

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Vistas (ViewSets) para la app inventario.
 Endpoints API REST con DRF.
 """
@@ -28,7 +28,7 @@ class LaboratorioViewSet(viewsets.ModelViewSet):
     serializer_class = LaboratorioSerializer
     permission_classes = [IsAuthenticated, PuedeVerInventario]
     filter_backends = [drf_filters.SearchFilter, drf_filters.OrderingFilter]
-    search_fields = ['nombre', 'codigo']
+    search_fields = ['nombre', 'pais']
     ordering_fields = ['nombre', 'fecha_creacion']
     ordering = ['nombre']
     
@@ -44,9 +44,9 @@ class ProductoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, PuedeVerInventario]
     filter_backends = [DjangoFilterBackend, drf_filters.SearchFilter, drf_filters.OrderingFilter]
     filterset_fields = ['laboratorio', 'activo']
-    search_fields = ['nombre', 'codigo', 'principio_activo']
-    ordering_fields = ['nombre', 'precio_unitario', 'fecha_creacion']
-    ordering = ['nombre']
+    search_fields = ['nombre_comercial', 'sku_codigo_barra', 'principio_activo']
+    ordering_fields = ['nombre_comercial', 'precio_clp', 'fecha_creacion']
+    ordering = ['nombre_comercial']
     
     def get_serializer_class(self):
         if self.action == 'list':
@@ -99,20 +99,21 @@ class LoteViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
     
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, PuedeModificarInventario])
+    @action(detail=False, methods=['post'], permission_classes=[IsAuthenticated, PuedeModificarInventario])
     def dispensar_fefo(self, request):
         """Dispensa cantidad de un producto usando algoritmo FEFO."""
+        producto_id = request.data.get('producto_id')
         cantidad = request.data.get('cantidad')
         
-        if not cantidad:
+        if not producto_id or not cantidad:
             return Response(
-                {'error': 'Se requiere cantidad'},
+                {'error': 'Se requiere producto_id y cantidad'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
         try:
             resultado = LoteService.dispensar_lote_fefo(
-                producto_id=self.get_object().producto.id,
+                producto_id=int(producto_id),
                 cantidad=int(cantidad),
                 usuario=request.user
             )
@@ -144,18 +145,24 @@ class LoteViewSet(viewsets.ModelViewSet):
 
 class MermaViewSet(viewsets.ModelViewSet):
     """CRUD para mermas (pÃ©rdidas de medicamentos)."""
-    queryset = Merma.objects.select_related('lote__producto', 'responsable').all()
+    queryset = Merma.objects.select_related('lote__producto', 'aprobado_por').all()
     serializer_class = MermaSerializer
     permission_classes = [IsAuthenticated, PuedeModificarInventario]
     filter_backends = [DjangoFilterBackend, drf_filters.OrderingFilter]
-    filterset_fields = ['lote', 'motivo']
-    ordering_fields = ['fecha_creacion', 'cantidad']
-    ordering = ['-fecha_creacion']
+    filterset_fields = ['lote', 'razon']
+    ordering_fields = ['fecha_registro', 'cantidad']
+    ordering = ['-fecha_registro']
     
     def perform_create(self, serializer):
         """Registra merma y actualiza stock del lote."""
-        merma = serializer.save(responsable=self.request.user)
-        MermaService.registrar_merma(merma)
+        from django.db import transaction
+        from rest_framework.exceptions import ValidationError
+        try:
+            with transaction.atomic():
+                merma = serializer.save()
+                MermaService.registrar_merma(merma)
+        except ValueError as e:
+            raise ValidationError({'cantidad': str(e)})
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, PuedeVerInventario])
     def reporte_mermas(self, request):
@@ -166,19 +173,19 @@ class MermaViewSet(viewsets.ModelViewSet):
         fecha_desde = date.today() - timedelta(days=int(dias))
         
         mermas = Merma.objects.filter(
-            fecha_creacion__gte=fecha_desde
-        ).select_related('lote__producto', 'responsable')
+            fecha_registro__date__gte=fecha_desde
+        ).select_related('lote__producto', 'aprobado_por')
         
         total_mermas = sum(m.cantidad for m in mermas)
         por_motivo = {}
         
         for merma in mermas:
-            motivo = merma.get_motivo_display()
+            motivo = merma.get_razon_display()
             if motivo not in por_motivo:
                 por_motivo[motivo] = {'cantidad': 0, 'valor_aproximado': 0}
             por_motivo[motivo]['cantidad'] += merma.cantidad
             por_motivo[motivo]['valor_aproximado'] += (
-                merma.cantidad * merma.lote.producto.precio_unitario
+                merma.cantidad * merma.lote.producto.precio_clp
             )
         
         return Response({

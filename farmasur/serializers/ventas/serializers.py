@@ -21,7 +21,7 @@ class CajaDiariaListSerializer(serializers.ModelSerializer):
 
 class CajaDiariaDetailSerializer(serializers.ModelSerializer):
     """Serializer completo para detalle de caja."""
-    operario = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all())
+    operario = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
         model = CajaDiaria
@@ -31,7 +31,10 @@ class CajaDiariaDetailSerializer(serializers.ModelSerializer):
             'total_ventas', 'total_descuentos', 'estado',
             'hora_apertura', 'hora_cierre', 'notas', 'datos_cierre'
         ]
-        read_only_fields = ['fecha', 'hora_apertura', 'hora_cierre']
+        read_only_fields = [
+            'fecha', 'hora_apertura', 'hora_cierre', 'monto_cierre', 'diferencia',
+            'total_ventas', 'total_descuentos', 'estado', 'datos_cierre'
+        ]
 
 
 class POSListSerializer(serializers.ModelSerializer):
@@ -49,7 +52,7 @@ class POSListSerializer(serializers.ModelSerializer):
 
 class POSDetailSerializer(serializers.ModelSerializer):
     """Serializer completo para detalle de venta."""
-    operario = serializers.PrimaryKeyRelatedField(queryset=Usuario.objects.all())
+    operario = serializers.PrimaryKeyRelatedField(read_only=True)
     caja = serializers.PrimaryKeyRelatedField(queryset=CajaDiaria.objects.all())
     
     class Meta:
@@ -62,7 +65,11 @@ class POSDetailSerializer(serializers.ModelSerializer):
             'requiere_receta_retenida', 'receta_retenida',
             'requiere_unidosis', 'items', 'notas', 'comprobante_impreso'
         ]
-        read_only_fields = ['fecha_venta']
+        read_only_fields = [
+            'fecha_venta', 'subtotal', 'descuento_total', 'total',
+            'convenio_aplicado', 'porcentaje_descuento_convenio'
+        ]
+        extra_kwargs = {'folio': {'required': False}}
 
 
 class ConvenioIsapreSerializer(serializers.ModelSerializer):

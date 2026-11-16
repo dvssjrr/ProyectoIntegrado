@@ -118,3 +118,29 @@ class LogAuditoria(models.Model):
 
     def __str__(self):
         return f"[{self.timestamp}] {self.get_tipo_evento_display()} - {self.usuario.username}"
+
+    @classmethod
+    def registrar(cls, usuario, tipo_evento, descripcion, datos_adicionales=None,
+                  direccion_ip=None, user_agent=''):
+        """Crea un registro encadenado por hash SHA-256 con el registro anterior."""
+        import hashlib
+        import json
+        from django.utils import timezone
+
+        datos = datos_adicionales or {}
+        ultimo = cls.objects.order_by('-id').first()
+        hash_anterior = ultimo.hash_sha256 if ultimo else ''
+        contenido = '|'.join([
+            hash_anterior, str(usuario.pk), str(tipo_evento), descripcion,
+            json.dumps(datos, sort_keys=True, default=str), timezone.now().isoformat(),
+        ])
+        return cls.objects.create(
+            usuario=usuario,
+            tipo_evento=tipo_evento,
+            descripcion=descripcion,
+            datos_adicionales=datos,
+            direccion_ip=direccion_ip,
+            user_agent=user_agent,
+            hash_anterior=hash_anterior,
+            hash_sha256=hashlib.sha256(contenido.encode('utf-8')).hexdigest(),
+        )

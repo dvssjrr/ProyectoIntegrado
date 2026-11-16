@@ -141,7 +141,6 @@ DB_PORT=5432
 ## 📖 Autores
 
 - Diego Arriagada
-- Damian Bravo  
-- Antonio Guzmán
+- Damian Bravo 
 
 **Proyecto de Evaluación Integrada**

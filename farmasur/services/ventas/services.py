@@ -5,7 +5,7 @@ Lógica de negocio reutilizable y operaciones transaccionales.
 from django.db import transaction
 from django.utils import timezone
 from farmasur.models import CajaDiaria, POS, ConvenioIsapre, Comprobante
-from farmasur.models import Lote
+from farmasur.models import Lote, Producto
 from farmasur.services.inventario.services import LoteService, StockService
 from datetime import datetime, timedelta
 
@@ -135,11 +135,12 @@ class POSService:
         caja.total_descuentos += descuento_convenio
         caja.save()
         
-        # Dispensar lotes usando FEFO para cada medicamento
+        # Dispensar lotes usando FEFO para cada medicamento (sku = código de barras del producto)
         for item in items:
             if 'sku' in item and 'cantidad' in item:
+                producto = Producto.objects.get(sku_codigo_barra=item['sku'])
                 LoteService.dispensar_lote_fefo(
-                    producto_id=item['sku'],
+                    producto_id=producto.pk,
                     cantidad=item['cantidad'],
                     usuario=operario
                 )

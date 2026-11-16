@@ -11,50 +11,51 @@ class LaboratorioSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Laboratorio
-        fields = ['id', 'nombre', 'descripcion', 'contacto', 'activo', 'fecha_creacion']
+        fields = ['id', 'nombre', 'pais', 'telefono', 'email', 'contacto', 'activo', 'fecha_creacion']
         read_only_fields = ['id', 'fecha_creacion']
 
 
 class ProductoListSerializer(serializers.ModelSerializer):
     """Serializer para listar productos (datos básicos)."""
     laboratorio_nombre = serializers.CharField(source='laboratorio.nombre', read_only=True)
-    stock_actual = serializers.IntegerField(read_only=True)
+    stock_vitrina = serializers.IntegerField(source='stock_total_vitrina', read_only=True)
+    stock_bodega = serializers.IntegerField(source='stock_total_bodega', read_only=True)
     
     class Meta:
         model = Producto
-        fields = ['id', 'nombre', 'codigo', 'laboratorio', 'laboratorio_nombre', 
-                 'stock_actual', 'precio_venta_lote', 'activo']
-        read_only_fields = ['id', 'stock_actual']
+        fields = ['id', 'sku_codigo_barra', 'nombre_comercial', 'presentacion', 'laboratorio',
+                  'laboratorio_nombre', 'precio_clp', 'stock_vitrina', 'stock_bodega', 'activo']
+        read_only_fields = ['id', 'stock_vitrina', 'stock_bodega']
 
 
 class ProductoDetailSerializer(serializers.ModelSerializer):
     """Serializer detallado para Producto."""
     laboratorio_nombre = serializers.CharField(source='laboratorio.nombre', read_only=True)
-    stock_vitrina = serializers.IntegerField(read_only=True)
-    stock_bodega = serializers.IntegerField(read_only=True)
+    stock_vitrina = serializers.IntegerField(source='stock_total_vitrina', read_only=True)
+    stock_bodega = serializers.IntegerField(source='stock_total_bodega', read_only=True)
     
     class Meta:
         model = Producto
         fields = '__all__'
-        read_only_fields = ['id', 'fecha_creacion', 'fecha_ultima_modificacion', 'stock_vitrina', 'stock_bodega']
+        read_only_fields = ['id', 'fecha_creacion', 'fecha_ultima_modificacion']
 
 
 class LoteListSerializer(serializers.ModelSerializer):
     """Serializer para listar lotes."""
-    producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+    producto_nombre = serializers.CharField(source='producto.nombre_comercial', read_only=True)
     estado_fefo = serializers.CharField(read_only=True)
     dias_para_vencer = serializers.IntegerField(read_only=True)
     
     class Meta:
         model = Lote
-        fields = ['id', 'numero_lote', 'producto', 'producto_nombre', 'cantidad_total',
-                 'fecha_vencimiento', 'estado_fefo', 'dias_para_vencer', 'ubicacion']
+        fields = ['id', 'codigo_lote', 'producto', 'producto_nombre', 'stock_vitrina', 'stock_bodega',
+                  'fecha_vencimiento', 'estado_fefo', 'dias_para_vencer']
         read_only_fields = ['id', 'estado_fefo', 'dias_para_vencer']
 
 
 class LoteDetailSerializer(serializers.ModelSerializer):
     """Serializer detallado para Lote."""
-    producto_nombre = serializers.CharField(source='producto.nombre', read_only=True)
+    producto_nombre = serializers.CharField(source='producto.nombre_comercial', read_only=True)
     estado_fefo = serializers.CharField(read_only=True)
     dias_para_vencer = serializers.IntegerField(read_only=True)
     
@@ -73,22 +74,21 @@ class LoteDetailSerializer(serializers.ModelSerializer):
 
 class RecepcionProveedorSerializer(serializers.ModelSerializer):
     """Serializer para Recepción de Proveedor."""
-    lotes_creados = LoteDetailSerializer(many=True, read_only=True)
     
     class Meta:
         model = RecepcionProveedor
-        fields = ['id', 'proveedor', 'fecha_recepcion', 'numero_factura', 'descripcion', 
-                 'cantidad_cajas', 'lotes_creados', 'timestamp']
-        read_only_fields = ['id', 'timestamp', 'lotes_creados']
+        fields = ['id', 'numero_orden_compra', 'numero_factura_proveedor', 'laboratorio', 'estado',
+                  'fecha_recepcion', 'datos_cubeta', 'notas', 'fecha_validacion']
+        read_only_fields = ['id', 'fecha_recepcion', 'fecha_validacion']
 
 
 class MermaSerializer(serializers.ModelSerializer):
     """Serializer para Merma (pérdida de medicamentos)."""
-    lote_numero = serializers.CharField(source='lote.numero_lote', read_only=True)
-    producto_nombre = serializers.CharField(source='lote.producto.nombre', read_only=True)
+    codigo_lote = serializers.CharField(source='lote.codigo_lote', read_only=True)
+    producto_nombre = serializers.CharField(source='lote.producto.nombre_comercial', read_only=True)
     
     class Meta:
         model = Merma
-        fields = ['id', 'lote', 'lote_numero', 'producto_nombre', 'cantidad', 
-                 'motivo', 'timestamp', 'responsable']
-        read_only_fields = ['id', 'timestamp']
+        fields = ['id', 'lote', 'codigo_lote', 'producto_nombre', 'cantidad', 'razon',
+                  'descripcion', 'aprobado_por', 'fecha_registro', 'fecha_aprobacion']
+        read_only_fields = ['id', 'fecha_registro', 'aprobado_por', 'fecha_aprobacion']

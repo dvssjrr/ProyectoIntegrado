@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+{% block title %}Panel Qu&iacute;mico Farmac&eacute;utico - FARMASUR{% endblock %}
+{% block heading %}Panel del Qu&iacute;mico Farmac&eacute;utico{% endblock %}
+{% block content %}
+<div class="tarjeta p-3 mb-4">
+    <h5>Recetas pendientes de validaci&oacute;n ({{ recetas_pendientes|length }})</h5>
+    <div class="table-responsive">
+    <table class="table table-sm">
+        <thead><tr><th>Folio</th><th>Paciente</th><th>M&eacute;dico</th><th>Emisi&oacute;n</th></tr></thead>
+        <tbody>
+        {% for r in recetas_pendientes %}
+        <tr><td>{{ r.folio }}</td><td>{{ r.nombre_paciente }}</td><td>{{ r.nombre_medico }}</td><td>{{ r.fecha_emision|date:"d/m/Y" }}</td></tr>
+        {% empty %}<tr><td colspan="4" class="text-muted">No hay recetas pendientes.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<div class="tarjeta p-3 mb-4">
+    <h5>Unidosis solicitadas ({{ unidosis|length }})</h5>
+    <div class="table-responsive">
+    <table class="table table-sm">
+        <thead><tr><th>Folio</th><th>Paciente</th><th>Solicitud</th></tr></thead>
+        <tbody>
+        {% for u in unidosis %}
+        <tr><td>{{ u.folio }}</td><td>{{ u.nombre_paciente }}</td><td>{{ u.fecha_solicitud|date:"d/m/Y H:i" }}</td></tr>
+        {% empty %}<tr><td colspan="3" class="text-muted">Sin solicitudes.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<div class="tarjeta p-3">
+    <h5>Recetas recientes</h5>
+    <div class="table-responsive">
+    <table class="table table-sm">
+        <thead><tr><th>Folio</th><th>Paciente</th><th>Estado</th></tr></thead>
+        <tbody>
+        {% for r in recetas_recientes %}
+        <tr><td>{{ r.folio }}</td><td>{{ r.nombre_paciente }}</td><td>{{ r.get_estado_display }}</td></tr>
+        {% empty %}<tr><td colspan="3" class="text-muted">Sin registros.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+</div>
+{% endblock %}

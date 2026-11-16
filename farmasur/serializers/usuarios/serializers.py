@@ -45,7 +45,7 @@ class LogAuditoriaSerializer(serializers.ModelSerializer):
     class Meta:
         model = LogAuditoria
         fields = [
-            'id', 'usuario', 'usuario_username', 'accion', 'tabla_afectada',
-            'descripcion', 'timestamp', 'hash_sha256', 'hash_anterior'
+            'id', 'usuario', 'usuario_username', 'tipo_evento', 'descripcion',
+            'datos_adicionales', 'direccion_ip', 'timestamp', 'hash_sha256', 'hash_anterior'
         ]
-        read_only_fields = '__all__'
+        read_only_fields = fields

@@ -10,6 +10,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     # API endpoints - Rutas centralizadas desde farmasur.urls
     path('api/', include('farmasur.urls')),
+    # Interfaces web por rol
+    path('', include('farmasur.urls.web')),
 ]
 
 if settings.DEBUG:

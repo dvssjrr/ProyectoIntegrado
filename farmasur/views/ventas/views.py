@@ -1,7 +1,11 @@
-﻿"""
+"""
 Vistas (ViewSets) para la app ventas.
 Endpoints API REST con DRF.
 """
+import uuid
+
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -37,6 +41,22 @@ class CajaDiariaViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             return CajaDiariaListSerializer
         return CajaDiariaDetailSerializer
+    
+    def create(self, request, *args, **kwargs):
+        """Abre una caja a nombre del usuario autenticado."""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        datos = serializer.validated_data
+        try:
+            caja = CajaService.abrir_caja(
+                caja_id=datos['caja_id'],
+                turno=datos['turno'],
+                operario=request.user,
+                monto_inicial=datos['monto_inicial'],
+            )
+        except (ValueError, IntegrityError) as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(self.get_serializer(caja).data, status=status.HTTP_201_CREATED)
     
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, PuedeGestionarCaja])
     def cerrar(self, request, pk=None):
@@ -85,6 +105,28 @@ class POSViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             return POSListSerializer
         return POSDetailSerializer
+    
+    def create(self, request, *args, **kwargs):
+        """Registra una venta calculando totales y descontando stock (FEFO)."""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        datos = serializer.validated_data
+        try:
+            venta = POSService.crear_venta(
+                caja=datos['caja'],
+                folio=datos.get('folio') or f"V-{uuid.uuid4().hex[:12].upper()}",
+                operario=request.user,
+                items=datos.get('items', []),
+                tipo_comprobante=datos.get('tipo_comprobante', POS.TipoComprobante.BOLETA),
+                rut_cliente=datos.get('rut_cliente', ''),
+                nombre_cliente=datos.get('nombre_cliente', ''),
+                convenio_id=request.data.get('convenio_id'),
+                requiere_receta=datos.get('requiere_receta_retenida', False),
+                requiere_unidosis=datos.get('requiere_unidosis', False),
+            )
+        except (ValueError, ObjectDoesNotExist) as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(POSDetailSerializer(venta).data, status=status.HTTP_201_CREATED)
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, PuedeVerVentas])
     def por_caja(self, request):

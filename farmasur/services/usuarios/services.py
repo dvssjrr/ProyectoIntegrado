@@ -28,8 +28,7 @@ class UsuarioService:
         # Registrar en auditoría
         LogAuditoria.registrar(
             usuario=usuario,
-            accion='CREAR',
-            tabla_afectada='usuarios_usuario',
+            tipo_evento=LogAuditoria.TipoEvento.CAMBIO_USUARIO,
             descripcion=f'Usuario creado: {usuario.username}'
         )
         
@@ -43,9 +42,10 @@ class UsuarioService:
         """
         usuario = Usuario.objects.get(pk=usuario_id)
         cambios = []
+        campos_permitidos = {'email', 'nombre_completo', 'rut', 'rol', 'activo', 'first_name', 'last_name'}
         
         for campo, valor in datos.items():
-            if hasattr(usuario, campo) and valor is not None:
+            if campo in campos_permitidos and valor is not None:
                 cambios.append(f"{campo}: {getattr(usuario, campo)} → {valor}")
                 setattr(usuario, campo, valor)
         
@@ -55,8 +55,7 @@ class UsuarioService:
         if cambios:
             LogAuditoria.registrar(
                 usuario=usuario,
-                accion='ACTUALIZAR',
-                tabla_afectada='usuarios_usuario',
+                tipo_evento=LogAuditoria.TipoEvento.CAMBIO_USUARIO,
                 descripcion=f'Cambios: {"; ".join(cambios)}'
             )
         
@@ -74,8 +73,7 @@ class UsuarioService:
         
         LogAuditoria.registrar(
             usuario=usuario,
-            accion='CAMBIAR_CONTRASEÑA',
-            tabla_afectada='usuarios_usuario',
+            tipo_evento=LogAuditoria.TipoEvento.CAMBIO_USUARIO,
             descripcion='Contraseña actualizada'
         )
         
@@ -96,11 +94,11 @@ class LogAuditoriaService:
     """Servicio para gestión de auditoría."""
     
     @staticmethod
-    def obtener_historial(tabla_afectada=None, limite=100):
-        """Obtiene historial de auditoría filtrando por tabla si es necesario."""
+    def obtener_historial(tipo_evento=None, limite=100):
+        """Obtiene historial de auditoría filtrando por tipo de evento si es necesario."""
         qs = LogAuditoria.objects.all()
-        if tabla_afectada:
-            qs = qs.filter(tabla_afectada=tabla_afectada)
+        if tipo_evento:
+            qs = qs.filter(tipo_evento=tipo_evento)
         return qs.order_by('-timestamp')[:limite]
     
     @staticmethod

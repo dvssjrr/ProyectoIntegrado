@@ -45,7 +45,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         
         usuario = UsuarioService.crear_usuario(
             username=serializer.validated_data['username'],
-            email=serializer.validated_data['email'],
+            email=serializer.validated_data.get('email', ''),
             nombre_completo=serializer.validated_data['nombre_completo'],
             rut=serializer.validated_data['rut'],
             rol=serializer.validated_data['rol'],
@@ -122,16 +122,16 @@ class AuditoriaViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [EsAdmin]
     
     @action(detail=False, methods=['get'])
-    def por_tabla(self, request):
-        """Obtener auditoría filtrada por tabla."""
-        tabla = request.query_params.get('tabla')
-        if not tabla:
+    def por_tipo_evento(self, request):
+        """Obtener auditoría filtrada por tipo de evento."""
+        tipo_evento = request.query_params.get('tipo_evento')
+        if not tipo_evento:
             return Response(
-                {'detail': 'Proporciona el parámetro tabla.'},
+                {'detail': 'Proporciona el parámetro tipo_evento.'},
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        registros = LogAuditoriaService.obtener_historial(tabla_afectada=tabla)
+        registros = LogAuditoriaService.obtener_historial(tipo_evento=tipo_evento)
         serializer = LogAuditoriaSerializer(registros, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -146,7 +146,7 @@ class AuditoriaViewSet(viewsets.ReadOnlyModelViewSet):
             'log_id': pk,
             'integridad': es_integro,
             'timestamp': log.timestamp,
-            'accion': log.accion,
+            'tipo_evento': log.tipo_evento,
             'descripcion': log.descripcion
         })
 

@@ -1,4 +1,4 @@
-﻿"""
+"""
 Vistas (ViewSets) para la app recetas.
 Endpoints API REST con DRF.
 """
@@ -105,8 +105,8 @@ class RecetaRetenidaISPViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated, PuedeModificarRecetas]
     filter_backends = [DjangoFilterBackend, drf_filters.OrderingFilter]
     filterset_fields = ['receta']
-    ordering_fields = ['fecha_retencion']
-    ordering = ['-fecha_retencion']
+    ordering_fields = ['fecha_dispensacion']
+    ordering = ['-fecha_dispensacion']
 
 
 class UnidosisAsistencialViewSet(viewsets.ModelViewSet):
