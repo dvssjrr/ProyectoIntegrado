@@ -1,7 +1,7 @@
-# 🏥 FARMASUR v2.0
+# FARMASUR v2.0
 Sistema de Gestión Farmacéutica Integral - Chile
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 farmacia_project/          # Configuración de Django (settings, urls, wsgi, asgi)
@@ -23,7 +23,7 @@ farmasur/                  # App principal organizada en 11 capas
 farmasur_templates/        # Templates HTML + Bootstrap (Frontend)
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Configurar Variables de Entorno
 ```bash
@@ -57,7 +57,7 @@ python manage.py runserver
 **Admin**: http://localhost:8000/admin/
 **API**: http://localhost:8000/api/
 
-## 📋 Capas del Proyecto
+## Capas del Proyecto
 
 | Capa | Propósito |
 |------|-----------|
@@ -73,14 +73,14 @@ python manage.py runserver
 | **migrations** | Control de versiones de BD |
 | **static** | Archivos estáticos (CSS, JS, imágenes) |
 
-## 🔐 Módulos Principales
+## Módulos Principales
 
 - **usuarios**: Autenticación, roles, auditoría
 - **inventario**: Medicamentos, stock, lotes, movimientos
 - **recetas**: Recetas médicas, dispensación
 - **ventas**: Punto de venta, caja, comprobantes
 
-## 📚 Convenciones de Código
+## Convenciones de Código
 
 ### Modelos
 ```python
@@ -111,7 +111,7 @@ from farmasur.views import UsuarioViewSet
 - Usa docstrings en clases y funciones
 - Máximo 1-2 líneas por comentario
 
-## ✅ Testing
+## Testing
 
 ```bash
 # Ejecutar todas las pruebas
@@ -122,7 +122,7 @@ coverage run --source='farmasur' manage.py test farmasur
 coverage report
 ```
 
-## 🔧 Variables de Entorno
+## Variables de Entorno
 
 ```env
 # .env.local
@@ -138,7 +138,7 @@ DB_HOST=localhost
 DB_PORT=5432
 ```
 
-## 📖 Autores
+## Autores
 
 - Diego Arriagada
 - Damian Bravo 
