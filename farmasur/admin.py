@@ -6,7 +6,8 @@ from django.contrib import admin
 # Importar modelos
 from farmasur.models.usuarios.models import Usuario, LogAuditoria
 from farmasur.models.inventario.models import (
-    Medicamento,
+    Laboratorio,
+    Producto,
     StockVitrina,
     StockBodega,
     MovimientoInventario,
@@ -54,11 +55,11 @@ class LogAuditoriaAdmin(admin.ModelAdmin):
 # INVENTARIO
 # ============================================================================
 
-@admin.register(Medicamento)
-class MedicamentoAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'principio_activo', 'presentacion', 'precio')
-    list_filter = ('presentacion', 'precio')
-    search_fields = ('codigo', 'nombre', 'principio_activo')
+@admin.register(Producto)
+class ProductoAdmin(admin.ModelAdmin):
+    list_display = ('sku_codigo_barra', 'nombre_comercial', 'principio_activo', 'presentacion', 'precio_clp')
+    list_filter = ('presentacion', 'precio_clp', 'condicion_venta')
+    search_fields = ('sku_codigo_barra', 'nombre_comercial', 'principio_activo')
 
 
 @admin.register(StockVitrina)

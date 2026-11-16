@@ -9,10 +9,9 @@ from farmasur.services.usuarios.services import (
     autenticar_usuario,
 )
 from farmasur.services.inventario.services import (
-    MedicamentoService,
+    LoteService,
     StockService,
-    MovimientoService,
-    calcular_fefo,
+    MermaService,
 )
 from farmasur.services.recetas.services import (
     RecetaService,
@@ -31,10 +30,9 @@ __all__ = [
     'LogAuditoriaService',
     'autenticar_usuario',
     # Inventario
-    'MedicamentoService',
+    'LoteService',
     'StockService',
-    'MovimientoService',
-    'calcular_fefo',
+    'MermaService',
     # Recetas
     'RecetaService',
     'validar_receta_legal',

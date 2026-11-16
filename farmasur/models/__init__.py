@@ -5,11 +5,11 @@ Centraliza todas las entidades y relaciones de la base de datos
 
 from farmasur.models.usuarios.models import Usuario, LogAuditoria
 from farmasur.models.inventario.models import (
-    Medicamento,
-    StockVitrina,
-    StockBodega,
-    MovimientoInventario,
+    Laboratorio,
+    Producto,
     Lote,
+    RecepcionProveedor,
+    Merma,
 )
 from farmasur.models.recetas.models import Receta, DetalleReceta, LibroISP
 from farmasur.models.ventas.models import Venta, DetalleVenta, Caja
@@ -19,11 +19,11 @@ __all__ = [
     'Usuario',
     'LogAuditoria',
     # Inventario
-    'Medicamento',
-    'StockVitrina',
-    'StockBodega',
-    'MovimientoInventario',
+    'Laboratorio',
+    'Producto',
     'Lote',
+    'RecepcionProveedor',
+    'Merma',
     # Recetas
     'Receta',
     'DetalleReceta',

@@ -9,11 +9,10 @@ from rest_framework.routers import DefaultRouter
 # Importar ViewSets de cada app
 from farmasur.views.usuarios.views import UsuarioViewSet, LogAuditoriaViewSet
 from farmasur.views.inventario.views import (
-    MedicamentoViewSet,
-    StockVitrinaViewSet,
-    StockBodegaViewSet,
-    MovimientoInventarioViewSet,
+    LaboratorioViewSet,
+    ProductoViewSet,
     LoteViewSet,
+    MermaViewSet,
 )
 from farmasur.views.recetas.views import RecetaViewSet, DetalleRecetaViewSet, LibroISPViewSet
 from farmasur.views.ventas.views import VentaViewSet, DetalleVentaViewSet, CajaViewSet
@@ -26,11 +25,10 @@ router.register(r'usuarios', UsuarioViewSet, basename='usuario')
 router.register(r'auditoria', LogAuditoriaViewSet, basename='auditoria')
 
 # Registrar ViewSets de Inventario
-router.register(r'medicamentos', MedicamentoViewSet, basename='medicamento')
-router.register(r'stock-vitrina', StockVitrinaViewSet, basename='stock-vitrina')
-router.register(r'stock-bodega', StockBodegaViewSet, basename='stock-bodega')
-router.register(r'movimientos', MovimientoInventarioViewSet, basename='movimiento')
+router.register(r'laboratorios', LaboratorioViewSet, basename='laboratorio')
+router.register(r'productos', ProductoViewSet, basename='producto')
 router.register(r'lotes', LoteViewSet, basename='lote')
+router.register(r'mermas', MermaViewSet, basename='merma')
 
 # Registrar ViewSets de Recetas
 router.register(r'recetas', RecetaViewSet, basename='receta')

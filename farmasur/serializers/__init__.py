@@ -8,11 +8,12 @@ from farmasur.serializers.usuarios.serializers import (
     LogAuditoriaSerializer,
 )
 from farmasur.serializers.inventario.serializers import (
-    MedicamentoSerializer,
-    StockVitrinaSerializer,
-    StockBodegaSerializer,
-    MovimientoInventarioSerializer,
-    LoteSerializer,
+    LaboratorioSerializer,
+    ProductoListSerializer,
+    ProductoDetailSerializer,
+    LoteListSerializer,
+    LoteDetailSerializer,
+    MermaSerializer,
 )
 from farmasur.serializers.recetas.serializers import (
     RecetaSerializer,
@@ -30,11 +31,12 @@ __all__ = [
     'UsuarioSerializer',
     'LogAuditoriaSerializer',
     # Inventario
-    'MedicamentoSerializer',
-    'StockVitrinaSerializer',
-    'StockBodegaSerializer',
-    'MovimientoInventarioSerializer',
-    'LoteSerializer',
+    'LaboratorioSerializer',
+    'ProductoListSerializer',
+    'ProductoDetailSerializer',
+    'LoteListSerializer',
+    'LoteDetailSerializer',
+    'MermaSerializer',
     # Recetas
     'RecetaSerializer',
     'DetalleRecetaSerializer',

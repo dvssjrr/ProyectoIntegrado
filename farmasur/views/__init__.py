@@ -8,11 +8,10 @@ from farmasur.views.usuarios.views import (
     LogAuditoriaViewSet,
 )
 from farmasur.views.inventario.views import (
-    MedicamentoViewSet,
-    StockVitrinaViewSet,
-    StockBodegaViewSet,
-    MovimientoInventarioViewSet,
+    LaboratorioViewSet,
+    ProductoViewSet,
     LoteViewSet,
+    MermaViewSet,
 )
 from farmasur.views.recetas.views import (
     RecetaViewSet,
@@ -30,11 +29,10 @@ __all__ = [
     'UsuarioViewSet',
     'LogAuditoriaViewSet',
     # Inventario
-    'MedicamentoViewSet',
-    'StockVitrinaViewSet',
-    'StockBodegaViewSet',
-    'MovimientoInventarioViewSet',
+    'LaboratorioViewSet',
+    'ProductoViewSet',
     'LoteViewSet',
+    'MermaViewSet',
     # Recetas
     'RecetaViewSet',
     'DetalleRecetaViewSet',
