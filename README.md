@@ -1,20 +1,10 @@
-# 🏥 FARMASUR - Sistema de Gestión Farmacéutica
+# 🏥 FARMASUR v1.0
+## Sistema Integral de Farmacia Privada - Chile
 
-**Farmasur** es un sistema integral de gestión para farmacias que implementa mejores prácticas en arquitectura de software con una **estructura por capas** profesional y escalable.
-
----
-
-## 📋 Tabla de Contenidos
-
-1. [Características](#características)
-2. [Requisitos](#requisitos)
-3. [Instalación](#instalación)
-4. [Configuración](#configuración)
-5. [Estructura del Proyecto](#estructura-del-proyecto)
-6. [Uso](#uso)
-7. [API REST](#api-rest)
-8. [Testing](#testing)
-9. [Documentación](#documentación)
+**Proyecto de Evaluación Integrada**
+- Diego Arriagada
+- Damian Bravo
+- Antonio Guzmán
 
 ---
 
