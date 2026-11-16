@@ -45,3 +45,9 @@ INFO 2026-11-16 15:10:23,022 autoreload 107668 107848 Watching for file changes 
 INFO 2026-11-16 15:10:37,580 autoreload 107668 107848 D:\progra\ProyectoIntegrado\farmasur\serializers\__init__.py changed, reloading.
 INFO 2026-11-16 15:10:38,592 autoreload 103544 88240 D:\progra\ProyectoIntegrado\farmasur\serializers\__init__.py changed, reloading.
 INFO 2026-11-16 15:10:50,729 autoreload 109416 108872 Watching for file changes with StatReloader
+INFO 2026-11-16 15:12:18,866 autoreload 110500 109828 Watching for file changes with StatReloader
+INFO 2026-11-16 15:12:41,273 autoreload 108964 112432 Watching for file changes with StatReloader
+INFO 2026-11-16 15:20:00,082 autoreload 109416 108872 D:\progra\ProyectoIntegrado\farmasur\views\inventario\views.py changed, reloading.
+INFO 2026-11-16 15:20:07,209 autoreload 119012 119056 Watching for file changes with StatReloader
+INFO 2026-11-16 15:20:31,971 autoreload 119012 119056 C:\Users\damib\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\django\conf\__init__.py changed, reloading.
+INFO 2026-11-16 15:26:19,237 autoreload 129336 129908 Watching for file changes with StatReloader

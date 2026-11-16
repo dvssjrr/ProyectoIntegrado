@@ -1,4 +1,4 @@
-"""
+﻿"""
 Vistas (ViewSets) para la app ventas.
 Endpoints API REST con DRF.
 """
@@ -6,7 +6,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
+from farmasur.views.filters import DjangoFilterBackend
 from rest_framework import filters as drf_filters
 
 from farmasur.models import CajaDiaria, POS, ConvenioIsapre, Comprobante
@@ -62,7 +62,7 @@ class CajaDiariaViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, PuedeGestionarCaja])
     def abierta_hoy(self, request):
-        """Retorna cajas abiertas del día."""
+        """Retorna cajas abiertas del dÃ­a."""
         cajas = CajaDiaria.objects.filter(
             estado=CajaDiaria.Estado.ABIERTA
         )
@@ -88,7 +88,7 @@ class POSViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, PuedeVerVentas])
     def por_caja(self, request):
-        """Retorna ventas de una caja específica."""
+        """Retorna ventas de una caja especÃ­fica."""
         caja_id = request.query_params.get('caja_id')
         
         if not caja_id:
@@ -103,7 +103,7 @@ class POSViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, PuedeVerVentas])
     def total_diario(self, request):
-        """Retorna total de ventas del día."""
+        """Retorna total de ventas del dÃ­a."""
         from datetime import date
         
         hoy = date.today()

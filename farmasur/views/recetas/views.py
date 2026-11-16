@@ -1,4 +1,4 @@
-"""
+﻿"""
 Vistas (ViewSets) para la app recetas.
 Endpoints API REST con DRF.
 """
@@ -6,7 +6,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
+from farmasur.views.filters import DjangoFilterBackend
 from rest_framework import filters as drf_filters
 
 from farmasur.models import Receta, DetalleReceta, RecetaRetenidaISP, UnidosisAsistencial
@@ -22,7 +22,7 @@ from farmasur.permissions.recetas.permissions import PuedeVerRecetas, PuedeModif
 
 
 class RecetaViewSet(viewsets.ModelViewSet):
-    """CRUD para recetas médicas."""
+    """CRUD para recetas mÃ©dicas."""
     queryset = Receta.objects.all()
     serializer_class = RecetaDetailSerializer
     permission_classes = [IsAuthenticated, PuedeVerRecetas]
@@ -85,14 +85,14 @@ class RecetaViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, PuedeVerRecetas])
     def vigentes(self, request):
-        """Retorna recetas vigentes (< 30 días)."""
+        """Retorna recetas vigentes (< 30 dÃ­as)."""
         recetas = RecetaService.listar_recetas_vigentes()
         serializer = self.get_serializer(recetas, many=True)
         return Response(serializer.data)
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, PuedeVerRecetas])
     def vencidas(self, request):
-        """Retorna recetas vencidas (> 30 días)."""
+        """Retorna recetas vencidas (> 30 dÃ­as)."""
         recetas = RecetaService.listar_recetas_vencidas()
         serializer = self.get_serializer(recetas, many=True)
         return Response(serializer.data)

@@ -11,10 +11,13 @@ class LoteForm(forms.ModelForm):
     
     class Meta:
         model = Lote
-        fields = ['numero_lote', 'producto', 'cantidad_total', 'fecha_vencimiento', 'ubicacion']
+        fields = [
+            'producto', 'codigo_lote', 'fecha_vencimiento',
+            'stock_vitrina', 'stock_bodega', 'costo_compra'
+        ]
         widgets = {
             'fecha_vencimiento': forms.DateInput(attrs={'type': 'date'}),
-            'numero_lote': forms.TextInput(attrs={'placeholder': 'Ej: LOTE-2026-001'}),
+            'codigo_lote': forms.TextInput(attrs={'placeholder': 'Ej: LOTE-2026-001'}),
         }
     
     def clean(self):
@@ -33,25 +36,18 @@ class MermaForm(forms.ModelForm):
     
     class Meta:
         model = Merma
-        fields = ['lote', 'cantidad', 'motivo', 'responsable']
-        widgets = {
-            'motivo': forms.Select(choices=[
-                ('VENCIMIENTO', 'Vencimiento'),
-                ('ROTURA', 'Rotura/Daño'),
-                ('THEFT', 'Pérdida/Robo'),
-                ('AJUSTE', 'Ajuste de inventario'),
-                ('OTRO', 'Otro'),
-            ])
-        }
+        fields = ['lote', 'cantidad', 'razon', 'descripcion']
     
     def clean_cantidad(self):
         cantidad = self.cleaned_data.get('cantidad')
         lote = self.cleaned_data.get('lote')
         
-        if lote and cantidad > lote.cantidad_total:
-            raise forms.ValidationError(
-                f"La cantidad no puede exceder el stock del lote ({lote.cantidad_total})."
-            )
+        if lote and cantidad is not None:
+            stock_total = lote.stock_vitrina + lote.stock_bodega
+            if cantidad > stock_total:
+                raise forms.ValidationError(
+                    f"La cantidad no puede exceder el stock del lote ({stock_total})."
+                )
         
         return cantidad
 

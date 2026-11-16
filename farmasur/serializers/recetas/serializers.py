@@ -3,7 +3,7 @@ Serializadores para la app recetas.
 Validación y representación de datos de API.
 """
 from rest_framework import serializers
-from farmasur.models import Receta, DetalleReceta, RecetaRetenidaISP, UnidosisAsistencial, Usuario
+from farmasur.models import Receta, RecetaRetenidaISP, UnidosisAsistencial, Usuario
 
 
 class RecetaListSerializer(serializers.ModelSerializer):

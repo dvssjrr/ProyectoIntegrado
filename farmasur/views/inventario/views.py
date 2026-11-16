@@ -1,4 +1,4 @@
-"""
+﻿"""
 Vistas (ViewSets) para la app inventario.
 Endpoints API REST con DRF.
 """
@@ -6,7 +6,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from django_filters.rest_framework import DjangoFilterBackend
+from farmasur.views.filters import DjangoFilterBackend
 from rest_framework import filters as drf_filters
 
 from farmasur.models import Laboratorio, Producto, Lote, Merma
@@ -80,7 +80,7 @@ class LoteViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, PuedeVerInventario])
     def fefo(self, request):
-        """Retorna lotes ordenados por FEFO (vencimiento más próximo primero)."""
+        """Retorna lotes ordenados por FEFO (vencimiento mÃ¡s prÃ³ximo primero)."""
         producto_id = request.query_params.get('producto_id')
         
         if not producto_id:
@@ -143,7 +143,7 @@ class LoteViewSet(viewsets.ModelViewSet):
 
 
 class MermaViewSet(viewsets.ModelViewSet):
-    """CRUD para mermas (pérdidas de medicamentos)."""
+    """CRUD para mermas (pÃ©rdidas de medicamentos)."""
     queryset = Merma.objects.select_related('lote__producto', 'responsable').all()
     serializer_class = MermaSerializer
     permission_classes = [IsAuthenticated, PuedeModificarInventario]
@@ -159,7 +159,7 @@ class MermaViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated, PuedeVerInventario])
     def reporte_mermas(self, request):
-        """Reporte de mermas por período o filtro."""
+        """Reporte de mermas por perÃ­odo o filtro."""
         from datetime import date, timedelta
         
         dias = request.query_params.get('dias', 30)

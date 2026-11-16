@@ -4,14 +4,42 @@ Lee variables de entorno desde .env.local
 """
 import os
 from pathlib import Path
-from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+def _load_env_file(path):
+    """Carga variables KEY=VALUE de un archivo .env sin pisar las ya definidas."""
+    if not path.exists():
+        return
+    for line in path.read_text(encoding='utf-8').splitlines():
+        line = line.strip()
+        if not line or line.startswith('#') or '=' not in line:
+            continue
+        key, value = line.split('=', 1)
+        os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
+_load_env_file(BASE_DIR / '.env.local')
+
+
+def config(name, default=None, cast=None):
+    value = os.environ.get(name, default)
+    if cast is bool and isinstance(value, str):
+        return value.strip().lower() in ('1', 'true', 'yes', 'on')
+    if cast is not None and isinstance(value, str):
+        return cast(value)
+    return value
+
+
+def Csv(value):
+    return [item.strip() for item in value.split(',') if item.strip()]
+
 
 # Seguridad y depuración
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-farmasur-dev-key-change-in-production')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,16 +49,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders',
-    'django_filters',
-    
+
     'farmasur',  # App centralizada con 11 capas
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -98,7 +122,6 @@ USE_TZ = True
 # Archivos estáticos y media
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'farmasur_static'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'farmasur_media'
@@ -110,14 +133,9 @@ AUTH_USER_MODEL = 'farmasur.Usuario'
 
 # Configuración de Django REST Framework
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
 }
-
-# CORS
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:3000', cast=Csv())
-CORS_ALLOW_CREDENTIALS = True
 
 # Seguridad
 CSRF_COOKIE_SECURE = not DEBUG
