@@ -1,0 +1,60 @@
+{% extends 'base/base.html' %}
+{% block title %}Libro de Recetas - Farmasur{% endblock %}
+{% block migas %}Libro Recetas / ISP{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div><h1 class="h3 mb-0">Libro de Recetas / ISP</h1><small class="text-muted">Control de recetas, retenidas y unidosis.</small></div>
+    <a class="btn btn-rojo" href="{% url 'receta_nueva' %}">+ Registrar receta</a>
+</div>
+<div class="tarjeta mb-4">
+    <form class="row g-2 mb-3" method="get">
+        <div class="col-md-4"><select class="form-select" name="estado" onchange="this.form.submit()">
+            <option value="">Todos los estados</option>
+            {% for valor, nombre in estados %}<option value="{{ valor }}" {% if estado == valor %}selected{% endif %}>{{ nombre }}</option>{% endfor %}
+        </select></div>
+    </form>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>Folio</th><th>Paciente</th><th>Médico</th><th>Emisión</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+        {% for r in pagina %}
+        <tr><td>{{ r.folio }}</td><td>{{ r.nombre_paciente }}<br><small class="text-muted">{{ r.rut_paciente }}</small></td>
+            <td>{{ r.nombre_medico }}</td><td>{{ r.fecha_emision|date:"d/m/Y" }}</td>
+            <td><span class="badge text-bg-{% if r.estado == 'PENDIENTE' %}warning{% elif r.estado == 'RECHAZADA' or r.estado == 'VENCIDA' %}danger{% else %}success{% endif %}">{{ r.get_estado_display }}</span></td>
+            <td class="text-end">
+            {% if puede_validar %}
+                {% if r.estado == 'PENDIENTE' %}
+                <form method="post" action="{% url 'receta_accion' r.pk 'aprobar' %}" class="d-inline">{% csrf_token %}<button class="btn btn-sm btn-success">Aprobar</button></form>
+                <form method="post" action="{% url 'receta_accion' r.pk 'rechazar' %}" class="d-inline" onsubmit="return rechazo(this)">{% csrf_token %}<input type="hidden" name="razon"><button class="btn btn-sm btn-outline-danger">Rechazar</button></form>
+                {% elif r.estado == 'APROBADA' %}
+                <form method="post" action="{% url 'receta_accion' r.pk 'dispensar' %}" class="d-inline">{% csrf_token %}<button class="btn btn-sm btn-rojo">Dispensar</button></form>
+                {% endif %}
+            {% endif %}
+            </td></tr>
+        {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">Sin recetas.</td></tr>
+        {% endfor %}
+        </tbody></table></div>
+    {% include 'base/paginacion.html' %}
+</div>
+<div class="row g-3">
+    <div class="col-lg-6"><div class="tarjeta"><strong>Libro ISP (recetas retenidas)</strong>
+        <table class="table table-sm mt-2"><thead><tr><th>Folio ISP</th><th>Receta</th><th>Fecha</th></tr></thead><tbody>
+        {% for x in retenidas %}<tr><td>{{ x.folio_isp }}</td><td>{{ x.receta.folio }}</td><td>{{ x.fecha_dispensacion|date:"d/m/Y H:i" }}</td></tr>
+        {% empty %}<tr><td colspan="3" class="text-muted">Sin registros.</td></tr>{% endfor %}
+        </tbody></table></div></div>
+    <div class="col-lg-6"><div class="tarjeta"><strong>Unidosis asistencial</strong>
+        <table class="table table-sm mt-2"><thead><tr><th>Folio</th><th>Paciente</th><th>Estado</th></tr></thead><tbody>
+        {% for u in unidosis %}<tr><td>{{ u.folio }}</td><td>{{ u.nombre_paciente }}</td><td>{{ u.get_estado_display }}</td></tr>
+        {% empty %}<tr><td colspan="3" class="text-muted">Sin registros.</td></tr>{% endfor %}
+        </tbody></table></div></div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function rechazo(f) {
+    var motivo = prompt('Motivo del rechazo:');
+    if (!motivo) return false;
+    f.razon.value = motivo;
+    return true;
+}
+</script>
+{% endblock %}

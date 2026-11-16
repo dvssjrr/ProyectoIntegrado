@@ -1,0 +1,37 @@
+{% extends 'base/base.html' %}
+{% block title %}Ventas - Farmasur{% endblock %}
+{% block migas %}Ventas (POS){% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Punto de venta</h1>
+{% if not caja %}
+<div class="alert alert-warning">No hay una caja abierta. <a href="{% url 'caja' %}">Abre una caja</a> para vender.</div>
+{% else %}
+<div class="row g-3">
+    <div class="col-lg-7"><div class="tarjeta">
+        <h2 class="h5">Nueva venta <small class="text-muted">· {{ caja.caja_id }} ({{ caja.turno }})</small></h2>
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="alert alert-danger py-2">{{ form.non_field_errors }}</div>{% endif %}
+            <div class="row g-2 mb-3">
+                <div class="col-md-4">{{ form.tipo_comprobante.label_tag }}{{ form.tipo_comprobante }}</div>
+                <div class="col-md-4">{{ form.rut_cliente.label_tag }}{{ form.rut_cliente }}</div>
+                <div class="col-md-4">{{ form.nombre_cliente.label_tag }}{{ form.nombre_cliente }}</div>
+                <div class="col-12">{{ form.convenio.label_tag }}{{ form.convenio }}</div>
+            </div>
+            <strong>Productos</strong>
+            {% for prod, cant in form.lineas %}
+            <div class="row g-2 mt-1"><div class="col-8">{{ prod }}</div><div class="col-4">{{ cant }}</div></div>
+            {% endfor %}
+            <button class="btn btn-rojo mt-3" type="submit">Registrar venta</button>
+        </form>
+    </div></div>
+    <div class="col-lg-5"><div class="tarjeta">
+        <div class="d-flex justify-content-between"><strong>Ventas de hoy</strong><span class="text-danger fw-bold">${{ total_hoy }}</span></div>
+        <table class="table table-sm mt-2"><thead><tr><th>Folio</th><th>Hora</th><th class="text-end">Total</th></tr></thead><tbody>
+        {% for v in ventas %}<tr><td>{{ v.folio }}</td><td>{{ v.fecha_venta|date:"H:i" }}</td><td class="text-end">${{ v.total }}</td></tr>
+        {% empty %}<tr><td colspan="3" class="text-muted">Sin ventas hoy.</td></tr>{% endfor %}
+        </tbody></table>
+    </div></div>
+</div>
+{% endif %}
+{% endblock %}

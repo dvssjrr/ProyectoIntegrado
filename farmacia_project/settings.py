@@ -76,6 +76,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'farmasur.context_processors.acceso',
             ],
         },
     },
@@ -97,11 +98,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DB_NAME', default='farmasur_db'),
-            'USER': config('DB_USER', default='farmasur_user'),
-            'PASSWORD': config('DB_PASSWORD', default='Farmasur2026!'),
-            'HOST': config('DB_HOST', default='localhost'),
-            'PORT': config('DB_PORT', default='5432'),
+            'NAME': config('DB_NAME', default=config('DATABASE_NAME', default='farmasur_db')),
+            'USER': config('DB_USER', default=config('DATABASE_USER', default='farmasur_user')),
+            'PASSWORD': config('DB_PASSWORD', default=config('DATABASE_PASSWORD', default='')),
+            'HOST': config('DB_HOST', default=config('DATABASE_HOST', default='localhost')),
+            'PORT': config('DB_PORT', default=config('DATABASE_PORT', default='5432')),
             'ATOMIC_REQUESTS': True,
             'CONN_MAX_AGE': 600,
         }

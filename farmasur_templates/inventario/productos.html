@@ -1,0 +1,29 @@
+{% extends 'base/base.html' %}
+{% block title %}Productos - Farmasur{% endblock %}
+{% block migas %}Productos{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div><h1 class="h3 mb-0">Productos</h1><small class="text-muted">Catálogo de medicamentos y productos de la farmacia.</small></div>
+    {% if acceso.inventario_gestion %}<a class="btn btn-rojo" href="{% url 'producto_nuevo' %}">+ Nuevo producto</a>{% endif %}
+</div>
+<div class="tarjeta">
+    <form class="row g-2 mb-3" method="get">
+        <div class="col-md-9"><input class="form-control" name="q" value="{{ q }}" placeholder="Buscar por nombre, SKU o principio activo"></div>
+        <div class="col-md-3"><button class="btn btn-rojo w-100">Buscar</button></div>
+    </form>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>SKU</th><th>Producto</th><th>Laboratorio</th><th>Venta</th><th>Precio</th><th>Mín. vitrina</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+        {% for p in pagina %}
+        <tr><td class="text-muted">{{ p.sku_codigo_barra }}</td>
+            <td><strong>{{ p.nombre_comercial }}</strong><br><small class="text-muted">{{ p.presentacion }}</small></td>
+            <td>{{ p.laboratorio.nombre }}</td><td>{{ p.get_condicion_venta_display }}</td>
+            <td>${{ p.precio_clp }}</td><td>{{ p.stock_minimo_vitrina }}</td>
+            <td>{% if p.activo %}<span class="badge text-bg-success">Activo</span>{% else %}<span class="badge text-bg-secondary">Inactivo</span>{% endif %}</td>
+            <td class="text-end">{% if acceso.inventario_gestion %}<a class="btn btn-sm btn-outline-rojo" href="{% url 'producto_editar' p.pk %}">Editar</a>{% endif %}</td></tr>
+        {% empty %}<tr><td colspan="8" class="text-center text-muted py-4">Sin productos.</td></tr>
+        {% endfor %}
+        </tbody></table></div>
+    {% include 'base/paginacion.html' %}
+</div>
+{% endblock %}

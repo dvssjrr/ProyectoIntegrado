@@ -1,0 +1,81 @@
+{% extends 'base/base.html' %}
+{% block title %}Dashboard - Farmasur{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div>
+        <h1 class="h3 mb-0">Dashboard de inventario</h1>
+        <small class="text-muted">Control de stock, vencimientos y trazabilidad sanitaria.</small>
+    </div>
+    {% if acceso.inventario_gestion %}<a class="btn btn-rojo" href="{% url 'transferir' %}">+ Registrar movimiento</a>{% endif %}
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="tarjeta">
+        <small class="text-muted">Stock crítico (vitrina)</small>
+        <div class="kpi-valor text-danger">{{ criticos }} <small class="fs-6">productos</small></div>
+        <small class="text-muted">Bajo el mínimo de vitrina</small>
+    </div></div>
+    <div class="col-md-4"><div class="tarjeta">
+        <small class="text-muted">Recetas retenidas hoy</small>
+        <div class="kpi-valor" style="color:#1565c0">{{ retenidas_hoy }}</div>
+        <small class="text-muted">Registrados en Libro ISP</small>
+    </div></div>
+    <div class="col-md-4"><div class="tarjeta">
+        <small class="text-muted">Próximos a vencer (FEFO)</small>
+        <div class="kpi-valor text-warning">{{ por_vencer }} <small class="fs-6">lotes</small></div>
+        <small class="text-muted">Vencen en los próximos 30 días</small>
+    </div></div>
+</div>
+
+<div class="tarjeta mb-4">
+    <div class="d-flex justify-content-between flex-wrap gap-2 mb-3">
+        <div><h2 class="h5 mb-0">Gestión de Stock y Vencimientos</h2><small class="text-muted">Inventario dual · Vitrina y bodega · Ordenado por prioridad</small></div>
+        {% if acceso.inventario_gestion %}<a class="btn btn-outline-rojo btn-sm align-self-start" href="{% url 'lote_nuevo' %}">+ Ingresar lote</a>{% endif %}
+    </div>
+    <form class="row g-2 mb-3" method="get">
+        <div class="col-md-6"><input class="form-control" name="q" value="{{ q }}" placeholder="Buscar código, medicamento o lote"></div>
+        <div class="col-md-3"><select class="form-select" name="estado" onchange="this.form.submit()">
+            <option value="">Todos los estados</option>
+            <option value="venc" {% if estado == 'venc' %}selected{% endif %}>Por vencer / vencidos</option>
+            <option value="reponer" {% if estado == 'reponer' %}selected{% endif %}>Reponer vitrina</option>
+            <option value="normal" {% if estado == 'normal' %}selected{% endif %}>Stock normal</option>
+        </select></div>
+        <div class="col-md-3"><button class="btn btn-rojo w-100">Buscar</button></div>
+    </form>
+    <div class="table-responsive">
+    <table class="table align-middle">
+        <thead><tr><th>Código</th><th>Medicamento</th><th>Lote</th><th>Stock vitrina</th><th>Stock bodega</th><th>Vencimiento</th><th>Estado</th></tr></thead>
+        <tbody>
+        {% for l in pagina %}
+        <tr>
+            <td class="text-muted">{{ l.producto.sku_codigo_barra }}</td>
+            <td><strong>{{ l.producto.nombre_comercial }}</strong><br><small class="text-muted">{{ l.producto.presentacion }}{% if l.producto.condicion_venta == 'RECETA_RETENIDA' %} · <span class="text-danger">Receta retenida</span>{% endif %}</small></td>
+            <td>{{ l.codigo_lote }}</td><td>{{ l.stock_vitrina }}</td><td>{{ l.stock_bodega }}</td>
+            <td>{{ l.fecha_vencimiento|date:"d/m/Y" }}</td>
+            <td><span class="badge text-bg-{{ l.estado_color }}">{{ l.estado_txt }}</span></td>
+        </tr>
+        {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">Sin resultados.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <small class="text-muted">{{ total_lotes }} lotes</small>
+    {% include 'base/paginacion.html' %}
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-7"><div class="tarjeta">
+        <div class="d-flex justify-content-between"><strong>Ventas últimos 7 días</strong><small class="text-muted">Total: ${{ total_semana }}</small></div>
+        <div class="barras mt-3">
+            {% for g in grafico %}<div title="${{ g.monto }}"><div style="height:110px;display:flex;align-items:flex-end"><span class="barra" style="height:{{ g.alto }}%"></span></div>{{ g.dia }}</div>{% endfor %}
+        </div>
+    </div></div>
+    <div class="col-lg-5"><div class="tarjeta">
+        <div class="d-flex justify-content-between mb-3"><strong>Vencimientos por período</strong><span class="badge text-bg-warning">FEFO</span></div>
+        {% for nombre, cant, color, pct in periodos %}
+        <div class="mb-3"><div class="d-flex justify-content-between small"><span>{{ nombre }}</span><strong>{{ cant }} lotes</strong></div>
+            <div class="progress" style="height:7px"><div class="progress-bar bg-{{ color }}" style="width:{{ pct }}%"></div></div></div>
+        {% endfor %}
+    </div></div>
+</div>
+{% endblock %}

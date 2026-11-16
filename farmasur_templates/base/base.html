@@ -3,50 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}FARMASUR{% endblock %}</title>
+    <title>{% block title %}Farmasur{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        :root {
-            --celeste: #4fc3f7;
-            --celeste-oscuro: #0288d1;
-            --celeste-claro: #e1f5fe;
-        }
-        body { background: var(--celeste-claro); color: #12394d; }
-        .navbar-farmasur { background: var(--celeste); }
-        .navbar-farmasur .navbar-brand, .navbar-farmasur .navbar-text { color: #06304a; }
-        .btn-celeste { background: var(--celeste-oscuro); border-color: var(--celeste-oscuro); color: #fff; }
-        .btn-celeste:hover { background: #01679f; color: #fff; }
-        .tarjeta { background: #fff; border: 1px solid #b3e5fc; border-radius: 12px; box-shadow: 0 2px 6px rgba(2,136,209,.12); }
-        .tarjeta h2, .tarjeta h5 { color: var(--celeste-oscuro); }
-        .kpi { font-size: 1.8rem; font-weight: 700; color: var(--celeste-oscuro); }
-        .table thead th { background: #b3e5fc; color: #06304a; border: 0; }
-        .badge-celeste { background: var(--celeste-oscuro); }
+        :root { --rojo: #c62828; --rojo-oscuro: #8e1b1b; --rojo-claro: #fdecea; --lateral: #2b1215; }
+        body { background: #f6f4f4; color: #2b2b2b; font-size: .92rem; }
+        .lateral { width: 230px; min-height: 100vh; background: var(--lateral); color: #e9d6d6; position: fixed; top: 0; bottom: 0; left: 0; display: flex; flex-direction: column; }
+        .lateral .marca { padding: 18px 16px; font-size: 1.3rem; font-weight: 700; color: #fff; }
+        .lateral .marca span { background: var(--rojo); border-radius: 6px; padding: 0 8px; margin-right: 8px; }
+        .lateral .seccion { font-size: .7rem; text-transform: uppercase; letter-spacing: .05em; padding: 6px 16px; color: #b99; }
+        .lateral a.item { display: block; padding: 9px 16px; margin: 2px 10px; border-radius: 8px; color: #e9d6d6; text-decoration: none; }
+        .lateral a.item:hover { background: rgba(255,255,255,.08); }
+        .lateral a.item.activo { background: var(--rojo); color: #fff; }
+        .lateral .usuario { margin-top: auto; padding: 14px 16px; border-top: 1px solid rgba(255,255,255,.1); }
+        .avatar { display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background: var(--rojo); color: #fff; font-weight: 600; margin-right: 8px; }
+        .contenido { margin-left: 230px; }
+        .topbar { background: #fff; border-bottom: 1px solid #e5dede; padding: 10px 28px; display: flex; justify-content: space-between; align-items: center; }
+        .pagina { padding: 24px 28px; }
+        .tarjeta { background: #fff; border: 1px solid #e8e0e0; border-radius: 12px; padding: 18px; }
+        .kpi-valor { font-size: 2rem; font-weight: 700; }
+        .btn-rojo { background: var(--rojo); border-color: var(--rojo); color: #fff; }
+        .btn-rojo:hover { background: var(--rojo-oscuro); border-color: var(--rojo-oscuro); color: #fff; }
+        .btn-outline-rojo { border-color: var(--rojo); color: var(--rojo); }
+        .btn-outline-rojo:hover { background: var(--rojo); color: #fff; }
+        .table thead th { font-size: .72rem; text-transform: uppercase; color: #777; border-bottom: 1px solid #eee; }
+        .barras { display: flex; align-items: flex-end; gap: 10px; height: 130px; }
+        .barras div { flex: 1; text-align: center; font-size: .7rem; color: #777; }
+        .barras .barra { background: var(--rojo); border-radius: 4px 4px 0 0; width: 100%; }
+        .progress-bar.bg-danger { background-color: var(--rojo) !important; }
+        a { color: var(--rojo); }
+        .page-link { color: var(--rojo); }
+        .active > .page-link { background: var(--rojo); border-color: var(--rojo); color: #fff; }
+        @media (max-width: 800px) { .lateral { position: static; width: 100%; min-height: 0; } .contenido { margin-left: 0; } }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-farmasur">
-        <div class="container-fluid">
-            <a class="navbar-brand fw-bold" href="{% url 'inicio' %}">FARMASUR</a>
-            {% if user.is_authenticated %}
-            <div class="d-flex align-items-center gap-3">
-                <span class="navbar-text">{{ user.nombre_completo|default:user.username }} &middot; {{ user.get_rol_display }}</span>
-                <form method="post" action="{% url 'logout' %}" class="m-0">
-                    {% csrf_token %}
-                    <button class="btn btn-sm btn-celeste" type="submit">Salir</button>
-                </form>
-            </div>
-            {% endif %}
-        </div>
-    </nav>
+{% if user.is_authenticated %}
+{% with actual=request.resolver_match.url_name %}
+<aside class="lateral">
+    <div class="marca"><span>+</span>farmasur</div>
+    <div class="seccion">Gestión farmacéutica</div>
+    <a class="item {% if actual == 'inicio' %}activo{% endif %}" href="{% url 'inicio' %}">Inicio</a>
+    <a class="item {% if actual == 'productos' or actual == 'producto_nuevo' or actual == 'producto_editar' %}activo{% endif %}" href="{% url 'productos' %}">Productos</a>
+    <a class="item {% if actual == 'inventario' or actual == 'lote_nuevo' or actual == 'transferir' %}activo{% endif %}" href="{% url 'inventario' %}">Inventario Dual</a>
+    {% if acceso.inventario_gestion %}
+    <a class="item {% if actual == 'mermas' or actual == 'merma_nueva' %}activo{% endif %}" href="{% url 'mermas' %}">Reportes Mermas</a>
+    {% endif %}
+    {% if acceso.libro %}
+    <a class="item {% if actual == 'libro' or actual == 'receta_nueva' %}activo{% endif %}" href="{% url 'libro' %}">Libro Recetas / ISP</a>
+    {% endif %}
+    {% if acceso.ventas %}
+    <a class="item {% if actual == 'pos' %}activo{% endif %}" href="{% url 'pos' %}">Ventas (POS)</a>
+    <a class="item {% if actual == 'caja' %}activo{% endif %}" href="{% url 'caja' %}">Caja</a>
+    {% endif %}
+    {% if acceso.config %}
+    <a class="item {% if actual == 'configuracion' %}activo{% endif %}" href="{% url 'configuracion' %}">Configuración</a>
+    <a class="item" href="/admin/">Administración Django</a>
+    {% endif %}
+    <div class="usuario">
+        <span class="avatar">{{ user.nombre_completo|slice:":1"|default:user.username|slice:":1"|upper }}</span>
+        <strong>{{ user.nombre_completo|default:user.username }}</strong><br>
+        <small>{{ user.get_rol_display }}</small>
+        <form method="post" action="{% url 'logout' %}" class="mt-2">{% csrf_token %}
+            <button class="btn btn-sm btn-outline-light w-100" type="submit">Cerrar sesión</button>
+        </form>
+    </div>
+</aside>
+{% endwith %}
+{% endif %}
 
-    <main class="container my-4">
-        <h1 class="h3 mb-4">{% block heading %}{% endblock %}</h1>
+<div class="{% if user.is_authenticated %}contenido{% endif %}">
+    {% if user.is_authenticated %}
+    <div class="topbar">
+        <small class="text-muted">Back-office &rsaquo; {% block migas %}Inicio{% endblock %}</small>
+        <small class="text-muted">{% now "l, d \d\e F Y" %}</small>
+    </div>
+    {% endif %}
+    <main class="pagina">
+        {% for m in messages %}
+        <div class="alert alert-{% if m.tags == 'error' %}danger{% else %}{{ m.tags|default:'info' }}{% endif %} py-2">{{ m }}</div>
+        {% endfor %}
         {% block content %}{% endblock %}
     </main>
-
-    <footer class="text-center py-3 text-muted small">&copy; FARMASUR &middot; Sistema de Gesti&oacute;n Farmac&eacute;utica</footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    {% block extra_js %}{% endblock %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% block extra_js %}{% endblock %}
 </body>
 </html>

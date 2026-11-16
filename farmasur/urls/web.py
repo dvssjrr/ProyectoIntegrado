@@ -7,8 +7,26 @@ urlpatterns = [
     path('', web.inicio, name='inicio'),
     path('login/', auth_views.LoginView.as_view(template_name='usuarios/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('panel/admin/', web.panel_admin, name='panel_admin'),
-    path('panel/farmaceutico/', web.panel_farmaceutico, name='panel_farmaceutico'),
-    path('panel/tecnico/', web.panel_tecnico, name='panel_tecnico'),
-    path('panel/bodeguero/', web.panel_bodeguero, name='panel_bodeguero'),
+
+    path('productos/', web.productos, name='productos'),
+    path('productos/nuevo/', web.producto_form, name='producto_nuevo'),
+    path('productos/<int:pk>/editar/', web.producto_form, name='producto_editar'),
+    path('inventario/', web.inventario, name='inventario'),
+    path('inventario/lote/nuevo/', web.lote_nuevo, name='lote_nuevo'),
+    path('inventario/movimiento/', web.transferir, name='transferir'),
+    path('mermas/', web.mermas, name='mermas'),
+    path('mermas/nueva/', web.merma_nueva, name='merma_nueva'),
+
+    path('libro/', web.libro, name='libro'),
+    path('libro/receta/nueva/', web.receta_nueva, name='receta_nueva'),
+    path('libro/receta/<int:pk>/<str:accion>/', web.receta_accion, name='receta_accion'),
+
+    path('ventas/', web.pos, name='pos'),
+    path('caja/', web.caja, name='caja'),
+
+    path('configuracion/', web.configuracion, name='configuracion'),
+    path('configuracion/usuarios/nuevo/', web.usuario_nuevo, name='usuario_nuevo'),
+    path('configuracion/usuarios/<int:pk>/activar/', web.usuario_toggle, name='usuario_toggle'),
+    path('configuracion/laboratorios/nuevo/', web.laboratorio_nuevo, name='laboratorio_nuevo'),
+    path('configuracion/convenios/nuevo/', web.convenio_nuevo, name='convenio_nuevo'),
 ]

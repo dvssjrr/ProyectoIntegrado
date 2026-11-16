@@ -1,14 +1,23 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
 import re
+
+class UsuarioManager(UserManager):
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('rol', Usuario.Rol.ADMIN)
+        return super().create_superuser(username, email, password, **extra_fields)
+
 
 class Usuario(AbstractUser):
     """
     Modelo personalizado de Usuario con validación de RUT chileno (Módulo 11)
     y sistema de roles RBAC.
     """
+    objects = UsuarioManager()
+    REQUIRED_FIELDS = ['email', 'rut', 'nombre_completo']
+
     class Rol(models.TextChoices):
         ADMIN = 'ADMIN', _('Administrador')
         FARMACEUTICO = 'FARMACEUTICO', _('Químico Farmacéutico')

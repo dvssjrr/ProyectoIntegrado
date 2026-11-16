@@ -1,0 +1,30 @@
+{% extends 'base/base.html' %}
+{% block title %}Configuración - Farmasur{% endblock %}
+{% block migas %}Configuración{% endblock %}
+{% block content %}
+<h1 class="h3 mb-3">Configuración</h1>
+<div class="tarjeta mb-4">
+    <div class="d-flex justify-content-between mb-2"><h2 class="h5">Usuarios</h2><a class="btn btn-rojo btn-sm" href="{% url 'usuario_nuevo' %}">+ Nuevo usuario</a></div>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>Nombre</th><th>Usuario</th><th>RUT</th><th>Rol</th><th>Estado</th><th></th></tr></thead><tbody>
+        {% for u in usuarios %}
+        <tr><td>{{ u.nombre_completo }}</td><td>{{ u.username }}</td><td>{{ u.rut }}</td><td>{{ u.get_rol_display }}</td>
+            <td>{% if u.activo %}<span class="badge text-bg-success">Activo</span>{% else %}<span class="badge text-bg-secondary">Inactivo</span>{% endif %}</td>
+            <td class="text-end"><form method="post" action="{% url 'usuario_toggle' u.pk %}">{% csrf_token %}
+                <button class="btn btn-sm btn-outline-secondary">{% if u.activo %}Desactivar{% else %}Activar{% endif %}</button></form></td></tr>
+        {% endfor %}
+        </tbody></table></div>
+</div>
+<div class="row g-3">
+    <div class="col-lg-6"><div class="tarjeta">
+        <div class="d-flex justify-content-between mb-2"><h2 class="h5">Laboratorios</h2><a class="btn btn-rojo btn-sm" href="{% url 'laboratorio_nuevo' %}">+ Nuevo</a></div>
+        <ul class="list-group list-group-flush">{% for l in laboratorios %}<li class="list-group-item">{{ l.nombre }} <small class="text-muted">{{ l.pais }}</small></li>
+        {% empty %}<li class="list-group-item text-muted">Sin laboratorios.</li>{% endfor %}</ul>
+    </div></div>
+    <div class="col-lg-6"><div class="tarjeta">
+        <div class="d-flex justify-content-between mb-2"><h2 class="h5">Convenios / Isapres</h2><a class="btn btn-rojo btn-sm" href="{% url 'convenio_nuevo' %}">+ Nuevo</a></div>
+        <ul class="list-group list-group-flush">{% for c in convenios %}<li class="list-group-item">{{ c.nombre }} <span class="badge text-bg-danger float-end">{{ c.porcentaje_descuento }}%</span></li>
+        {% empty %}<li class="list-group-item text-muted">Sin convenios.</li>{% endfor %}</ul>
+    </div></div>
+</div>
+{% endblock %}

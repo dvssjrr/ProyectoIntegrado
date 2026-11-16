@@ -191,3 +191,22 @@ INFO 2026-11-16 16:05:04,949 autoreload 151700 151820 Watching for file changes 
 INFO 2026-11-16 16:05:15,545 autoreload 151700 151820 D:\progra\ProyectoIntegrado\farmacia_project\settings.py changed, reloading.
 INFO 2026-11-16 16:05:19,177 autoreload 153584 151932 Watching for file changes with StatReloader
 WARNING 2026-11-16 16:06:48,568 log 153816 153864 Forbidden: /panel/bodeguero/
+INFO 2026-11-16 16:37:08,394 autoreload 153584 151932 D:\progra\ProyectoIntegrado\farmacia_project\settings.py changed, reloading.
+INFO 2026-11-16 16:37:11,084 autoreload 156196 156172 Watching for file changes with StatReloader
+INFO 2026-11-16 16:47:09,020 autoreload 156196 156172 D:\progra\ProyectoIntegrado\farmasur\models\usuarios\models.py changed, reloading.
+INFO 2026-11-16 16:47:12,060 autoreload 159408 159232 Watching for file changes with StatReloader
+INFO 2026-11-16 16:55:36,202 autoreload 158896 139024 Watching for file changes with StatReloader
+INFO 2026-11-16 16:56:05,446 autoreload 142136 141448 Watching for file changes with StatReloader
+WARNING 2026-11-16 16:59:11,919 log 160344 154412 Not Found: /favicon.ico
+INFO 2026-11-16 17:11:11,380 autoreload 159408 159232 D:\progra\ProyectoIntegrado\farmacia_project\settings.py changed, reloading.
+INFO 2026-11-16 17:11:11,064 autoreload 142136 141448 D:\progra\ProyectoIntegrado\farmacia_project\settings.py changed, reloading.
+INFO 2026-11-16 17:11:15,932 autoreload 159392 160388 Watching for file changes with StatReloader
+INFO 2026-11-16 17:11:17,382 autoreload 156024 146456 Watching for file changes with StatReloader
+INFO 2026-11-16 17:11:57,210 autoreload 159392 160388 D:\progra\ProyectoIntegrado\farmasur\urls\web.py changed, reloading.
+INFO 2026-11-16 17:12:02,496 autoreload 164460 164672 Watching for file changes with StatReloader
+WARNING 2026-11-16 17:14:38,292 log 165968 162784 Forbidden: /mermas/
+WARNING 2026-11-16 17:14:38,295 log 165968 162784 Forbidden: /configuracion/
+WARNING 2026-11-16 17:14:38,324 log 165968 162784 Forbidden: /ventas/
+WARNING 2026-11-16 17:15:18,953 log 164060 164360 Forbidden: /mermas/
+WARNING 2026-11-16 17:15:18,955 log 164060 164360 Forbidden: /configuracion/
+WARNING 2026-11-16 17:15:18,990 log 164060 164360 Forbidden: /ventas/
