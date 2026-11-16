@@ -4,7 +4,6 @@
 **Proyecto de Evaluación Integrada**
 - Diego Arriagada
 - Damian Bravo
-- Antonio Guzmán
 
 ---
 
