@@ -4,7 +4,7 @@ Lógica de negocio reutilizable y operaciones transaccionales.
 """
 from django.db import transaction
 from django.contrib.auth.hashers import make_password
-from .models import Usuario, LogAuditoria
+from farmasur.models import Usuario, LogAuditoria
 
 
 class UsuarioService:

@@ -3,8 +3,8 @@ Serializers para la app usuarios.
 Validación y representación de datos de Usuario para API REST.
 """
 from rest_framework import serializers
-from .models import Usuario, LogAuditoria
-from .validators import validar_rut_chileno
+from farmasur.models import Usuario, LogAuditoria
+from farmasur.validators.usuarios.validators import validar_rut_chileno
 
 
 class UsuarioListSerializer(serializers.ModelSerializer):

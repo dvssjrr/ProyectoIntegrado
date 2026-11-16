@@ -3,7 +3,7 @@ Serializers para la app inventario.
 Validación y representación de datos de medicamentos, lotes, etc.
 """
 from rest_framework import serializers
-from .models import Laboratorio, Producto, Lote, RecepcionProveedor, Merma
+from farmasur.models import Laboratorio, Producto, Lote, RecepcionProveedor, Merma
 
 
 class LaboratorioSerializer(serializers.ModelSerializer):

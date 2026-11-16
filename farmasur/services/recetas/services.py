@@ -4,7 +4,7 @@ Lógica de negocio reutilizable y operaciones transaccionales.
 """
 from django.db import transaction
 from django.utils import timezone
-from .models import Receta, RecetaRetenidaISP, UnidosisAsistencial
+from farmasur.models import Receta, RecetaRetenidaISP, UnidosisAsistencial
 import hashlib
 from datetime import timedelta
 

@@ -9,16 +9,16 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters as drf_filters
 
-from .models import Receta, RecetaRetenidaISP, UnidosisAsistencial
-from .serializers import (
+from farmasur.models import Receta, DetalleReceta, RecetaRetenidaISP, UnidosisAsistencial
+from farmasur.serializers.recetas.serializers import (
     RecetaListSerializer,
     RecetaDetailSerializer,
     RecetaRetenidaISPSerializer,
     UnidosisAsistencialListSerializer,
     UnidosisAsistencialDetailSerializer,
 )
-from .services import RecetaService, RecetaRetenidaISPService, UnidosisAsistencialService
-from .permissions import PuedeVerRecetas, PuedeModificarRecetas, SoloFarmaceutico
+from farmasur.services.recetas.services import RecetaService
+from farmasur.permissions.recetas.permissions import PuedeVerRecetas, PuedeModificarRecetas
 
 
 class RecetaViewSet(viewsets.ModelViewSet):
@@ -42,9 +42,9 @@ class RecetaViewSet(viewsets.ModelViewSet):
             self.permission_classes = [IsAuthenticated, PuedeModificarRecetas]
         return super().get_permissions()
     
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, SoloFarmaceutico])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, PuedeModificarRecetas])
     def aprobar(self, request, pk=None):
-        """Aprueba una receta (solo farmacéuticos)."""
+        """Aprueba una receta."""
         try:
             receta = RecetaService.aprobar_receta(pk, request.user)
             serializer = self.get_serializer(receta)
@@ -70,9 +70,9 @@ class RecetaViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
     
-    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, SoloFarmaceutico])
+    @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, PuedeModificarRecetas])
     def dispensar(self, request, pk=None):
-        """Dispensa una receta (solo farmacéuticos)."""
+        """Dispensa una receta."""
         try:
             receta = RecetaService.dispensar_receta(pk)
             serializer = self.get_serializer(receta)
@@ -102,43 +102,27 @@ class RecetaRetenidaISPViewSet(viewsets.ReadOnlyModelViewSet):
     """Vista de solo lectura para recetas retenidas ISP."""
     queryset = RecetaRetenidaISP.objects.all()
     serializer_class = RecetaRetenidaISPSerializer
-    permission_classes = [IsAuthenticated, SoloFarmaceutico]
+    permission_classes = [IsAuthenticated, PuedeModificarRecetas]
     filter_backends = [DjangoFilterBackend, drf_filters.OrderingFilter]
     filterset_fields = ['receta']
-    ordering_fields = ['fecha_dispensacion']
-    ordering = ['-fecha_dispensacion']
-    
-    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, SoloFarmaceutico])
-    def validar_integridad(self, request, pk=None):
-        """Valida integridad del encadenamiento de hash."""
-        try:
-            receta_retenida = self.get_object()
-            es_valida = RecetaRetenidaISPService.validar_integridad(pk)
-            return Response({
-                'folio_isp': receta_retenida.folio_isp,
-                'integridad_valida': es_valida
-            })
-        except RecetaRetenidaISP.DoesNotExist:
-            return Response(
-                {'error': 'Receta retenida no encontrada'},
-                status=status.HTTP_404_NOT_FOUND
-            )
+    ordering_fields = ['fecha_retencion']
+    ordering = ['-fecha_retencion']
 
 
 class UnidosisAsistencialViewSet(viewsets.ModelViewSet):
     """CRUD para unidosis asistencial."""
     queryset = UnidosisAsistencial.objects.all()
-    serializer_class = UnidosisAsistencialDetailSerializer
     permission_classes = [IsAuthenticated, PuedeModificarRecetas]
     filter_backends = [DjangoFilterBackend, drf_filters.SearchFilter, drf_filters.OrderingFilter]
     filterset_fields = ['estado', 'rut_paciente']
     search_fields = ['folio', 'nombre_paciente']
-    ordering_fields = ['fecha_solicitud', 'fecha_dispensacion']
+    ordering_fields = ['fecha_solicitud']
     ordering = ['-fecha_solicitud']
     
     def get_serializer_class(self):
         if self.action == 'list':
             return UnidosisAsistencialListSerializer
+        return UnidosisAsistencialDetailSerializer
         return UnidosisAsistencialDetailSerializer
     
     def perform_create(self, serializer):
@@ -149,10 +133,12 @@ class UnidosisAsistencialViewSet(viewsets.ModelViewSet):
     def preparar(self, request, pk=None):
         """Marca unidosis como preparada."""
         try:
-            unidosis = UnidosisAsistencialService.preparar_unidosis(pk)
+            unidosis = self.get_object()
+            unidosis.estado = 'PREPARADA'
+            unidosis.save()
             serializer = self.get_serializer(unidosis)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except (ValueError, UnidosisAsistencial.DoesNotExist) as e:
+        except UnidosisAsistencial.DoesNotExist as e:
             return Response(
                 {'error': str(e)},
                 status=status.HTTP_400_BAD_REQUEST
@@ -162,10 +148,12 @@ class UnidosisAsistencialViewSet(viewsets.ModelViewSet):
     def dispensar(self, request, pk=None):
         """Dispensa unidosis."""
         try:
-            unidosis = UnidosisAsistencialService.dispensar_unidosis(pk, request.user)
+            unidosis = self.get_object()
+            unidosis.estado = 'DISPENSADA'
+            unidosis.save()
             serializer = self.get_serializer(unidosis)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except (ValueError, UnidosisAsistencial.DoesNotExist) as e:
+        except UnidosisAsistencial.DoesNotExist as e:
             return Response(
                 {'error': str(e)},
                 status=status.HTTP_400_BAD_REQUEST
@@ -174,13 +162,13 @@ class UnidosisAsistencialViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated, PuedeModificarRecetas])
     def cancelar(self, request, pk=None):
         """Cancela una unidosis."""
-        observaciones = request.data.get('observaciones', '')
-        
         try:
-            unidosis = UnidosisAsistencialService.cancelar_unidosis(pk, observaciones)
+            unidosis = self.get_object()
+            unidosis.estado = 'CANCELADA'
+            unidosis.save()
             serializer = self.get_serializer(unidosis)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except (ValueError, UnidosisAsistencial.DoesNotExist) as e:
+        except UnidosisAsistencial.DoesNotExist as e:
             return Response(
                 {'error': str(e)},
                 status=status.HTTP_400_BAD_REQUEST

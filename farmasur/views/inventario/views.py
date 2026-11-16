@@ -9,8 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters as drf_filters
 
-from .models import Laboratorio, Producto, Lote, Merma
-from .serializers import (
+from farmasur.models import Laboratorio, Producto, Lote, Merma
+from farmasur.serializers.inventario.serializers import (
     LaboratorioSerializer,
     ProductoListSerializer,
     ProductoDetailSerializer,
@@ -18,8 +18,8 @@ from .serializers import (
     LoteDetailSerializer,
     MermaSerializer,
 )
-from .services import LoteService, StockService, MermaService
-from .permissions import PuedeVerInventario, PuedeModificarInventario
+from farmasur.services.inventario.services import LoteService, StockService, MermaService
+from farmasur.permissions.inventario.permissions import PuedeVerInventario, PuedeModificarInventario
 
 
 class LaboratorioViewSet(viewsets.ModelViewSet):

@@ -4,9 +4,9 @@ Lógica de negocio reutilizable y operaciones transaccionales.
 """
 from django.db import transaction
 from django.utils import timezone
-from .models import CajaDiaria, POS, ConvenioIsapre, Comprobante
-from inventario.models import Lote
-from inventario.services import LoteService, StockService
+from farmasur.models import CajaDiaria, POS, ConvenioIsapre, Comprobante
+from farmasur.models import Lote
+from farmasur.services.inventario.services import LoteService, StockService
 from datetime import datetime, timedelta
 
 

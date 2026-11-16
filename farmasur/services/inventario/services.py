@@ -5,7 +5,7 @@ Lógica de negocio reutilizable: FEFO, cálculos de stock, etc.
 from django.db import transaction
 from django.db.models import Q, Sum
 from datetime import date, timedelta
-from .models import Lote, Producto, RecepcionProveedor, Merma
+from farmasur.models import Lote, Producto, RecepcionProveedor, Merma
 
 
 class LoteService:

@@ -3,8 +3,7 @@ Serializadores para la app ventas.
 Validación y representación de datos de API.
 """
 from rest_framework import serializers
-from .models import CajaDiaria, POS, ConvenioIsapre, Comprobante
-from usuarios.models import Usuario
+from farmasur.models import CajaDiaria, POS, ConvenioIsapre, Comprobante, Usuario
 
 
 class CajaDiariaListSerializer(serializers.ModelSerializer):

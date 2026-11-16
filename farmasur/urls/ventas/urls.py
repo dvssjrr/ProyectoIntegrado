@@ -4,7 +4,7 @@ Enrutamiento de endpoints de API.
 """
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from . import views
+from farmasur.views.ventas import views
 
 app_name = 'ventas'
 

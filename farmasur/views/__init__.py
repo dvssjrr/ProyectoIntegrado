@@ -5,7 +5,7 @@ ViewSets de Django REST Framework para todos los endpoints
 
 from farmasur.views.usuarios.views import (
     UsuarioViewSet,
-    LogAuditoriaViewSet,
+    AuditoriaViewSet,
 )
 from farmasur.views.inventario.views import (
     LaboratorioViewSet,
@@ -15,19 +15,19 @@ from farmasur.views.inventario.views import (
 )
 from farmasur.views.recetas.views import (
     RecetaViewSet,
-    DetalleRecetaViewSet,
-    LibroISPViewSet,
+    RecetaRetenidaISPViewSet,
+    UnidosisAsistencialViewSet,
 )
 from farmasur.views.ventas.views import (
-    VentaViewSet,
-    DetalleVentaViewSet,
-    CajaViewSet,
+    CajaDiariaViewSet,
+    POSViewSet,
+    ConvenioIsapreViewSet,
 )
 
 __all__ = [
     # Usuarios
     'UsuarioViewSet',
-    'LogAuditoriaViewSet',
+    'AuditoriaViewSet',
     # Inventario
     'LaboratorioViewSet',
     'ProductoViewSet',
@@ -35,10 +35,10 @@ __all__ = [
     'MermaViewSet',
     # Recetas
     'RecetaViewSet',
-    'DetalleRecetaViewSet',
-    'LibroISPViewSet',
+    'RecetaRetenidaISPViewSet',
+    'UnidosisAsistencialViewSet',
     # Ventas
-    'VentaViewSet',
-    'DetalleVentaViewSet',
-    'CajaViewSet',
+    'CajaDiariaViewSet',
+    'POSViewSet',
+    'ConvenioIsapreViewSet',
 ]

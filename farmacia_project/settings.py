@@ -59,19 +59,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'farmacia_project.wsgi.application'
 
-# Base de Datos: PostgreSQL con credenciales desde .env.local
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='farmasur_db'),
-        'USER': config('DB_USER', default='farmasur_user'),
-        'PASSWORD': config('DB_PASSWORD', default='Farmasur2026!'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
-        'ATOMIC_REQUESTS': True,
-        'CONN_MAX_AGE': 600,
+# Base de Datos: PostgreSQL con credenciales desde .env.local o SQLite para desarrollo
+USE_SQLITE = config('USE_SQLITE', default=True, cast=bool)
+
+if USE_SQLITE:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': config('DB_NAME', default='farmasur_db'),
+            'USER': config('DB_USER', default='farmasur_user'),
+            'PASSWORD': config('DB_PASSWORD', default='Farmasur2026!'),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='5432'),
+            'ATOMIC_REQUESTS': True,
+            'CONN_MAX_AGE': 600,
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},

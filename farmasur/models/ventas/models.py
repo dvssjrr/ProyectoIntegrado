@@ -16,7 +16,7 @@ class CajaDiaria(models.Model):
     fecha = models.DateField(auto_now_add=True, db_index=True)
     turno = models.CharField(max_length=20, choices=[('MAÑANA', 'Mañana'), ('TARDE', 'Tarde'), ('NOCHE', 'Noche')])
     
-    operario = models.ForeignKey('usuarios.Usuario', on_delete=models.PROTECT)
+    operario = models.ForeignKey('farmasur.Usuario', on_delete=models.PROTECT)
     
     monto_inicial = models.IntegerField(validators=[MinValueValidator(0)], help_text="Monto inicial en CLP")
     monto_cierre = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(0)])
@@ -71,7 +71,7 @@ class POS(models.Model):
     folio = models.CharField(max_length=50, unique=True, db_index=True)
     fecha_venta = models.DateTimeField(auto_now_add=True, db_index=True)
     
-    operario = models.ForeignKey('usuarios.Usuario', on_delete=models.PROTECT)
+    operario = models.ForeignKey('farmasur.Usuario', on_delete=models.PROTECT)
     
     rut_cliente = models.CharField(max_length=12, blank=True, db_index=True)
     nombre_cliente = models.CharField(max_length=255, blank=True)
@@ -93,7 +93,7 @@ class POS(models.Model):
     # Datos de receta retenida si aplica
     requiere_receta_retenida = models.BooleanField(default=False)
     receta_retenida = models.ForeignKey(
-        'recetas.RecetaRetenidaISP',
+        'farmasur.RecetaRetenidaISP',
         on_delete=models.SET_NULL,
         null=True,
         blank=True

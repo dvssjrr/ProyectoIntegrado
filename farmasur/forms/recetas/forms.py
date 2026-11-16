@@ -3,7 +3,7 @@ Formularios para la app recetas.
 Validación de datos en formularios HTML tradicionales.
 """
 from django import forms
-from .models import Receta, RecetaRetenidaISP, UnidosisAsistencial
+from farmasur.models import Receta, RecetaRetenidaISP, UnidosisAsistencial
 
 
 class RecetaForm(forms.ModelForm):

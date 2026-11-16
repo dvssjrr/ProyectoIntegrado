@@ -3,7 +3,7 @@ Permisos para la app ventas.
 Control de acceso basado en roles.
 """
 from rest_framework import permissions
-from usuarios.models import Usuario
+from farmasur.models import Usuario
 
 
 class PuedeVerVentas(permissions.BasePermission):

@@ -3,7 +3,7 @@ Formularios para la app ventas.
 Validación de datos en formularios HTML tradicionales.
 """
 from django import forms
-from .models import CajaDiaria, POS, ConvenioIsapre, Comprobante
+from farmasur.models import CajaDiaria, POS, ConvenioIsapre, Comprobante
 
 
 class CajaDiariaForm(forms.ModelForm):

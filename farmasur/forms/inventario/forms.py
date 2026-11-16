@@ -3,7 +3,7 @@ Formularios para la app inventario.
 Validación de datos en formularios HTML tradicionales.
 """
 from django import forms
-from .models import Lote, Producto, Merma
+from farmasur.models import Lote, Producto, Merma
 
 
 class LoteForm(forms.ModelForm):
@@ -75,5 +75,5 @@ class ProductoFilterForm(forms.Form):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        from .models import Laboratorio
+        from farmasur.models import Laboratorio
         self.fields['laboratorio'].queryset = Laboratorio.objects.all()

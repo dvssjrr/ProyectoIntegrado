@@ -8,10 +8,10 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from datetime import timedelta
 
-from usuarios.models import Usuario, LogAuditoria
-from inventario.models import Laboratorio, Producto, Lote
-from recetas.models import Receta
-from ventas.models import ConvenioIsapre, CajaDiaria
+from farmasur.models import Usuario, LogAuditoria
+from farmasur.models import Laboratorio, Producto, Lote
+from farmasur.models import Receta
+from farmasur.models import ConvenioIsapre, CajaDiaria
 
 User = get_user_model()
 

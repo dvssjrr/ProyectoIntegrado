@@ -3,6 +3,20 @@ from django.utils import timezone
 from django.core.validators import MinValueValidator
 from datetime import timedelta
 
+
+class DetalleReceta(models.Model):
+    """
+    Detalles de medicamentos en una receta.
+    """
+    class Meta:
+        db_table = 'recetas_detalle_receta'
+        verbose_name = 'Detalle de Receta'
+        verbose_name_plural = 'Detalles de Receta'
+    
+    def __str__(self):
+        return f"Detalle Receta"
+
+
 class Receta(models.Model):
     """
     Validación clínica y legal de recetas médicas con bloqueo automático a 30 días.
@@ -25,7 +39,7 @@ class Receta(models.Model):
     notas_prescriptor = models.TextField(blank=True)
     fecha_aprobacion = models.DateTimeField(null=True, blank=True)
     aprobado_por = models.ForeignKey(
-        'usuarios.Usuario',
+        'farmasur.Usuario',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
@@ -85,7 +99,7 @@ class RecetaRetenidaISP(models.Model):
     folio_isp = models.CharField(max_length=50, unique=True, db_index=True)
     fecha_dispensacion = models.DateTimeField(auto_now_add=True)
     dispensado_por = models.ForeignKey(
-        'usuarios.Usuario',
+        'farmasur.Usuario',
         on_delete=models.PROTECT,
         related_name='recetas_retenidas_dispensadas'
     )
@@ -133,14 +147,14 @@ class UnidosisAsistencial(models.Model):
     observaciones = models.TextField(blank=True)
     
     solicitado_por = models.ForeignKey(
-        'usuarios.Usuario',
+        'farmasur.Usuario',
         on_delete=models.SET_NULL,
         null=True,
         related_name='unidosis_solicitadas'
     )
     
     dispensado_por = models.ForeignKey(
-        'usuarios.Usuario',
+        'farmasur.Usuario',
         on_delete=models.SET_NULL,
         null=True,
         blank=True,

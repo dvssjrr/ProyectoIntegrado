@@ -4,7 +4,8 @@ Validación y transformación de datos para la API REST
 """
 
 from farmasur.serializers.usuarios.serializers import (
-    UsuarioSerializer,
+    UsuarioListSerializer,
+    UsuarioDetailSerializer,
     LogAuditoriaSerializer,
 )
 from farmasur.serializers.inventario.serializers import (
@@ -13,22 +14,30 @@ from farmasur.serializers.inventario.serializers import (
     ProductoDetailSerializer,
     LoteListSerializer,
     LoteDetailSerializer,
+    RecepcionProveedorSerializer,
     MermaSerializer,
 )
 from farmasur.serializers.recetas.serializers import (
-    RecetaSerializer,
-    DetalleRecetaSerializer,
-    LibroISPSerializer,
+    RecetaListSerializer,
+    RecetaDetailSerializer,
+    RecetaRetenidaISPSerializer,
+    UnidosisAsistencialListSerializer,
+    UnidosisAsistencialDetailSerializer,
 )
 from farmasur.serializers.ventas.serializers import (
-    VentaSerializer,
-    DetalleVentaSerializer,
-    CajaSerializer,
+    CajaDiariaListSerializer,
+    CajaDiariaDetailSerializer,
+    POSListSerializer,
+    POSDetailSerializer,
+    ConvenioIsapreSerializer,
+    ComprobanteListSerializer,
+    ComprobanteDetailSerializer,
 )
 
 __all__ = [
     # Usuarios
-    'UsuarioSerializer',
+    'UsuarioListSerializer',
+    'UsuarioDetailSerializer',
     'LogAuditoriaSerializer',
     # Inventario
     'LaboratorioSerializer',
@@ -36,13 +45,20 @@ __all__ = [
     'ProductoDetailSerializer',
     'LoteListSerializer',
     'LoteDetailSerializer',
+    'RecepcionProveedorSerializer',
     'MermaSerializer',
     # Recetas
-    'RecetaSerializer',
-    'DetalleRecetaSerializer',
-    'LibroISPSerializer',
+    'RecetaListSerializer',
+    'RecetaDetailSerializer',
+    'RecetaRetenidaISPSerializer',
+    'UnidosisAsistencialListSerializer',
+    'UnidosisAsistencialDetailSerializer',
     # Ventas
-    'VentaSerializer',
-    'DetalleVentaSerializer',
-    'CajaSerializer',
+    'CajaDiariaListSerializer',
+    'CajaDiariaDetailSerializer',
+    'POSListSerializer',
+    'POSDetailSerializer',
+    'ConvenioIsapreSerializer',
+    'ComprobanteListSerializer',
+    'ComprobanteDetailSerializer',
 ]

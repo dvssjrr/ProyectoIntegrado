@@ -9,8 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters as drf_filters
 
-from .models import CajaDiaria, POS, ConvenioIsapre, Comprobante
-from .serializers import (
+from farmasur.models import CajaDiaria, POS, ConvenioIsapre, Comprobante
+from farmasur.serializers.ventas.serializers import (
     CajaDiariaListSerializer,
     CajaDiariaDetailSerializer,
     POSListSerializer,
@@ -19,8 +19,8 @@ from .serializers import (
     ComprobanteListSerializer,
     ComprobanteDetailSerializer,
 )
-from .services import CajaService, POSService, ConvenioService, ComprobanteService
-from .permissions import PuedeVerVentas, PuedeModificarVentas, PuedeGestionarCaja
+from farmasur.services.ventas.services import CajaService, POSService, ConvenioService, ComprobanteService
+from farmasur.permissions.ventas.permissions import PuedeVerVentas, PuedeModificarVentas, PuedeGestionarCaja
 
 
 class CajaDiariaViewSet(viewsets.ModelViewSet):

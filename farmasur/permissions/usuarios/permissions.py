@@ -3,7 +3,7 @@ Permisos para la app usuarios.
 Control de acceso basado en roles (RBAC).
 """
 from rest_framework import permissions
-from .models import Usuario
+from farmasur.models import Usuario
 
 
 class EsAdmin(permissions.BasePermission):

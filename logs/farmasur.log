@@ -3,3 +3,45 @@ INFO 2026-11-16 14:41:33,577 autoreload 59628 58396 Watching for file changes wi
 INFO 2026-11-16 14:41:57,710 autoreload 59628 58396 D:\progra\ProyectoIntegrado\farmasur\models\__init__.py changed, reloading.
 INFO 2026-11-16 14:42:42,198 autoreload 62932 62512 Watching for file changes with StatReloader
 INFO 2026-11-16 14:51:42,927 autoreload 62932 62512 C:\Users\damib\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\django\contrib\admin\__init__.py changed, reloading.
+INFO 2026-11-16 14:52:54,631 autoreload 49952 69736 Watching for file changes with StatReloader
+INFO 2026-11-16 14:53:03,683 autoreload 49952 69736 D:\progra\ProyectoIntegrado\farmacia_project\settings.py changed, reloading.
+INFO 2026-11-16 14:53:12,652 autoreload 37176 70996 Watching for file changes with StatReloader
+INFO 2026-11-16 14:53:25,244 autoreload 37176 70996 D:\progra\ProyectoIntegrado\farmasur\views\usuarios\views.py changed, reloading.
+INFO 2026-11-16 14:53:35,899 autoreload 72136 72140 Watching for file changes with StatReloader
+INFO 2026-11-16 14:55:00,795 autoreload 72136 72140 D:\progra\ProyectoIntegrado\farmasur\models\recetas\models.py changed, reloading.
+INFO 2026-11-16 14:55:15,781 autoreload 68216 74192 Watching for file changes with StatReloader
+INFO 2026-11-16 14:55:58,882 autoreload 68216 74192 D:\progra\ProyectoIntegrado\farmasur\serializers\usuarios\serializers.py changed, reloading.
+INFO 2026-11-16 14:56:06,659 autoreload 73160 77664 Watching for file changes with StatReloader
+INFO 2026-11-16 14:57:35,902 autoreload 73160 77664 D:\progra\ProyectoIntegrado\farmasur\validators\__init__.py changed, reloading.
+INFO 2026-11-16 14:57:45,285 autoreload 79268 68216 Watching for file changes with StatReloader
+INFO 2026-11-16 14:57:58,778 autoreload 79268 68216 D:\progra\ProyectoIntegrado\farmasur\validators\__init__.py changed, reloading.
+INFO 2026-11-16 14:58:07,965 autoreload 82400 82044 Watching for file changes with StatReloader
+INFO 2026-11-16 14:58:29,859 autoreload 82400 82044 D:\progra\ProyectoIntegrado\farmasur\serializers\__init__.py changed, reloading.
+INFO 2026-11-16 14:58:41,093 autoreload 82996 83108 Watching for file changes with StatReloader
+INFO 2026-11-16 14:58:49,752 autoreload 82996 83108 D:\progra\ProyectoIntegrado\farmasur\permissions\__init__.py changed, reloading.
+INFO 2026-11-16 14:59:00,613 autoreload 83720 84748 Watching for file changes with StatReloader
+INFO 2026-11-16 14:59:28,731 autoreload 83720 84748 D:\progra\ProyectoIntegrado\farmasur\permissions\inventario\permissions.py changed, reloading.
+INFO 2026-11-16 14:59:39,167 autoreload 76472 83404 Watching for file changes with StatReloader
+INFO 2026-11-16 14:59:43,872 autoreload 76472 83404 D:\progra\ProyectoIntegrado\farmasur\services\recetas\services.py changed, reloading.
+INFO 2026-11-16 14:59:48,646 autoreload 86000 86280 Watching for file changes with StatReloader
+INFO 2026-11-16 15:00:05,953 autoreload 86000 86280 D:\progra\ProyectoIntegrado\farmasur\services\ventas\services.py changed, reloading.
+INFO 2026-11-16 15:00:13,168 autoreload 88052 87484 Watching for file changes with StatReloader
+INFO 2026-11-16 15:02:04,906 autoreload 88052 87484 D:\progra\ProyectoIntegrado\farmasur\views\__init__.py changed, reloading.
+INFO 2026-11-16 15:02:15,588 autoreload 91636 91084 Watching for file changes with StatReloader
+INFO 2026-11-16 15:03:03,236 autoreload 91636 91084 D:\progra\ProyectoIntegrado\farmasur\views\recetas\views.py changed, reloading.
+INFO 2026-11-16 15:03:14,274 autoreload 94696 94700 Watching for file changes with StatReloader
+INFO 2026-11-16 15:03:43,070 autoreload 94696 94700 D:\progra\ProyectoIntegrado\farmasur\views\recetas\views.py changed, reloading.
+INFO 2026-11-16 15:03:50,365 autoreload 95852 95752 Watching for file changes with StatReloader
+INFO 2026-11-16 15:05:08,176 autoreload 95852 95752 D:\progra\ProyectoIntegrado\farmasur\views\recetas\views.py changed, reloading.
+INFO 2026-11-16 15:05:10,446 autoreload 98468 98492 Watching for file changes with StatReloader
+INFO 2026-11-16 15:05:30,041 autoreload 98468 98492 D:\progra\ProyectoIntegrado\farmasur\views\recetas\views.py changed, reloading.
+INFO 2026-11-16 15:05:46,010 autoreload 98628 98164 Watching for file changes with StatReloader
+INFO 2026-11-16 15:07:24,357 autoreload 98628 98164 D:\progra\ProyectoIntegrado\farmasur\models\ventas\models.py changed, reloading.
+INFO 2026-11-16 15:07:44,140 autoreload 102696 103084 Watching for file changes with StatReloader
+INFO 2026-11-16 15:08:02,624 autoreload 102696 103084 D:\progra\ProyectoIntegrado\farmasur\models\recetas\models.py changed, reloading.
+INFO 2026-11-16 15:08:22,629 autoreload 103544 88240 Watching for file changes with StatReloader
+INFO 2026-11-16 15:09:46,432 autoreload 107240 106504 Watching for file changes with StatReloader
+INFO 2026-11-16 15:10:23,022 autoreload 107668 107848 Watching for file changes with StatReloader
+INFO 2026-11-16 15:10:37,580 autoreload 107668 107848 D:\progra\ProyectoIntegrado\farmasur\serializers\__init__.py changed, reloading.
+INFO 2026-11-16 15:10:38,592 autoreload 103544 88240 D:\progra\ProyectoIntegrado\farmasur\serializers\__init__.py changed, reloading.
+INFO 2026-11-16 15:10:50,729 autoreload 109416 108872 Watching for file changes with StatReloader

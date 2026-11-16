@@ -6,10 +6,10 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
-from .models import Usuario, LogAuditoria
-from .serializers import UsuarioListSerializer, UsuarioDetailSerializer, LogAuditoriaSerializer
-from .permissions import EsAdmin, EsAdminOLectura, es_admin
-from .services import UsuarioService, LogAuditoriaService
+from farmasur.models import Usuario, LogAuditoria
+from farmasur.serializers.usuarios.serializers import UsuarioListSerializer, UsuarioDetailSerializer, LogAuditoriaSerializer
+from farmasur.permissions.usuarios.permissions import EsAdmin, EsAdminOLectura, es_admin
+from farmasur.services.usuarios.services import UsuarioService, LogAuditoriaService
 
 
 class UsuarioViewSet(viewsets.ModelViewSet):

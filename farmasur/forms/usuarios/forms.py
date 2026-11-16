@@ -4,8 +4,8 @@ Validación de datos en formularios HTML tradicionales.
 """
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import Usuario
-from .validators import validar_rut_chileno
+from farmasur.models import Usuario
+from farmasur.validators import validar_rut_chileno
 
 
 class UsuarioCreationForm(UserCreationForm):

@@ -4,39 +4,43 @@ Control de acceso basado en roles (RBAC) para todos los endpoints
 """
 
 from farmasur.permissions.usuarios.permissions import (
-    IsAdmin,
-    IsFarmaceutico,
-    IsOwner,
-    CustomPermission,
+    EsAdmin,
+    EsAdminOLectura,
+    EsUsuarioMismoOAdmin,
+    es_admin,
 )
 from farmasur.permissions.inventario.permissions import (
-    CanViewInventario,
-    CanEditInventario,
-    CanManageStock,
+    PuedeVerInventario,
+    PuedeModificarInventario,
+    SoloBodeguero,
 )
 from farmasur.permissions.recetas.permissions import (
-    CanViewRecetas,
-    CanRegisterReceta,
+    PuedeVerRecetas,
+    SoloFarmaceutico,
+    PuedeModificarRecetas,
 )
 from farmasur.permissions.ventas.permissions import (
-    CanViewVentas,
-    CanRegisterVenta,
+    PuedeVerVentas,
+    PuedeModificarVentas,
+    PuedeGestionarCaja,
 )
 
 __all__ = [
     # Usuarios
-    'IsAdmin',
-    'IsFarmaceutico',
-    'IsOwner',
-    'CustomPermission',
+    'EsAdmin',
+    'EsAdminOLectura',
+    'EsUsuarioMismoOAdmin',
+    'es_admin',
     # Inventario
-    'CanViewInventario',
-    'CanEditInventario',
-    'CanManageStock',
+    'PuedeVerInventario',
+    'PuedeModificarInventario',
+    'SoloBodeguero',
     # Recetas
-    'CanViewRecetas',
-    'CanRegisterReceta',
+    'PuedeVerRecetas',
+    'SoloFarmaceutico',
+    'PuedeModificarRecetas',
     # Ventas
-    'CanViewVentas',
-    'CanRegisterVenta',
+    'PuedeVerVentas',
+    'PuedeModificarVentas',
+    'PuedeGestionarCaja',
 ]

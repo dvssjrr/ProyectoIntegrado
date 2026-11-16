@@ -62,16 +62,16 @@ class LoteAdmin(admin.ModelAdmin):
 
 @admin.register(RecepcionProveedor)
 class RecepcionProveedorAdmin(admin.ModelAdmin):
-    list_display = ('numero_documento', 'laboratorio', 'fecha_recepcion', 'total_costo')
-    list_filter = ('fecha_recepcion',)
-    search_fields = ('numero_documento', 'laboratorio__nombre')
+    list_display = ('numero_orden_compra', 'laboratorio', 'fecha_recepcion', 'estado')
+    list_filter = ('fecha_recepcion', 'estado')
+    search_fields = ('numero_orden_compra', 'laboratorio__nombre')
 
 
 @admin.register(Merma)
 class MermaAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'lote', 'cantidad', 'motivo', 'fecha')
-    list_filter = ('motivo', 'fecha')
-    search_fields = ('codigo', 'lote__codigo_lote')
+    list_display = ('id', 'lote', 'cantidad', 'fecha_registro')
+    list_filter = ('fecha_registro',)
+    search_fields = ('lote__codigo_lote',)
 
 
 # ============================================================================
@@ -80,23 +80,23 @@ class MermaAdmin(admin.ModelAdmin):
 
 @admin.register(Receta)
 class RecetaAdmin(admin.ModelAdmin):
-    list_display = ('numero', 'paciente_nombre', 'medico_nombre', 'fecha_emision', 'estado')
+    list_display = ('folio', 'nombre_paciente', 'nombre_medico', 'fecha_emision', 'estado')
     list_filter = ('estado', 'fecha_emision')
-    search_fields = ('numero', 'paciente_nombre', 'medico_nombre')
+    search_fields = ('folio', 'nombre_paciente', 'nombre_medico')
 
 
 @admin.register(RecetaRetenidaISP)
 class RecetaRetenidaISPAdmin(admin.ModelAdmin):
-    list_display = ('receta', 'fecha_registro', 'dispensada', 'fecha_dispensacion')
-    list_filter = ('dispensada', 'fecha_registro')
-    search_fields = ('receta__numero',)
+    list_display = ('receta', 'fecha_dispensacion')
+    list_filter = ('fecha_dispensacion',)
+    search_fields = ('receta__folio',)
 
 
 @admin.register(UnidosisAsistencial)
 class UnidosisAsistencialAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'receta', 'medicamento', 'cantidad', 'fecha_registro')
-    list_filter = ('fecha_registro',)
-    search_fields = ('codigo', 'receta__numero', 'medicamento__nombre_comercial')
+    list_display = ('folio', 'nombre_paciente', 'estado', 'fecha_solicitud')
+    list_filter = ('estado', 'fecha_solicitud')
+    search_fields = ('folio', 'nombre_paciente')
 
 
 # ============================================================================
@@ -105,27 +105,27 @@ class UnidosisAsistencialAdmin(admin.ModelAdmin):
 
 @admin.register(CajaDiaria)
 class CajaDiariaAdmin(admin.ModelAdmin):
-    list_display = ('numero', 'fecha', 'saldo_inicial', 'saldo_final', 'estado')
+    list_display = ('caja_id', 'fecha', 'monto_inicial', 'total_ventas', 'estado')
     list_filter = ('estado', 'fecha')
-    search_fields = ('numero',)
+    search_fields = ('caja_id',)
 
 
 @admin.register(POS)
 class POSAdmin(admin.ModelAdmin):
-    list_display = ('numero', 'fecha', 'total_venta', 'cliente', 'caja')
-    list_filter = ('fecha',)
-    search_fields = ('numero', 'cliente')
+    list_display = ('folio', 'fecha_venta', 'total', 'nombre_cliente', 'caja')
+    list_filter = ('fecha_venta',)
+    search_fields = ('folio', 'nombre_cliente')
 
 
 @admin.register(ConvenioIsapre)
 class ConvenioIsapreAdmin(admin.ModelAdmin):
-    list_display = ('codigo', 'nombre', 'descuento_porcentaje', 'activo')
+    list_display = ('nombre', 'porcentaje_descuento', 'activo')
     list_filter = ('activo',)
-    search_fields = ('codigo', 'nombre')
+    search_fields = ('nombre',)
 
 
 @admin.register(Comprobante)
 class ComprobanteAdmin(admin.ModelAdmin):
-    list_display = ('numero', 'pos', 'tipo_comprobante', 'fecha_emision', 'monto_total')
-    list_filter = ('tipo_comprobante', 'fecha_emision')
-    search_fields = ('numero',)
+    list_display = ('folio_comprobante', 'venta_pos', 'tipo', 'fecha_emision', 'total')
+    list_filter = ('tipo', 'fecha_emision')
+    search_fields = ('folio_comprobante',)
