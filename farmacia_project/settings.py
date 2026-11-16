@@ -1,9 +1,14 @@
+"""
+Configuración principal de Django para Farmasur.
+Lee variables de entorno desde .env.local
+"""
 import os
 from pathlib import Path
 from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Seguridad y depuración
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-farmasur-dev-key-change-in-production')
 DEBUG = config('DEBUG', default=True, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
@@ -19,8 +24,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     
-    # Aplicación centralizada del proyecto
-    'farmasur',
+    'farmasur',  # App centralizada con 11 capas
 ]
 
 MIDDLEWARE = [
@@ -40,7 +44,7 @@ ROOT_URLCONF = 'farmacia_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'farmasur_templates'],
+        'DIRS': [BASE_DIR / 'farmasur_templates'],  # Templates centralizados (Bootstrap + HTML)
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -55,7 +59,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'farmacia_project.wsgi.application'
 
-# Base de Datos: PostgreSQL
+# Base de Datos: PostgreSQL con credenciales desde .env.local
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -81,6 +85,7 @@ TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_TZ = True
 
+# Archivos estáticos y media
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'farmasur_static'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -90,10 +95,10 @@ MEDIA_ROOT = BASE_DIR / 'farmasur_media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Autenticación personalizada
-AUTH_USER_MODEL = 'usuarios.Usuario'
+# Modelo de usuario personalizado
+AUTH_USER_MODEL = 'farmasur.Usuario'
 
-# REST Framework
+# Configuración de Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
