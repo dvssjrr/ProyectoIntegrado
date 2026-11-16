@@ -1,0 +1,52 @@
+# Entorno virtual
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+*.egg-info/
+
+# Django
+*.log
+local_settings.py
+/staticfiles/
+/farmasur_static/
+/farmasur_media/
+
+# Base de datos
+*.sqlite3
+*.sqlite
+
+# Variables de entorno
+.env
+.env.local
+.env*.local
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Node (si hay frontend con npm)
+node_modules/
+npm-debug.log
