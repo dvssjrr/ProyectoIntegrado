@@ -39,7 +39,8 @@ def Csv(value):
 # Seguridad y depuración
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-farmasur-dev-key-change-in-production')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv)
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='3.217.226.133,localhost,127.0.0.1', cast=Csv)
+CSRF_TRUSTED_ORIGINS = ['http://3.217.226.133']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -180,3 +181,15 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = ['http://54.166.222.36:8000', 'http://54.166.222.36']
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+
+CSRF_TRUSTED_ORIGINS = ['http://54.166.222.36:8000', 'http://54.166.222.36']
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
