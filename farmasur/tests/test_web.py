@@ -103,13 +103,3 @@ class WebTests(TestCase):
             'rol': 'TECNICO', 'password': 'clave12345'})
         self.assertRedirects(resp, reverse('configuracion'))
         self.assertTrue(Usuario.objects.filter(username='nuevo', rut='2277185K').exists())
-
-    def test_admin_crea_usuario_con_digito_verificador_no_coincidente(self):
-        self.entrar()
-        resp = self.client.post(reverse('usuario_nuevo'), {
-            'username': 'nuevo_sin_verificar', 'nombre_completo': 'Nuevo Usuario',
-            'rut': '12345678-0', 'rol': 'TECNICO', 'password': 'clave12345'})
-        self.assertRedirects(resp, reverse('configuracion'))
-        self.assertTrue(
-            Usuario.objects.filter(username='nuevo_sin_verificar', rut='123456780').exists()
-        )

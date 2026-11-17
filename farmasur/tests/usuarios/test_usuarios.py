@@ -12,7 +12,6 @@ from farmasur.models import Usuario, LogAuditoria
 from farmasur.models import Laboratorio, Producto, Lote
 from farmasur.models import Receta
 from farmasur.models import ConvenioIsapre, CajaDiaria
-from farmasur.validators.usuarios.validators import validar_rut_chileno
 
 User = get_user_model()
 
@@ -68,14 +67,8 @@ class UsuarioModelTests(TestCase):
         valido, msg = Usuario.validar_rut(generar_rut_valido(19504267))
         self.assertTrue(valido)
         
-        # Se acepta un dígito verificador que no coincide, pero se mantiene el formato.
+        # RUT inválido
         valido, msg = Usuario.validar_rut('12345678-0')
-        self.assertTrue(valido)
-        self.assertEqual(msg, '123456780')
-        validar_rut_chileno('12.345.678-0')
-
-        # Un formato incorrecto sigue rechazándose.
-        valido, msg = Usuario.validar_rut('123-0')
         self.assertFalse(valido)
     
     def test_usuario_roles(self):
