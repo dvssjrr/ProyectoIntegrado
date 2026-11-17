@@ -47,7 +47,7 @@
     <a class="item {% if actual == 'inicio' %}activo{% endif %}" href="{% url 'inicio' %}">Inicio</a>
     <a class="item {% if actual == 'productos' or actual == 'producto_nuevo' or actual == 'producto_editar' %}activo{% endif %}" href="{% url 'productos' %}">Productos</a>
     <a class="item {% if actual == 'inventario' or actual == 'lote_nuevo' or actual == 'transferir' %}activo{% endif %}" href="{% url 'inventario' %}">Inventario Dual</a>
-    {% if acceso.inventario_gestion %}
+    {% if acceso.mermas %}
     <a class="item {% if actual == 'mermas' or actual == 'merma_nueva' %}activo{% endif %}" href="{% url 'mermas' %}">Reportes Mermas</a>
     {% endif %}
     {% if acceso.libro %}

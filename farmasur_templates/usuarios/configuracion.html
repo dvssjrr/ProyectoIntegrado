@@ -15,6 +15,191 @@
         {% endfor %}
         </tbody></table></div>
 </div>
+
+<!-- ── Permisos por Rol (RBAC) ── -->
+<h2 class="h5 mb-3">Permisos por Rol</h2>
+<div class="row g-3 mb-4">
+
+    <!-- Administrador -->
+    <div class="col-lg-6">
+        <div class="tarjeta h-100" style="border-left:4px solid var(--rojo);">
+            <div class="d-flex align-items-center mb-3">
+                <span class="avatar" style="background:var(--rojo);">A</span>
+                <div>
+                    <h3 class="h6 mb-0">Administrador</h3>
+                    <small class="text-muted">Control total del sistema</small>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Gestión de Usuarios y Roles
+                    <span class="badge text-bg-success">CRUD Completo</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Catálogo y Convenios Isapre
+                    <span class="badge text-bg-success">CRUD Completo</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Inventario Dual (Vitrina/Bodega)
+                    <span class="badge text-bg-success">Consulta Total</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Punto de Venta (Venta Libre)
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Autorización Controlados / ISP
+                    <span class="badge text-bg-secondary">Solo Lectura</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Logs de Auditoría
+                    <span class="badge text-bg-success">Consulta / Exportar</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Configuración
+                    <span class="badge text-bg-success">Acceso Total</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Químico Farmacéutico -->
+    <div class="col-lg-6">
+        <div class="tarjeta h-100" style="border-left:4px solid #2e7d32;">
+            <div class="d-flex align-items-center mb-3">
+                <span class="avatar" style="background:#2e7d32;">QF</span>
+                <div>
+                    <h3 class="h6 mb-0">Químico Farmacéutico</h3>
+                    <small class="text-muted">Autorización clínica y dispensación</small>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Gestión de Usuarios y Roles
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Catálogo y Convenios Isapre
+                    <span class="badge text-bg-warning text-dark">Activar / Consultar</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Inventario Dual (Vitrina/Bodega)
+                    <span class="badge text-bg-warning text-dark">Consulta + Mermas</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Punto de Venta (Venta Libre)
+                    <span class="badge text-bg-success">Operación Completa</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Autorización Controlados / ISP
+                    <span class="badge text-bg-success">Autoriza + Libro ISP</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Logs de Auditoría
+                    <span class="badge text-bg-info text-dark">Consulta Libro ISP</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Configuración
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Técnico / Auxiliar de Farmacia -->
+    <div class="col-lg-6">
+        <div class="tarjeta h-100" style="border-left:4px solid #f9a825;">
+            <div class="d-flex align-items-center mb-3">
+                <span class="avatar" style="background:#f9a825; color:#333;">T</span>
+                <div>
+                    <h3 class="h6 mb-0">Técnico / Auxiliar de Farmacia</h3>
+                    <small class="text-muted">Atención de mostrador y ventas</small>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Gestión de Usuarios y Roles
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Catálogo y Convenios Isapre
+                    <span class="badge text-bg-secondary">Solo Lectura</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Inventario Dual (Vitrina/Bodega)
+                    <span class="badge text-bg-info text-dark">Consulta Vitrina</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Punto de Venta (Venta Libre)
+                    <span class="badge text-bg-success">Operación Completa</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Autorización Controlados / ISP
+                    <span class="badge text-bg-warning text-dark">Solicita Validación</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Logs de Auditoría
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Configuración
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bodeguero -->
+    <div class="col-lg-6">
+        <div class="tarjeta h-100" style="border-left:4px solid #1565c0;">
+            <div class="d-flex align-items-center mb-3">
+                <span class="avatar" style="background:#1565c0;">B</span>
+                <div>
+                    <h3 class="h6 mb-0">Bodeguero</h3>
+                    <small class="text-muted">Recepción y gestión de bodega</small>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Gestión de Usuarios y Roles
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Catálogo y Convenios Isapre
+                    <span class="badge text-bg-secondary">Solo Lectura</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Inventario Dual (Vitrina/Bodega)
+                    <span class="badge text-bg-info text-dark">Recepción + Traspasos</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Punto de Venta (Venta Libre)
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Autorización Controlados / ISP
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Logs de Auditoría
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                    Configuración
+                    <span class="badge text-bg-danger">Sin Acceso (403)</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<div class="p-3 mb-4" style="background:#fdecea; border-left:4px solid var(--rojo); border-radius:4px;">
+    <small><strong>Nota:</strong> Los accesos no autorizados retornan <strong>HTTP 403 (Forbidden)</strong>. 
+    El Químico Farmacéutico (QF) es el único habilitado para autorizar la dispensación de medicamentos controlados 
+    y registrar en el Libro ISP, según la normativa del Instituto de Salud Pública de Chile.</small>
+</div>
+
 <div class="row g-3">
     <div class="col-lg-6"><div class="tarjeta">
         <div class="d-flex justify-content-between mb-2"><h2 class="h5">Laboratorios</h2><a class="btn btn-rojo btn-sm" href="{% url 'laboratorio_nuevo' %}">+ Nuevo</a></div>

@@ -213,3 +213,597 @@ WARNING 2026-11-16 17:15:18,990 log 164060 164360 Forbidden: /ventas/
 WARNING 2026-11-16 17:16:45,689 log 167456 162224 Not Found: /panel/admin/
 WARNING 2026-11-16 17:16:46,906 log 167456 162224 Not Found: /panel/admin/
 WARNING 2026-11-16 17:16:48,093 log 167456 162224 Not Found: /panel/admin/
+INFO 2026-11-16 18:04:34,606 autoreload 2440 26248 Watching for file changes with StatReloader
+INFO 2026-11-16 18:06:19,791 autoreload 21180 9932 Watching for file changes with StatReloader
+WARNING 2026-11-16 18:06:33,427 log 21180 25164 Not Found: /favicon.ico
+WARNING 2026-11-16 18:09:30,944 log 21180 10536 Forbidden (CSRF token from POST incorrect.): /login/
+WARNING 2026-11-16 18:09:46,307 log 21180 10536 Forbidden (CSRF token from POST incorrect.): /login/
+INFO 2026-11-16 18:37:28,640 autoreload 17324 22592 Watching for file changes with StatReloader
+WARNING 2026-11-16 18:37:30,385 log 17324 24120 Not Found: /favicon.ico
+INFO 2026-11-16 23:57:22,640 autoreload 4472 18952 Watching for file changes with StatReloader
+WARNING 2026-11-17 00:04:34,874 log 4472 3928 Not Found: /favicon.ico
+INFO 2026-11-17 00:09:29,103 autoreload 4472 18952 C:\Users\arria\ProyectoIntegrado\farmasur\context_processors.py changed, reloading.
+INFO 2026-11-17 00:09:30,285 autoreload 7416 25920 Watching for file changes with StatReloader
+INFO 2026-11-17 00:09:36,309 autoreload 7416 25920 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:09:37,483 autoreload 26356 18668 Watching for file changes with StatReloader
+INFO 2026-11-17 00:09:47,831 autoreload 26356 18668 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:09:49,248 autoreload 23928 24840 Watching for file changes with StatReloader
+INFO 2026-11-17 00:09:58,844 autoreload 23928 24840 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:10:00,123 autoreload 18900 14712 Watching for file changes with StatReloader
+INFO 2026-11-17 00:10:04,926 autoreload 18900 14712 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:10:06,105 autoreload 3796 24056 Watching for file changes with StatReloader
+INFO 2026-11-17 00:10:10,915 autoreload 3796 24056 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:10:12,092 autoreload 19048 18820 Watching for file changes with StatReloader
+INFO 2026-11-17 00:10:18,046 autoreload 19048 18820 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:10:19,160 autoreload 13224 26360 Watching for file changes with StatReloader
+INFO 2026-11-17 00:10:23,678 autoreload 13224 26360 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:10:24,314 autoreload 14552 11200 Watching for file changes with StatReloader
+INFO 2026-11-17 00:10:30,924 autoreload 14552 11200 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:10:32,111 autoreload 23808 10836 Watching for file changes with StatReloader
+INFO 2026-11-17 00:10:36,798 autoreload 23808 10836 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:10:38,065 autoreload 17124 18544 Watching for file changes with StatReloader
+INFO 2026-11-17 00:10:43,926 autoreload 17124 18544 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:10:45,073 autoreload 18176 6048 Watching for file changes with StatReloader
+INFO 2026-11-17 00:10:49,732 autoreload 18176 6048 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:10:50,901 autoreload 20472 10200 Watching for file changes with StatReloader
+INFO 2026-11-17 00:11:31,684 autoreload 20472 10200 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:11:33,148 autoreload 14808 18372 Watching for file changes with StatReloader
+INFO 2026-11-17 00:14:22,436 autoreload 14808 18372 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:14:24,059 autoreload 12616 16336 Watching for file changes with StatReloader
+INFO 2026-11-17 00:14:30,377 autoreload 12616 16336 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:14:31,827 autoreload 14452 12668 Watching for file changes with StatReloader
+INFO 2026-11-17 00:14:39,276 autoreload 14452 12668 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:14:40,999 autoreload 3872 1816 Watching for file changes with StatReloader
+INFO 2026-11-17 00:14:45,183 autoreload 3872 1816 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:14:46,617 autoreload 12440 20428 Watching for file changes with StatReloader
+INFO 2026-11-17 00:14:54,209 autoreload 12440 20428 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:14:55,633 autoreload 15492 13628 Watching for file changes with StatReloader
+ERROR 2026-11-17 00:15:29,811 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:29,850 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:29,883 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:29,920 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:29,959 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,004 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,046 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,085 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,126 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,169 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,202 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,238 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,344 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,377 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,409 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,444 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,477 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,510 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,547 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,582 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,617 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,652 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,687 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,720 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,826 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,862 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,898 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,943 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:30,977 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,010 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,045 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,076 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,112 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,151 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,188 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,225 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,319 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,353 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,388 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,424 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,461 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,497 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,535 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,571 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,607 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,650 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,688 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:15:31,727 log 11904 16576 Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\utils\deprecation.py", line 133, in __call__
+    response = self.process_request(request)
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\arria\AppData\Roaming\Python\Python314\site-packages\django\http\request.py", line 151, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+WARNING 2026-11-17 00:15:50,973 log 8616 23324 Forbidden: /libro/receta/nueva/
+WARNING 2026-11-17 00:15:50,977 log 8616 23324 Forbidden: /ventas/
+WARNING 2026-11-17 00:15:50,980 log 8616 23324 Forbidden: /caja/
+WARNING 2026-11-17 00:15:51,098 log 8616 23324 Forbidden: /productos/nuevo/
+WARNING 2026-11-17 00:15:51,116 log 8616 23324 Forbidden: /inventario/lote/nuevo/
+WARNING 2026-11-17 00:15:51,120 log 8616 23324 Forbidden: /inventario/movimiento/
+WARNING 2026-11-17 00:15:51,196 log 8616 23324 Forbidden: /configuracion/
+WARNING 2026-11-17 00:15:51,271 log 8616 23324 Forbidden: /productos/nuevo/
+WARNING 2026-11-17 00:15:51,291 log 8616 23324 Forbidden: /inventario/lote/nuevo/
+WARNING 2026-11-17 00:15:51,295 log 8616 23324 Forbidden: /inventario/movimiento/
+WARNING 2026-11-17 00:15:51,299 log 8616 23324 Forbidden: /mermas/
+WARNING 2026-11-17 00:15:51,348 log 8616 23324 Forbidden: /configuracion/
+WARNING 2026-11-17 00:15:51,435 log 8616 23324 Forbidden: /productos/nuevo/
+WARNING 2026-11-17 00:15:51,477 log 8616 23324 Forbidden: /mermas/
+WARNING 2026-11-17 00:15:51,481 log 8616 23324 Forbidden: /libro/
+WARNING 2026-11-17 00:15:51,484 log 8616 23324 Forbidden: /libro/receta/nueva/
+WARNING 2026-11-17 00:15:51,488 log 8616 23324 Forbidden: /ventas/
+WARNING 2026-11-17 00:15:51,491 log 8616 23324 Forbidden: /caja/
+WARNING 2026-11-17 00:15:51,494 log 8616 23324 Forbidden: /configuracion/
+INFO 2026-11-17 00:16:24,793 autoreload 15492 13628 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 00:16:26,269 autoreload 9708 21860 Watching for file changes with StatReloader

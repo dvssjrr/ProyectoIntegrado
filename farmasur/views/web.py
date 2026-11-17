@@ -31,17 +31,20 @@ from farmasur.services.ventas.services import CajaService, POSService
 R = Usuario.Rol
 INVENTARIO = (R.FARMACEUTICO, R.BODEGUERO)
 VENTAS = (R.FARMACEUTICO, R.TECNICO)
+LIBRO = (R.FARMACEUTICO, R.TECNICO)
 ERRORES = (ValueError, ValidationError, Receta.DoesNotExist, CajaDiaria.DoesNotExist)
 PARTICIPIO = {'aprobar': 'aprobada', 'rechazar': 'rechazada', 'dispensar': 'dispensada'}
 
 
 def rol_requerido(*roles):
-    """Permite el acceso a los roles indicados y siempre al administrador."""
+    """Permite el acceso solo a los roles indicados. Admin se incluye solo si está en la lista."""
     def decorador(vista):
         @wraps(vista)
         @login_required
         def envoltura(request, *args, **kwargs):
-            if request.user.rol != R.ADMIN and request.user.rol not in roles:
+            if roles and request.user.rol not in roles:
+                return HttpResponseForbidden('No tienes permiso para ver esta página.')
+            if not roles and request.user.rol != R.ADMIN:
                 return HttpResponseForbidden('No tienes permiso para ver esta página.')
             return vista(request, *args, **kwargs)
         return envoltura
@@ -132,7 +135,7 @@ def productos(request):
     return render(request, 'inventario/productos.html', {'pagina': pagina, 'q': q})
 
 
-@rol_requerido(*INVENTARIO)
+@rol_requerido(R.ADMIN)
 def producto_form(request, pk=None):
     instancia = get_object_or_404(Producto, pk=pk) if pk else None
     form = ProductoForm(request.POST or None, instance=instancia)
@@ -156,7 +159,7 @@ def inventario(request):
     return render(request, 'inventario/lotes.html', {'pagina': pagina, 'q': q})
 
 
-@rol_requerido(*INVENTARIO)
+@rol_requerido(R.ADMIN, R.BODEGUERO)
 def lote_nuevo(request):
     form = LoteForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -167,7 +170,7 @@ def lote_nuevo(request):
                        'Registro de recepción de mercadería.')
 
 
-@rol_requerido(*INVENTARIO)
+@rol_requerido(R.ADMIN, R.BODEGUERO)
 def transferir(request):
     form = TransferirForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -183,7 +186,7 @@ def transferir(request):
                        'Mueve stock entre bodega y vitrina (FEFO).', 'Registrar movimiento')
 
 
-@rol_requerido(*INVENTARIO)
+@rol_requerido(R.ADMIN, R.FARMACEUTICO)
 def mermas(request):
     lista = Merma.objects.select_related('lote__producto').order_by('-fecha_registro')
     pagina = Paginator(lista, 12).get_page(request.GET.get('page'))
@@ -191,7 +194,7 @@ def mermas(request):
         'pagina': pagina, 'total_unidades': lista.aggregate(t=Sum('cantidad'))['t'] or 0})
 
 
-@rol_requerido(*INVENTARIO)
+@rol_requerido(R.ADMIN, R.FARMACEUTICO)
 def merma_nueva(request):
     form = MermaWebForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -209,7 +212,7 @@ def merma_nueva(request):
 
 
 # --------------------------------------------------------------- Recetas
-@rol_requerido(*VENTAS)
+@rol_requerido(R.ADMIN, R.FARMACEUTICO, R.TECNICO)
 def libro(request):
     estado = request.GET.get('estado', '')
     lista = Receta.objects.order_by('-fecha_registro')
@@ -220,11 +223,11 @@ def libro(request):
         'estado': estado, 'estados': Receta.Estado.choices,
         'retenidas': RecetaRetenidaISP.objects.select_related('receta').order_by('-fecha_dispensacion')[:10],
         'unidosis': UnidosisAsistencial.objects.order_by('-fecha_solicitud')[:10],
-        'puede_validar': request.user.rol in (R.ADMIN, R.FARMACEUTICO),
+        'puede_validar': request.user.rol == R.FARMACEUTICO,
     })
 
 
-@rol_requerido(*VENTAS)
+@rol_requerido(R.FARMACEUTICO, R.TECNICO)
 def receta_nueva(request):
     form = RecetaWebForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
@@ -262,7 +265,7 @@ def receta_accion(request, pk, accion):
 
 
 # ---------------------------------------------------------------- Ventas
-@rol_requerido(*VENTAS)
+@rol_requerido(R.FARMACEUTICO, R.TECNICO)
 def caja(request):
     abrir = AbrirCajaForm(prefix='abrir')
     cerrar = CerrarCajaForm(prefix='cerrar')
@@ -295,7 +298,7 @@ def caja(request):
     })
 
 
-@rol_requerido(*VENTAS)
+@rol_requerido(R.FARMACEUTICO, R.TECNICO)
 def pos(request):
     caja_abierta = CajaDiaria.objects.filter(estado=CajaDiaria.Estado.ABIERTA).order_by('-hora_apertura').first()
     form = VentaForm(request.POST or None)
