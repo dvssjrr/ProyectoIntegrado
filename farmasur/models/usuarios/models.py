@@ -56,27 +56,11 @@ class Usuario(AbstractUser):
 
     @staticmethod
     def validar_rut(rut_input):
-        """Valida un RUT chileno usando el dígito verificador (Módulo 11)."""
+        """Valida el formato de un RUT chileno y lo normaliza."""
         rut_limpio = re.sub(r'[.\-]', '', str(rut_input)).upper()
         
         if not re.match(r'^\d{7,8}[0-9K]$', rut_limpio):
             return False, "Formato de RUT inválido"
-        
-        numeros = rut_limpio[:-1]
-        digito_verificador = rut_limpio[-1]
-        
-        suma = sum(int(d) * (2 + i % 6) for i, d in enumerate(reversed(numeros)))
-        digito_calculado = 11 - (suma % 11)
-        
-        if digito_calculado == 11:
-            digito_calculado = '0'
-        elif digito_calculado == 10:
-            digito_calculado = 'K'
-        else:
-            digito_calculado = str(digito_calculado)
-        
-        if str(digito_verificador) != digito_calculado:
-            return False, "Dígito verificador inválido"
         
         return True, rut_limpio
 
