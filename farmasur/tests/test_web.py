@@ -1,6 +1,6 @@
 from django.core.management import call_command
-from django.test import TestCase
-from django.urls import reverse
+from django.test import RequestFactory, TestCase, override_settings
+from django.urls import get_resolver, reverse
 
 from farmasur.models.inventario.models import Lote, Merma, Producto
 from farmasur.models.recetas.models import Receta
@@ -33,6 +33,19 @@ class WebTests(TestCase):
     def test_login_publico_y_redirige_anonimos(self):
         self.assertEqual(self.client.get(reverse('login')).status_code, 200)
         self.assertEqual(self.client.get(reverse('inicio')).status_code, 302)
+
+    def test_error_404_redirige_a_inicio(self):
+        with override_settings(DEBUG=False):
+            response = self.client.get('/ruta-inexistente/')
+
+        self.assertRedirects(response, reverse('inicio'), fetch_redirect_response=False)
+
+    def test_error_500_redirige_a_inicio(self):
+        with override_settings(DEBUG=False):
+            handler = get_resolver('farmacia_project.urls').resolve_error_handler(500)
+            response = handler(RequestFactory().get('/'))
+
+        self.assertRedirects(response, reverse('inicio'), fetch_redirect_response=False)
 
     def test_admin_ve_todas_las_paginas(self):
         self.entrar()
