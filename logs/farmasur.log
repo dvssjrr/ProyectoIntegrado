@@ -807,3 +807,131 @@ WARNING 2026-11-17 00:15:51,491 log 8616 23324 Forbidden: /caja/
 WARNING 2026-11-17 00:15:51,494 log 8616 23324 Forbidden: /configuracion/
 INFO 2026-11-17 00:16:24,793 autoreload 15492 13628 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
 INFO 2026-11-17 00:16:26,269 autoreload 9708 21860 Watching for file changes with StatReloader
+INFO 2026-11-17 00:34:47,113 autoreload 1735 126438338216448 Watching for file changes with StatReloader
+ERROR 2026-11-17 00:35:36,023 log 1735 126438186415808 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:35:36,510 log 1735 126438186415808 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+INFO 2026-11-17 00:37:16,143 autoreload 1746 129308045738496 Watching for file changes with StatReloader
+ERROR 2026-11-17 00:38:00,747 log 1746 129307893561024 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:38:01,383 log 1746 129307885168320 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:38:25,155 log 1746 129307885168320 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:38:34,143 log 1746 129307885168320 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:39:15,799 log 1746 129307885168320 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:39:16,463 log 1746 129307885168320 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:39:45,220 log 1746 129307885168320 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+ERROR 2026-11-17 00:39:45,703 log 1746 129307885168320 Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/core/handlers/exception.py", line 56, in inner
+    response = get_response(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/utils/deprecation.py", line 441, in __call__
+    response = self.process_request(request)
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/middleware/common.py", line 48, in process_request
+    host = request.get_host()
+  File "/home/ubuntu/ProyectoIntegrado/venv/lib/python3.14/site-packages/django/http/request.py", line 210, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '54.166.222.36:8000'. You may need to add '54.166.222.36' to ALLOWED_HOSTS.
+INFO 2026-11-17 00:41:52,300 autoreload 1769 127847414551040 Watching for file changes with StatReloader
+INFO 2026-11-17 00:42:24,048 autoreload 1776 125802705728000 Watching for file changes with StatReloader
+WARNING 2026-11-17 00:44:14,195 log 1776 125802622482112 Not Found: /favicon.ico
+WARNING 2026-11-17 00:47:52,533 log 1776 125802622482112 Forbidden (CSRF token from POST incorrect.): /login/
+WARNING 2026-11-17 00:49:00,449 log 1776 125802622482112 Forbidden (CSRF token from POST incorrect.): /login/
+INFO 2026-11-17 00:49:40,244 autoreload 1788 125811269476864 Watching for file changes with StatReloader
+WARNING 2026-11-17 00:49:46,086 log 1788 125811116996288 Forbidden (CSRF token from POST incorrect.): /login/
+INFO 2026-11-17 00:50:58,457 autoreload 1801 138779026080256 Watching for file changes with StatReloader
+WARNING 2026-11-17 00:54:04,057 log 1801 138778714830528 Not Found: /favicon.ico
+INFO 2026-11-17 01:05:44,219 autoreload 1859 130419608756736 Watching for file changes with StatReloader
+WARNING 2026-11-17 01:13:27,551 log 1859 130419525678784 Forbidden (CSRF token from POST incorrect.): /login/
+WARNING 2026-11-17 01:17:48,259 log 1859 130419517286080 Not Found: /favicon.ico
+INFO 2026-11-17 01:25:53,837 autoreload 1901 132673606820352 Watching for file changes with StatReloader
+INFO 2026-11-17 09:53:21,896 autoreload 1184 131338022162944 Watching for file changes with StatReloader
+WARNING 2026-11-17 09:54:13,532 log 1184 131337870636736 Not Found: /favicon.ico
+WARNING 2026-11-17 10:04:49,060 log 1184 131337862244032 Not Found: /robots.txt

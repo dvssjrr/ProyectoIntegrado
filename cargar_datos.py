@@ -281,9 +281,9 @@ print(f"✓ {convenios_creados} convenios Isapre creados")
 
 # ── USUARIOS ADICIONALES ─────────────────────────────────────
 usuarios_data = [
-    ('mlopez', 'María López Castillo', '163456789', 'FARMACEUTICO', 'mlopez@farmasur.cl'),
-    ('jperez', 'José Pérez Dinamarca', '174567890', 'TECNICO', 'jperez@farmasur.cl'),
-    ('crodriguez', 'Camila Rodríguez Flores', '185678901', 'BODEGUERO', 'crodriguez@farmasur.cl'),
+    ('mlopez', 'María López Castillo', '163456788', 'FARMACEUTICO', 'mlopez@farmasur.cl'),
+    ('jperez', 'José Pérez Dinamarca', '174567891', 'TECNICO', 'jperez@farmasur.cl'),
+    ('crodriguez', 'Camila Rodríguez Flores', '185678903', 'BODEGUERO', 'crodriguez@farmasur.cl'),
 ]
 
 usuarios_creados = 0
