@@ -32,10 +32,17 @@ class UsuarioDetailSerializer(serializers.ModelSerializer):
     
     def validate_rut(self, value):
         """Valida que el RUT sea único."""
+        valido, rut = Usuario.validar_rut(value)
+        if not valido:
+            raise serializers.ValidationError(rut)
+
         instance = self.instance
-        if Usuario.objects.filter(rut=value).exclude(pk=instance.pk if instance else None).exists():
+        usuarios = Usuario.objects.filter(rut=rut)
+        if instance:
+            usuarios = usuarios.exclude(pk=instance.pk)
+        if usuarios.exists():
             raise serializers.ValidationError("Este RUT ya está registrado.")
-        return value
+        return rut
 
 
 class LogAuditoriaSerializer(serializers.ModelSerializer):

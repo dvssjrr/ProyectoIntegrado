@@ -5,7 +5,7 @@ Validación de datos en formularios HTML tradicionales.
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from farmasur.models import Usuario
-from farmasur.validators import validar_rut_chileno
+from farmasur.validators import normalizar_rut_chileno, validar_rut_chileno
 
 
 class UsuarioCreationForm(UserCreationForm):
@@ -24,6 +24,9 @@ class UsuarioCreationForm(UserCreationForm):
         model = Usuario
         fields = ('username', 'email', 'nombre_completo', 'rut', 'rol', 'password1', 'password2')
 
+    def clean_rut(self):
+        return normalizar_rut_chileno(self.cleaned_data['rut'])
+
 
 class UsuarioChangeForm(UserChangeForm):
     """Formulario para editar un usuario existente."""
@@ -36,6 +39,10 @@ class UsuarioChangeForm(UserChangeForm):
     class Meta:
         model = Usuario
         fields = ('username', 'email', 'nombre_completo', 'rut', 'rol', 'activo')
+
+    def clean_rut(self):
+        rut = self.cleaned_data['rut']
+        return normalizar_rut_chileno(rut) if rut else rut
 
 
 class UsuarioFilterForm(forms.Form):

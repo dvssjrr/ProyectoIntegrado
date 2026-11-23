@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.translation import gettext_lazy as _
+from farmasur.validators import normalizar_rut_chileno
 import re
 
 class UsuarioManager(UserManager):
@@ -57,36 +59,18 @@ class Usuario(AbstractUser):
     @staticmethod
     def validar_rut(rut_input):
         """Valida un RUT chileno usando el dígito verificador (Módulo 11)."""
-        rut_limpio = re.sub(r'[.\-]', '', str(rut_input)).upper()
-        
-        if not re.match(r'^\d{7,8}[0-9K]$', rut_limpio):
-            return False, "Formato de RUT inválido"
-        
-        numeros = rut_limpio[:-1]
-        digito_verificador = rut_limpio[-1]
-        
-        suma = sum(int(d) * (2 + i % 6) for i, d in enumerate(reversed(numeros)))
-        digito_calculado = 11 - (suma % 11)
-        
-        if digito_calculado == 11:
-            digito_calculado = '0'
-        elif digito_calculado == 10:
-            digito_calculado = 'K'
-        else:
-            digito_calculado = str(digito_calculado)
-        
-        if str(digito_verificador) != digito_calculado:
-            return False, "Dígito verificador inválido"
-        
-        return True, rut_limpio
+        try:
+            return True, normalizar_rut_chileno(rut_input)
+        except ValidationError as error:
+            return False, error.messages[0]
 
     def save(self, *args, **kwargs):
         """Valida el RUT antes de guardar."""
         if self.rut:
-            valido, mensaje = self.validar_rut(self.rut)
-            if not valido:
-                raise ValueError(f"RUT inválido: {mensaje}")
-            self.rut = re.sub(r'[.\-]', '', str(self.rut)).upper()
+            try:
+                self.rut = normalizar_rut_chileno(self.rut)
+            except ValidationError as error:
+                raise ValueError(f"RUT inválido: {error.messages[0]}") from error
         super().save(*args, **kwargs)
 
 

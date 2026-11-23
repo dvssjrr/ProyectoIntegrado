@@ -1,5 +1,5 @@
 from django.core.management import call_command
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from farmasur.models.inventario.models import Lote, Merma, Producto
@@ -33,6 +33,16 @@ class WebTests(TestCase):
     def test_login_publico_y_redirige_anonimos(self):
         self.assertEqual(self.client.get(reverse('login')).status_code, 200)
         self.assertEqual(self.client.get(reverse('inicio')).status_code, 302)
+
+    def test_un_usuario_puede_iniciar_sesion_en_sesiones_simultaneas(self):
+        credenciales = {'username': self.usuarios[Usuario.Rol.ADMIN].username, 'password': 'x'}
+        ventana_uno = Client()
+        ventana_dos = Client()
+
+        self.assertTrue(ventana_uno.login(**credenciales))
+        self.assertTrue(ventana_dos.login(**credenciales))
+        self.assertEqual(ventana_uno.get(reverse('inicio')).status_code, 200)
+        self.assertEqual(ventana_dos.get(reverse('inicio')).status_code, 200)
 
     def test_admin_ve_todas_las_paginas(self):
         self.entrar()
@@ -99,7 +109,7 @@ class WebTests(TestCase):
     def test_admin_crea_usuario(self):
         self.entrar()
         resp = self.client.post(reverse('usuario_nuevo'), {
-            'username': 'nuevo', 'nombre_completo': 'Nuevo Usuario', 'rut': '2277185-K',
+            'username': 'nuevo', 'nombre_completo': 'Nuevo Usuario', 'rut': '2.277.185-k',
             'rol': 'TECNICO', 'password': 'clave12345'})
         self.assertRedirects(resp, reverse('configuracion'))
         self.assertTrue(Usuario.objects.filter(username='nuevo', rut='2277185K').exists())

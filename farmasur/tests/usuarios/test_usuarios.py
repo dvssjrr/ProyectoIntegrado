@@ -3,6 +3,7 @@ Pruebas unitarias para validar la estructura del sistema Farmasur.
 Ejecutar con: python manage.py test
 """
 
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -12,6 +13,8 @@ from farmasur.models import Usuario, LogAuditoria
 from farmasur.models import Laboratorio, Producto, Lote
 from farmasur.models import Receta
 from farmasur.models import ConvenioIsapre, CajaDiaria
+from farmasur.validators import normalizar_rut_chileno, validar_rut_chileno
+from farmasur.serializers.usuarios.serializers import UsuarioDetailSerializer
 
 User = get_user_model()
 
@@ -63,13 +66,45 @@ class UsuarioModelTests(TestCase):
     
     def test_rut_validation(self):
         """Verifica que el RUT se valida correctamente."""
-        # RUT válido
-        valido, msg = Usuario.validar_rut(generar_rut_valido(19504267))
+        valido, rut = Usuario.validar_rut('22.178.194-5')
         self.assertTrue(valido)
-        
-        # RUT inválido
-        valido, msg = Usuario.validar_rut('12345678-0')
+        self.assertEqual(rut, '221781945')
+
+        valido, rut = Usuario.validar_rut('10.000.013-k')
+        self.assertTrue(valido)
+        self.assertEqual(rut, '10000013K')
+        self.assertEqual(normalizar_rut_chileno(' 10.000.013-k '), '10000013K')
+
+        self.assertIsNone(validar_rut_chileno('10.000.013-k'))
+
+        with self.assertRaises(ValidationError):
+            validar_rut_chileno('22.178.194-3')
+
+        valido, msg = Usuario.validar_rut('22.178.194-3')
         self.assertFalse(valido)
+        self.assertIn('Dígito verificador', msg)
+
+    def test_usuario_save_normaliza_rut(self):
+        usuario = Usuario.objects.create_user(
+            username='rut_format',
+            password='testpass123',
+            rut='10.000.013-k',
+            nombre_completo='Test User',
+        )
+        self.assertEqual(usuario.rut, '10000013K')
+
+    def test_serializer_detecta_rut_duplicado_con_formato_distinto(self):
+        serializer = UsuarioDetailSerializer(data={
+            'username': 'otro_usuario',
+            'email': 'otro@test.com',
+            'nombre_completo': 'Otro Usuario',
+            'rut': f'{self.usuario.rut[:-1]}-{self.usuario.rut[-1]}',
+            'rol': Usuario.Rol.TECNICO,
+            'activo': True,
+        })
+        self.assertFalse(serializer.is_valid())
+        self.assertIn('rut', serializer.errors)
+        self.assertIn('Este RUT ya está registrado.', str(serializer.errors['rut']))
     
     def test_usuario_roles(self):
         """Verifica que los 4 roles existen."""

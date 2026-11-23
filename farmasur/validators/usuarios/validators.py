@@ -6,55 +6,31 @@ from django.core.exceptions import ValidationError
 import re
 
 
-def validar_rut_chileno(rut_input):
-    """
-    Valida un RUT chileno usando el dígito verificador (Módulo 11).
-    
-    Acepta formatos:
-    - 12345678-9
-    - 12.345.678-9
-    
-    Lanza ValidationError si es inválido.
-    """
-    # Limpiar espacios
-    rut = rut_input.strip()
-    
-    # Permitir formato con puntos y guión
-    if '.' in rut or '-' in rut:
-        rut_limpio = rut.replace('.', '').replace('-', '')
-    else:
-        rut_limpio = rut
-    
-    # Validar que sea numérico + un carácter
-    if not re.match(r'^\d{7,8}[0-9K]$', rut_limpio):
+def normalizar_rut_chileno(rut_input):
+    """Valida un RUT chileno y lo devuelve sin puntos ni guion."""
+    rut_limpio = re.sub(r'[.\-\s]', '', str(rut_input or '')).upper()
+    if not re.fullmatch(r'\d{7,8}[0-9K]', rut_limpio):
         raise ValidationError('El RUT debe tener formato válido (ej: 12.345.678-9).')
-    
-    # Separar número y dígito verificador
-    num_rut = rut_limpio[:-1]
-    digito_ingresado = rut_limpio[-1].upper()
-    
-    # Calcular dígito verificador usando Módulo 11
-    suma = 0
-    multiplicador = 2
-    
-    for digit in reversed(num_rut):
-        suma += int(digit) * multiplicador
-        multiplicador += 1
-        if multiplicador > 7:
-            multiplicador = 2
-    
-    residuo = suma % 11
-    digito_calculado = 11 - residuo
-    
+
+    numero, digito_ingresado = rut_limpio[:-1], rut_limpio[-1]
+    suma = sum(int(digit) * (2 + index % 6) for index, digit in enumerate(reversed(numero)))
+    digito_calculado = 11 - (suma % 11)
     if digito_calculado == 10:
         digito_calculado = 'K'
     elif digito_calculado == 11:
         digito_calculado = '0'
     else:
         digito_calculado = str(digito_calculado)
-    
+
     if digito_ingresado != digito_calculado:
-        raise ValidationError(f'El RUT es inválido. Dígito verificador incorrecto.')
+        raise ValidationError('El RUT es inválido. Dígito verificador incorrecto.')
+
+    return rut_limpio
+
+
+def validar_rut_chileno(rut_input):
+    """Valida un RUT chileno usando el dígito verificador (Módulo 11)."""
+    normalizar_rut_chileno(rut_input)
 
 
 def validar_nombre_usuario(username):
