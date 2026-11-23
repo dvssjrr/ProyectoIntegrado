@@ -22,6 +22,8 @@ urlpatterns = [
     path('libro/receta/<int:pk>/<str:accion>/', web.receta_accion, name='receta_accion'),
 
     path('ventas/', web.pos, name='pos'),
+    path('ventas/buscar-producto/', web.buscar_producto_codigo, name='buscar_producto_codigo'),
+    path('ventas/boleta/<int:venta_id>/', web.ver_boleta, name='boleta'),
     path('caja/', web.caja, name='caja'),
 
     path('configuracion/', web.configuracion, name='configuracion'),

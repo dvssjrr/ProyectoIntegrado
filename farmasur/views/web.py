@@ -10,10 +10,11 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import F, Q, Sum
 from django.db.models.functions import Coalesce, TruncDate
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+import json
 
 from farmasur.forms.web import (
     AbrirCajaForm, CerrarCajaForm, ConvenioForm, LaboratorioForm, LoteForm,
@@ -23,7 +24,7 @@ from farmasur.forms.web import (
 from farmasur.models.inventario.models import Laboratorio, Lote, Merma, Producto
 from farmasur.models.recetas.models import Receta, RecetaRetenidaISP, UnidosisAsistencial
 from farmasur.models.usuarios.models import Usuario
-from farmasur.models.ventas.models import CajaDiaria, ConvenioIsapre, POS
+from farmasur.models.ventas.models import CajaDiaria, ConvenioIsapre, POS, Comprobante
 from farmasur.services.inventario.services import MermaService, StockService
 from farmasur.services.recetas.services import RecetaService
 from farmasur.services.ventas.services import CajaService, POSService
@@ -298,28 +299,192 @@ def caja(request):
     })
 
 
+@login_required
+def buscar_producto_codigo(request):
+    """Busca producto por código de barras / SKU para el POS."""
+    codigo = request.GET.get('codigo', '').strip()
+    if not codigo:
+        return JsonResponse({'ok': False, 'error': 'Código no proporcionado.'}, status=400)
+    
+    prod = Producto.objects.filter(activo=True, sku_codigo_barra=codigo).first()
+    if not prod:
+        prod = Producto.objects.filter(activo=True).filter(
+            Q(sku_codigo_barra__icontains=codigo) | Q(nombre_comercial__icontains=codigo)
+        ).first()
+
+    if not prod:
+        return JsonResponse({'ok': False, 'error': f'No se encontró producto con código "{codigo}".'}, status=404)
+
+    return JsonResponse({
+        'ok': True,
+        'sku': prod.sku_codigo_barra,
+        'nombre': prod.nombre_comercial,
+        'principio': prod.principio_activo,
+        'presentacion': prod.presentacion,
+        'precio': prod.precio_clp,
+        'stock_vitrina': prod.stock_total_vitrina,
+        'stock_bodega': prod.stock_total_bodega,
+        'condicion_venta': prod.condicion_venta,
+        'condicion_display': prod.get_condicion_venta_display(),
+        'frio': prod.requiere_cadena_frio,
+    })
+
+
 @rol_requerido(R.FARMACEUTICO, R.TECNICO)
 def pos(request):
     caja_abierta = CajaDiaria.objects.filter(estado=CajaDiaria.Estado.ABIERTA).order_by('-hora_apertura').first()
     form = VentaForm(request.POST or None)
-    if request.method == 'POST' and form.is_valid() and caja_abierta:
-        d = form.cleaned_data
-        try:
-            with transaction.atomic():
-                venta = POSService.crear_venta(
-                    caja=caja_abierta, folio=f'V-{uuid.uuid4().hex[:8].upper()}',
-                    operario=request.user, items=d['items'], tipo_comprobante=d['tipo_comprobante'],
-                    rut_cliente=d['rut_cliente'], nombre_cliente=d['nombre_cliente'],
-                    convenio_id=d['convenio'].pk if d['convenio'] else None)
-            messages.success(request, f'Venta {venta.folio} registrada por ${venta.total}.')
-            return redirect('pos')
-        except ERRORES as exc:
-            _mensaje_error(request, exc)
+
+    if request.method == 'POST' and caja_abierta:
+        # Modo escaneo con lector / cámara (items_json)
+        items_json_raw = request.POST.get('items_json')
+        if items_json_raw:
+            try:
+                items_data = json.loads(items_json_raw)
+                if not items_data:
+                    messages.error(request, 'Debe escanear o agregar al menos un producto a la venta.')
+                    return redirect('pos')
+
+                items = []
+                for it in items_data:
+                    sku = str(it.get('sku', '')).strip()
+                    cant = int(it.get('cantidad', 1))
+                    if sku and cant > 0:
+                        prod = Producto.objects.get(sku_codigo_barra=sku, activo=True)
+                        items.append({
+                            'sku': prod.sku_codigo_barra,
+                            'nombre': prod.nombre_comercial,
+                            'presentacion': prod.presentacion,
+                            'cantidad': cant,
+                            'precio_unitario': prod.precio_clp,
+                            'subtotal': cant * prod.precio_clp
+                        })
+
+                if not items:
+                    messages.error(request, 'No se identificaron productos válidos para cobrar.')
+                    return redirect('pos')
+
+                convenio_id = request.POST.get('convenio')
+                tipo_comprobante = request.POST.get('tipo_comprobante', 'BOLETA')
+                rut_cliente = request.POST.get('rut_cliente', '').strip()
+                nombre_cliente = request.POST.get('nombre_cliente', '').strip()
+
+                with transaction.atomic():
+                    venta = POSService.crear_venta(
+                        caja=caja_abierta, folio=f'V-{uuid.uuid4().hex[:8].upper()}',
+                        operario=request.user, items=items, tipo_comprobante=tipo_comprobante,
+                        rut_cliente=rut_cliente, nombre_cliente=nombre_cliente,
+                        convenio_id=int(convenio_id) if convenio_id else None
+                    )
+                messages.success(request, f'¡Venta {venta.folio} registrada exitosamente! Boleta emitida.')
+                return redirect('boleta', venta_id=venta.id)
+            except Exception as exc:
+                _mensaje_error(request, exc)
+                return redirect('pos')
+        elif form.is_valid():
+            d = form.cleaned_data
+            try:
+                with transaction.atomic():
+                    venta = POSService.crear_venta(
+                        caja=caja_abierta, folio=f'V-{uuid.uuid4().hex[:8].upper()}',
+                        operario=request.user, items=d['items'], tipo_comprobante=d['tipo_comprobante'],
+                        rut_cliente=d['rut_cliente'], nombre_cliente=d['nombre_cliente'],
+                        convenio_id=d['convenio'].pk if d['convenio'] else None)
+                messages.success(request, f'Venta {venta.folio} registrada por ${venta.total}. Boleta emitida.')
+                return redirect('boleta', venta_id=venta.id)
+            except ERRORES as exc:
+                _mensaje_error(request, exc)
+
     hoy = timezone.localdate()
-    ventas = POS.objects.filter(fecha_venta__date=hoy).order_by('-fecha_venta')
+    ventas = POS.objects.filter(fecha_venta__date=hoy).select_related('comprobante').order_by('-fecha_venta')
+    convenios = ConvenioIsapre.objects.filter(activo=True).order_by('nombre')
+    productos_rapidos = Producto.objects.filter(activo=True).order_by('nombre_comercial')[:10]
+
     return render(request, 'ventas/pos.html', {
-        'form': form, 'caja': caja_abierta, 'ventas': ventas[:10],
+        'form': form,
+        'caja': caja_abierta,
+        'ventas': ventas[:12],
         'total_hoy': ventas.aggregate(t=Sum('total'))['t'] or 0,
+        'convenios': convenios,
+        'productos_rapidos': productos_rapidos,
+    })
+
+
+@login_required
+def ver_boleta(request, venta_id):
+    """Muestra e imprime la boleta electrónica asociada a una venta,
+    incluyendo el código de barras y boleta individual por cada producto."""
+    from farmasur.services.barcode import generar_codigo_barra_svg
+
+    venta = get_object_or_404(POS.objects.select_related('caja', 'operario'), id=venta_id)
+    comprobante = getattr(venta, 'comprobante', None)
+    if not comprobante:
+        tasa_iva = 0.19
+        neto = int(venta.total / (1 + tasa_iva))
+        iva = venta.total - neto
+        tipo_comp = 'FACTURA' if venta.tipo_comprobante == 'FACTURA' else 'BOLETA'
+        comprobante = Comprobante.objects.create(
+            venta_pos=venta,
+            tipo=tipo_comp,
+            folio_comprobante=f"BOL-{venta.id:06d}",
+            rut_receptor=venta.rut_cliente or '66.666.666-6',
+            nombre_receptor=venta.nombre_cliente or 'Cliente General',
+            neto=neto,
+            iva=iva,
+            total=venta.total
+        )
+
+    # Código de barras oficial del comprobante general
+    codigo_boleta_svg = generar_codigo_barra_svg(comprobante.folio_comprobante, height=42, show_text=True)
+
+    # Generar código de barra y boleta individual para CADA producto comprado
+    items_enriquecidos = []
+    dscto_pct = venta.porcentaje_descuento_convenio or 0
+
+    for idx, item in enumerate(venta.items or [], 1):
+        sku = str(item.get('sku', '')).strip()
+        nombre = item.get('nombre', 'Producto')
+        presentacion = item.get('presentacion', '')
+        cant = int(item.get('cantidad', 1))
+        precio_unit = int(item.get('precio_unitario', 0))
+        subtotal_item = cant * precio_unit
+
+        # Descuento proporcional
+        total_item = int(subtotal_item * (1 - dscto_pct / 100))
+        neto_item = int(total_item / 1.19)
+        iva_item = total_item - neto_item
+        folio_item = f"{comprobante.folio_comprobante}-P{idx:02d}"
+
+        # Código de barras del producto (SKU) y del ticket individual
+        codigo_prod = sku if sku else f"MED{idx:04d}"
+        barcode_item_svg = generar_codigo_barra_svg(codigo_prod, height=44, show_text=True)
+        barcode_ticket_svg = generar_codigo_barra_svg(folio_item, height=40, show_text=True)
+
+        items_enriquecidos.append({
+            'numero': idx,
+            'sku': sku,
+            'nombre': nombre,
+            'presentacion': presentacion,
+            'cantidad': cant,
+            'precio_unitario': precio_unit,
+            'subtotal': subtotal_item,
+            'total_item': total_item,
+            'neto_item': neto_item,
+            'iva_item': iva_item,
+            'folio_item': folio_item,
+            'barcode_svg': barcode_item_svg,
+            'barcode_ticket_svg': barcode_ticket_svg,
+            'lotes_dispensados': item.get('lotes_dispensados', []),
+            'stock_restante': item.get('stock_restante', 0),
+        })
+
+    return render(request, 'ventas/boleta.html', {
+        'venta': venta,
+        'comprobante': comprobante,
+        'codigo_boleta_svg': codigo_boleta_svg,
+        'items_enriquecidos': items_enriquecidos,
+        'boletas_individuales': items_enriquecidos,
+        'total_productos': len(items_enriquecidos),
     })
 
 

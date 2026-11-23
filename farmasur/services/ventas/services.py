@@ -139,11 +139,38 @@ class POSService:
         for item in items:
             if 'sku' in item and 'cantidad' in item:
                 producto = Producto.objects.get(sku_codigo_barra=item['sku'])
-                LoteService.dispensar_lote_fefo(
+                disp = LoteService.dispensar_lote_fefo(
                     producto_id=producto.pk,
                     cantidad=item['cantidad'],
                     usuario=operario
                 )
+                item['lotes_dispensados'] = disp
+                item['stock_restante'] = producto.stock_total_vitrina
+        
+        # Guardar trazabilidad de lotes descontados en la venta
+        venta.items = items
+        venta.save(update_fields=['items'])
+        
+        # Generar comprobante (Boleta / Factura electrónica)
+        tasa_iva = 0.19
+        neto = int(total / (1 + tasa_iva))
+        iva = total - neto
+        tipo_comp = 'FACTURA' if tipo_comprobante == 'FACTURA' else 'BOLETA'
+        prefijo = 'FAC' if tipo_comp == 'FACTURA' else 'BOL'
+        folio_comp = f"{prefijo}-{venta.id:06d}"
+        
+        Comprobante.objects.get_or_create(
+            venta_pos=venta,
+            defaults={
+                'tipo': tipo_comp,
+                'folio_comprobante': folio_comp,
+                'rut_receptor': (rut_cliente or '66.666.666-6')[:12],
+                'nombre_receptor': nombre_cliente or 'Cliente General',
+                'neto': neto,
+                'iva': iva,
+                'total': total
+            }
+        )
         
         return venta
     

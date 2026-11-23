@@ -1,0 +1,392 @@
+{% extends 'base/base.html' %}
+{% block title %}Boleta Electrónica {{ comprobante.folio_comprobante }} - Farmasur{% endblock %}
+{% block migas %}Ventas &rsaquo; Boleta {{ comprobante.folio_comprobante }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ticket-container {
+        max-width: 490px;
+        margin: 15px auto;
+        background: #fff;
+        padding: 22px;
+        border-radius: 8px;
+        box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        border: 1px solid #e0e0e0;
+        font-family: 'Courier New', Courier, monospace;
+        color: #111;
+    }
+    .ticket-header {
+        text-align: center;
+        border-bottom: 1px dashed #666;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+    }
+    .sii-box {
+        border: 2px solid #c62828;
+        color: #c62828;
+        padding: 10px;
+        font-weight: bold;
+        text-align: center;
+        margin: 12px 0;
+        font-size: 0.95rem;
+        line-height: 1.3;
+    }
+    .ticket-table th, .ticket-table td {
+        font-size: 0.82rem;
+        padding: 6px 0;
+    }
+    .ticket-table thead th {
+        border-bottom: 1px solid #111;
+    }
+    .ticket-totals {
+        border-top: 1px dashed #666;
+        margin-top: 12px;
+        padding-top: 10px;
+        font-size: 0.9rem;
+    }
+    .timbre-sii {
+        border: 1px solid #444;
+        padding: 10px;
+        margin-top: 16px;
+        text-align: center;
+        font-size: 0.72rem;
+        background: #fafafa;
+    }
+    .barcode-wrapper {
+        text-align: center;
+        margin: 8px 0;
+    }
+    .barcode-wrapper svg {
+        max-width: 100%;
+        height: auto;
+    }
+    .item-barcode-box {
+        background: #fbfbfb;
+        border: 1px dotted #bbb;
+        border-radius: 4px;
+        padding: 4px 6px;
+        margin-top: 4px;
+        text-align: center;
+    }
+    .item-barcode-box svg {
+        max-height: 38px;
+    }
+    .individual-ticket {
+        page-break-after: always;
+        margin-bottom: 30px;
+    }
+
+    /* ESTILOS PARA IMPRESIÓN (TICKET TÉRMICO / CARTA) */
+    @media print {
+        body {
+            background: #fff !important;
+            color: #000 !important;
+        }
+        .lateral, .topbar, .btn-no-print, nav, header, .nav-tabs {
+            display: none !important;
+        }
+        .contenido {
+            margin-left: 0 !important;
+            padding: 0 !important;
+        }
+        .pagina {
+            padding: 0 !important;
+        }
+        .tab-pane {
+            display: block !important;
+            opacity: 1 !important;
+        }
+        .ticket-container {
+            max-width: 100% !important;
+            box-shadow: none !important;
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 auto 30px auto !important;
+        }
+        .no-print-section {
+            display: none !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 btn-no-print">
+    <div>
+        <h1 class="h3 mb-0">Comprobante de Venta</h1>
+        <small class="text-muted">
+            Folio: <strong>{{ comprobante.folio_comprobante }}</strong> · {{ total_productos }} producto(s) con código de barras generado.
+        </small>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'pos' %}" class="btn btn-outline-secondary">
+            ← Nueva Venta (POS)
+        </a>
+        <button type="button" class="btn btn-rojo px-3" onclick="window.print()">
+            🖨️ Imprimir Boletas
+        </button>
+    </div>
+</div>
+
+<!-- PESTAÑAS: BOLETA GENERAL VS BOLETAS INDIVIDUALES POR PRODUCTO -->
+<ul class="nav nav-pills mb-3 btn-no-print" id="boletaTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active fw-bold" id="general-tab" data-bs-toggle="tab" data-bs-target="#tab-general" type="button" role="tab">
+            📑 Boleta General Consolidada
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-bold" id="individuales-tab" data-bs-toggle="tab" data-bs-target="#tab-individuales" type="button" role="tab">
+            🏷️ Boleta de Compra por Cada Producto ({{ total_productos }})
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="boletaTabsContent">
+
+    <!-- TAB 1: BOLETA GENERAL (CON CÓDIGO DE BARRAS DE CADA PRODUCTO) -->
+    <div class="tab-pane fade show active" id="tab-general" role="tabpanel">
+        <div class="ticket-container">
+            <!-- ENCABEZADO DE FARMASUR -->
+            <div class="ticket-header">
+                <h2 style="font-size: 1.6rem; font-weight: 900; margin: 0; color: #c62828;">+ FARMASUR</h2>
+                <div style="font-size: 0.85rem; font-weight: bold; margin-top: 3px;">FARMASUR S.A.</div>
+                <div style="font-size: 0.72rem;">GIRO: FARMACIA Y PRODUCTOS FARMACÉUTICOS</div>
+                <div style="font-size: 0.72rem;">CASA MATRIZ: AV. LIB. BERNARDO O'HIGGINS 1234, SANTIAGO</div>
+                <div style="font-size: 0.72rem;">FONO: +56 2 2350 7000 · WWW.FARMASUR.CL</div>
+            </div>
+
+            <!-- RECUADRO TRIBUTARIO SII -->
+            <div class="sii-box">
+                <div>R.U.T.: 76.123.456-7</div>
+                <div style="font-size: 1.05rem; margin: 3px 0;">{{ comprobante.get_tipo_display|upper }} ELECTRÓNICA</div>
+                <div>N° {{ comprobante.folio_comprobante }}</div>
+                <div style="font-size: 0.72rem; font-weight: normal; margin-top: 2px;">S.I.I. - SANTIAGO CENTRO</div>
+            </div>
+
+            <!-- METADATA DE EMISIÓN -->
+            <div style="font-size: 0.78rem; margin-bottom: 12px; line-height: 1.4;">
+                <div><strong>Fecha/Hora:</strong> {{ comprobante.fecha_emision|date:"d/m/Y H:i:s" }}</div>
+                <div><strong>Caja:</strong> {{ venta.caja.caja_id }} (Turno: {{ venta.caja.turno }})</div>
+                <div><strong>Atendido por:</strong> {{ venta.operario.nombre_completo|default:venta.operario.username }}</div>
+                <div><strong>Folio Venta:</strong> {{ venta.folio }}</div>
+                <div class="border-top mt-1 pt-1">
+                    <strong>Cliente:</strong> {{ comprobante.nombre_receptor }}<br>
+                    {% if comprobante.rut_receptor %}<strong>RUT:</strong> {{ comprobante.rut_receptor }}<br>{% endif %}
+                    {% if venta.convenio_aplicado %}<strong>Convenio:</strong> {{ venta.convenio_aplicado }} ({{ venta.porcentaje_descuento_convenio }}% dscto)<br>{% endif %}
+                </div>
+            </div>
+
+            <!-- TABLA DE PRODUCTOS COMPRADOS CON CÓDIGO DE BARRA POR PRODUCTO -->
+            <div style="font-size: 0.75rem; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #111; padding-bottom: 3px;">
+                Detalle de Medicamentos Adquiridos:
+            </div>
+            <table class="table table-borderless ticket-table w-100 mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 12%;">CANT</th>
+                        <th style="width: 58%;">PRODUCTO / CÓDIGO DE BARRAS</th>
+                        <th style="width: 15%; text-align: right;">UNIT.</th>
+                        <th style="width: 15%; text-align: right;">TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for it in items_enriquecidos %}
+                    <tr style="border-bottom: 1px dotted #ccc;">
+                        <td style="vertical-align: top; font-weight: bold;">{{ it.cantidad }}x</td>
+                        <td>
+                            <strong>{{ it.nombre }}</strong><br>
+                            {% if it.presentacion %}<small class="text-muted">{{ it.presentacion }}</small><br>{% endif %}
+                            
+                            <!-- CÓDIGO DE BARRAS POR CADA PRODUCTO COMPRADO -->
+                            <div class="item-barcode-box">
+                                <div class="barcode-wrapper">
+                                    {{ it.barcode_svg|safe }}
+                                </div>
+                                <div style="font-size: 0.65rem; color: #555;">Item N° {{ it.numero }} · Tique: {{ it.folio_item }}</div>
+                            </div>
+                        </td>
+                        <td style="text-align: right; vertical-align: top;">${{ it.precio_unitario }}</td>
+                        <td style="text-align: right; vertical-align: top; font-weight: bold;">${{ it.subtotal }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center py-2">Sin ítems</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <!-- TOTALES Y DESGLOSE IVA -->
+            <div class="ticket-totals">
+                <div class="d-flex justify-content-between">
+                    <span>SUBTOTAL:</span>
+                    <span>${{ venta.subtotal }}</span>
+                </div>
+                {% if venta.descuento_total > 0 %}
+                <div class="d-flex justify-content-between text-success">
+                    <span>DESCUENTO CONVENIO:</span>
+                    <span>-${{ venta.descuento_total }}</span>
+                </div>
+                {% endif %}
+                <div class="d-flex justify-content-between" style="font-size: 1.15rem; font-weight: 900; margin-top: 6px; border-top: 1px solid #111; padding-top: 6px;">
+                    <span>TOTAL A PAGAR:</span>
+                    <span>${{ venta.total }}</span>
+                </div>
+                <div style="font-size: 0.72rem; color: #555; margin-top: 6px; border-top: 1px dashed #aaa; padding-top: 4px;">
+                    <div class="d-flex justify-content-between">
+                        <span>Monto Neto:</span>
+                        <span>${{ comprobante.neto }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>IVA (19%):</span>
+                        <span>${{ comprobante.iva }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DESCUENTO AUTOMÁTICO DE STOCK (FEFO) -->
+            <div class="p-2 my-2 bg-light border rounded" style="font-size: 0.72rem; line-height: 1.3;">
+                <div class="fw-bold text-success mb-1">⚡ Descuento Automático de Stock (Algoritmo FEFO):</div>
+                {% for it in items_enriquecidos %}
+                <div class="d-flex justify-content-between mt-1 pt-1 border-top border-dotted">
+                    <span>• {{ it.nombre }} ({{ it.cantidad }} u.):</span>
+                    <span>
+                        {% if it.lotes_dispensados %}
+                            {% for ld in it.lotes_dispensados %}Lote: <strong>{{ ld.codigo_lote }}</strong> (-{{ ld.cantidad }} u.){% endfor %}
+                        {% else %}
+                            Lote FEFO prioritario (-{{ it.cantidad }} u.)
+                        {% endif %}
+                        · Stock restante vitrina: <strong>{{ it.stock_restante }} u.</strong>
+                    </span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- CÓDIGO DE BARRAS GENERAL DE LA BOLETA -->
+            <div class="barcode-wrapper mt-3 pt-2 border-top">
+                <div style="font-size: 0.7rem; font-weight: bold; margin-bottom: 2px;">CÓDIGO DE BARRAS DE LA BOLETA:</div>
+                {{ codigo_boleta_svg|safe }}
+            </div>
+
+            <!-- TIMBRE ELECTRÓNICO SII SIMULADO -->
+            <div class="timbre-sii">
+                <div style="font-weight: bold;">TIMBRE ELECTRÓNICO S.I.I.</div>
+                <div style="font-size: 0.65rem;">Res. 80 de 2014 - Verifique documento en www.sii.cl</div>
+                <div style="font-size: 0.65rem; color: #777;">Control ISP y Dispensación Farmasur</div>
+            </div>
+
+            <!-- PIE DEL TICKET -->
+            <div style="text-align: center; margin-top: 14px; font-size: 0.72rem; color: #555;">
+                <p class="mb-1">¡Gracias por preferir Farmasur!</p>
+                <p class="mb-0">Conserve este comprobante para cambios dentro de 30 días con el código de barra del producto.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: BOLETAS INDIVIDUALES POR CADA PRODUCTO COMPRADO -->
+    <div class="tab-pane fade" id="tab-individuales" role="tabpanel">
+        
+        <div class="alert alert-info py-2 btn-no-print d-flex justify-content-between align-items-center">
+            <span>🏷️ <strong>{{ total_productos }} Boletas Individuales generadas.</strong> Cada producto comprado cuenta con su propio ticket con código de barras escaneable.</span>
+            <button type="button" class="btn btn-sm btn-rojo" onclick="window.print()">🖨️ Imprimir Todas</button>
+        </div>
+
+        {% for it in boletas_individuales %}
+        <div class="ticket-container individual-ticket">
+            <!-- ENCABEZADO -->
+            <div class="ticket-header">
+                <h3 style="font-size: 1.4rem; font-weight: 900; margin: 0; color: #c62828;">+ FARMASUR</h3>
+                <div style="font-size: 0.8rem; font-weight: bold;">FARMASUR S.A.</div>
+                <div style="font-size: 0.7rem;">BOLETA INDIVIDUAL DE COMPRA POR PRODUCTO</div>
+                <div style="font-size: 0.7rem;">CASA MATRIZ: AV. LIB. BERNARDO O'HIGGINS 1234, SANTIAGO</div>
+            </div>
+
+            <!-- RECUADRO TRIBUTARIO -->
+            <div class="sii-box">
+                <div>R.U.T.: 76.123.456-7</div>
+                <div style="font-size: 1rem; margin: 2px 0;">BOLETA DE COMPRA N° {{ it.folio_item }}</div>
+                <div style="font-size: 0.72rem; font-weight: normal;">Boleta Matriz: {{ comprobante.folio_comprobante }} (Item {{ it.numero }} de {{ total_productos }})</div>
+            </div>
+
+            <!-- METADATA DEL TICKET -->
+            <div style="font-size: 0.78rem; margin-bottom: 10px; line-height: 1.4;">
+                <div><strong>Fecha:</strong> {{ comprobante.fecha_emision|date:"d/m/Y H:i:s" }}</div>
+                <div><strong>Caja:</strong> {{ venta.caja.caja_id }} · <strong>Atendido por:</strong> {{ venta.operario.username }}</div>
+                <div><strong>Cliente:</strong> {{ comprobante.nombre_receptor }}</div>
+            </div>
+
+            <!-- DETALLE DEL MEDICAMENTO -->
+            <div style="border-top: 1px solid #111; border-bottom: 1px solid #111; padding: 10px 0; margin-bottom: 10px;">
+                <div style="font-size: 1.1rem; font-weight: bold; color: #111;">{{ it.nombre }}</div>
+                {% if it.presentacion %}<div style="font-size: 0.8rem; color: #555;">{{ it.presentacion }}</div>{% endif %}
+                <div class="d-flex justify-content-between mt-2 pt-2 border-top border-dotted" style="font-size: 0.85rem;">
+                    <span>Cantidad: <strong>{{ it.cantidad }} unidad(es)</strong></span>
+                    <span>P. Unit: <strong>${{ it.precio_unitario }}</strong></span>
+                </div>
+            </div>
+
+            <!-- TOTALES DEL PRODUCTO -->
+            <div class="ticket-totals pt-1 mt-1">
+                <div class="d-flex justify-content-between">
+                    <span>Subtotal Producto:</span>
+                    <span>${{ it.subtotal }}</span>
+                </div>
+                <div class="d-flex justify-content-between" style="font-size: 1.1rem; font-weight: bold; border-top: 1px solid #111; padding-top: 4px; margin-top: 4px;">
+                    <span>TOTAL PAGADO:</span>
+                    <span>${{ it.total_item }}</span>
+                </div>
+                <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem; margin-top: 3px;">
+                    <span>Neto: ${{ it.neto_item }}</span>
+                    <span>IVA (19%): ${{ it.iva_item }}</span>
+                </div>
+            </div>
+
+            <!-- DESCUENTO DE STOCK DE ESTE PRODUCTO -->
+            <div class="p-2 my-2 bg-light border rounded text-center" style="font-size: 0.72rem;">
+                <span class="text-success fw-bold">⚡ Stock descontado en vitrina (FEFO): <strong>-{{ it.cantidad }} u.</strong></span><br>
+                <span class="text-muted">Stock restante disponible en vitrina: <strong>{{ it.stock_restante }} u.</strong></span>
+            </div>
+
+            <!-- CÓDIGO DE BARRAS DEL PRODUCTO (SKU/EAN-13) -->
+            <div class="barcode-wrapper mt-3 p-2 bg-light rounded border text-center">
+                <div style="font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: #c62828;">
+                    CÓDIGO DE BARRAS DEL PRODUCTO:
+                </div>
+                {{ it.barcode_svg|safe }}
+                <div style="font-size: 0.68rem; color: #666; margin-top: 4px;">
+                    SKU Oficial Farmasur: <code>{{ it.sku }}</code>
+                </div>
+            </div>
+
+            <!-- CÓDIGO DE BARRAS DEL TICKET INDIVIDUAL -->
+            <div class="barcode-wrapper mt-2 text-center">
+                <div style="font-size: 0.68rem; color: #777;">CÓDIGO DE VALIDACIÓN TICKET:</div>
+                {{ it.barcode_ticket_svg|safe }}
+            </div>
+
+            <!-- PIE -->
+            <div style="text-align: center; margin-top: 12px; font-size: 0.7rem; color: #666;">
+                Tique Individual de Garantía y Trazabilidad Farmacéutica<br>
+                Instituto de Salud Pública (ISP) · Farmasur
+            </div>
+
+            <div class="text-center mt-3 btn-no-print">
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="window.print()">
+                    🖨️ Imprimir Esta Boleta
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<div class="text-center mt-3 mb-5 btn-no-print">
+    <button type="button" class="btn btn-rojo btn-lg px-4" onclick="window.print()">
+        🖨️ Imprimir Boletas
+    </button>
+    <a href="{% url 'pos' %}" class="btn btn-outline-secondary btn-lg ms-2">
+        ← Volver a Ventas
+    </a>
+</div>
+{% endblock %}

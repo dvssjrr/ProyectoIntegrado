@@ -807,3 +807,47 @@ WARNING 2026-11-17 00:15:51,491 log 8616 23324 Forbidden: /caja/
 WARNING 2026-11-17 00:15:51,494 log 8616 23324 Forbidden: /configuracion/
 INFO 2026-11-17 00:16:24,793 autoreload 15492 13628 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
 INFO 2026-11-17 00:16:26,269 autoreload 9708 21860 Watching for file changes with StatReloader
+INFO 2026-11-17 09:34:05,224 autoreload 14980 7936 Watching for file changes with StatReloader
+WARNING 2026-11-17 09:34:17,738 log 14980 25764 Not Found: /asdfghjk
+WARNING 2026-11-17 09:34:17,863 log 14980 25764 Not Found: /favicon.ico
+INFO 2026-11-17 10:00:56,320 autoreload 14980 7936 C:\Users\arria\ProyectoIntegrado\farmasur\services\ventas\services.py changed, reloading.
+INFO 2026-11-17 10:00:57,429 autoreload 8076 16044 Watching for file changes with StatReloader
+INFO 2026-11-17 10:01:35,401 autoreload 8076 16044 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:01:36,490 autoreload 4184 16452 Watching for file changes with StatReloader
+INFO 2026-11-17 10:01:53,636 autoreload 4184 16452 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:01:54,695 autoreload 16836 25964 Watching for file changes with StatReloader
+INFO 2026-11-17 10:02:14,134 autoreload 16836 25964 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:02:15,255 autoreload 13776 10880 Watching for file changes with StatReloader
+INFO 2026-11-17 10:02:48,307 autoreload 13776 10880 C:\Users\arria\ProyectoIntegrado\farmasur\urls\web.py changed, reloading.
+INFO 2026-11-17 10:02:49,494 autoreload 21316 13080 Watching for file changes with StatReloader
+INFO 2026-11-17 10:06:07,958 autoreload 17864 25188 Watching for file changes with StatReloader
+INFO 2026-11-17 10:06:43,186 autoreload 21316 13080 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:06:43,489 autoreload 17864 25188 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:06:44,640 autoreload 20764 6320 Watching for file changes with StatReloader
+INFO 2026-11-17 10:06:44,843 autoreload 23524 10096 Watching for file changes with StatReloader
+INFO 2026-11-17 10:15:41,314 autoreload 20764 6320 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:15:41,953 autoreload 23524 10096 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:15:42,464 autoreload 21588 17896 Watching for file changes with StatReloader
+INFO 2026-11-17 10:15:43,170 autoreload 24428 8828 Watching for file changes with StatReloader
+INFO 2026-11-17 10:16:48,143 autoreload 24428 8828 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:16:48,855 autoreload 21588 17896 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:16:49,323 autoreload 25608 18052 Watching for file changes with StatReloader
+INFO 2026-11-17 10:16:50,032 autoreload 19788 9516 Watching for file changes with StatReloader
+WARNING 2026-11-17 10:17:35,392 log 25608 22580 Forbidden: /ventas/
+WARNING 2026-11-17 10:17:38,937 log 25608 22580 Forbidden: /ventas/
+INFO 2026-11-17 10:20:39,006 autoreload 25608 18052 C:\Users\arria\ProyectoIntegrado\farmasur\services\ventas\services.py changed, reloading.
+INFO 2026-11-17 10:20:39,193 autoreload 19788 9516 C:\Users\arria\ProyectoIntegrado\farmasur\services\ventas\services.py changed, reloading.
+INFO 2026-11-17 10:20:40,193 autoreload 14624 16460 Watching for file changes with StatReloader
+INFO 2026-11-17 10:20:40,369 autoreload 24964 14276 Watching for file changes with StatReloader
+INFO 2026-11-17 10:21:35,141 autoreload 24964 14276 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:21:35,523 autoreload 14624 16460 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:21:36,318 autoreload 1272 4056 Watching for file changes with StatReloader
+INFO 2026-11-17 10:21:36,772 autoreload 11516 7984 Watching for file changes with StatReloader
+INFO 2026-11-17 10:23:32,101 autoreload 11516 7984 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:23:32,815 autoreload 1272 4056 C:\Users\arria\ProyectoIntegrado\farmasur\views\web.py changed, reloading.
+INFO 2026-11-17 10:23:33,561 autoreload 14812 22276 Watching for file changes with StatReloader
+INFO 2026-11-17 10:23:34,284 autoreload 4004 12692 Watching for file changes with StatReloader
+WARNING 2026-11-17 10:25:06,006 log 14812 12196 Not Found: /favicon.ico
+WARNING 2026-11-17 10:36:22,567 log 14812 3692 Not Found: /favicon.ico
+INFO 2026-11-23 15:40:41,848 autoreload 14404 15420 Watching for file changes with StatReloader
+WARNING 2026-11-23 15:41:05,784 log 14404 9128 Not Found: /favicon.ico
