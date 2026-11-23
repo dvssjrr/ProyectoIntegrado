@@ -39,7 +39,17 @@ def Csv(value):
 # Seguridad y depuración
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-farmasur-dev-key-change-in-production')
 DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv)
+ALLOWED_HOSTS = config(
+    'ALLOWED_HOSTS',
+    default='localhost,127.0.0.1,0.0.0.0,3.217.226.133,ec2-3-217-226-133.compute-1.amazonaws.com',
+    cast=Csv
+)
+
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='http://localhost,http://127.0.0.1,http://3.217.226.133,http://ec2-3-217-226-133.compute-1.amazonaws.com,https://ec2-3-217-226-133.compute-1.amazonaws.com',
+    cast=Csv
+)
 
 INSTALLED_APPS = [
     'django.contrib.admin',

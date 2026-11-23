@@ -851,3 +851,6 @@ WARNING 2026-11-17 10:25:06,006 log 14812 12196 Not Found: /favicon.ico
 WARNING 2026-11-17 10:36:22,567 log 14812 3692 Not Found: /favicon.ico
 INFO 2026-11-23 15:40:41,848 autoreload 14404 15420 Watching for file changes with StatReloader
 WARNING 2026-11-23 15:41:05,784 log 14404 9128 Not Found: /favicon.ico
+INFO 2026-11-23 16:09:35,055 autoreload 26660 17128 Watching for file changes with StatReloader
+INFO 2026-11-23 16:09:53,438 autoreload 26660 17128 C:\Users\arria\ProyectoIntegrado\farmacia_project\settings.py changed, reloading.
+INFO 2026-11-23 16:09:54,533 autoreload 416 11900 Watching for file changes with StatReloader
