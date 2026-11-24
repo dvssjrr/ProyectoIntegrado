@@ -65,7 +65,7 @@ class WebTests(TestCase):
         }, follow=True)
         self.assertEqual(respuesta.status_code, 200)
         self.assertContains(respuesta, 'Usuario TECNICO')
-        self.assertContains(respuesta, 'Abrir otra ventana (otro usuario)')
+        self.assertContains(respuesta, 'Abrir sesión con otro usuario')
         self.assertContains(respuesta, f'href="{url_login.rsplit("login/", 1)[0]}productos/"')
 
         pagina_uno = ventana_uno.get(reverse('inicio'))

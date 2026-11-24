@@ -44,7 +44,6 @@
 <aside class="lateral">
     <div class="marca"><span>+</span>farmasur</div>
     <div class="seccion">Gestión farmacéutica</div>
-    <a class="item" href="/__new-window__/" target="_blank" rel="noopener">Abrir otra ventana (otro usuario)</a>
     <a class="item {% if actual == 'inicio' %}activo{% endif %}" href="{% url 'inicio' %}">Inicio</a>
     <a class="item {% if actual == 'productos' or actual == 'producto_nuevo' or actual == 'producto_editar' %}activo{% endif %}" href="{% url 'productos' %}">Productos</a>
     <a class="item {% if actual == 'inventario' or actual == 'lote_nuevo' or actual == 'transferir' %}activo{% endif %}" href="{% url 'inventario' %}">Inventario Dual</a>
@@ -66,6 +65,10 @@
         <span class="avatar">{{ user.nombre_completo|slice:":1"|default:user.username|slice:":1"|upper }}</span>
         <strong>{{ user.nombre_completo|default:user.username }}</strong><br>
         <small>{{ user.get_rol_display }}</small>
+        <details class="mt-2 small">
+            <summary style="cursor:pointer;color:#b99">Más opciones</summary>
+            <a class="d-block mt-1" style="color:#e9d6d6" href="/__new-window__/" target="_blank" rel="noopener">Abrir sesión con otro usuario</a>
+        </details>
         <form method="post" action="{% url 'logout' %}" class="mt-2">{% csrf_token %}
             <button class="btn btn-sm btn-outline-light w-100" type="submit">Cerrar sesión</button>
         </form>

@@ -59,7 +59,7 @@ python manage.py runserver
 
 ### Varias cuentas en el mismo navegador
 
-Para usar cuentas distintas en ventanas separadas del mismo perfil del navegador, inicia sesión en la primera ventana y usa **Abrir otra ventana (otro usuario)**. La nueva ventana tendrá una sesión independiente; duplicar una pestaña normal seguirá compartiendo la sesión actual.
+Para usar cuentas distintas en ventanas separadas del mismo perfil del navegador, inicia sesión en la primera ventana y abre **Más opciones** en el área de la cuenta; luego elige **Abrir sesión con otro usuario**. La nueva ventana tendrá una sesión independiente; duplicar una pestaña normal seguirá compartiendo la sesión actual.
 
 ## Capas del Proyecto
 
