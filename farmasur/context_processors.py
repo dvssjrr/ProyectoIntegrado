@@ -25,4 +25,5 @@ def acceso(request):
         'libro_registrar': qf or tecnico,
         'ventas': qf or tecnico,
         'config': admin,
+        'reportes': admin,
     }}

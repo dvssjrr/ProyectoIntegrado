@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+{% block title %}Compras de {{ cliente.nombre_completo }} - Farmasur{% endblock %}
+{% block migas %}<a href="{% url 'clientes' %}">Clientes</a> &rsaquo; Historial de compras{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div><h1 class="h3 mb-1">Historial de compras</h1><p class="text-muted mb-0">{{ cliente.nombre_completo }} · RUT {{ cliente.rut }}{% if cliente.convenio %} · Beneficio: {{ cliente.convenio }}{% endif %}</p></div>
+    <a class="btn btn-outline-secondary" href="{% url 'clientes' %}">Volver a clientes</a>
+</div>
+<div class="row g-3 mb-3">
+    <div class="col-md-6"><div class="tarjeta"><small class="text-muted">Compras</small><div class="kpi-valor">{{ total_compras }}</div></div></div>
+    <div class="col-md-6"><div class="tarjeta"><small class="text-muted">Monto acumulado</small><div class="kpi-valor">${{ monto_total }}</div></div></div>
+</div>
+<div class="tarjeta"><div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>Fecha</th><th>Folio</th><th>Productos / categoría</th><th>Operario</th><th>Pago</th><th>Total</th><th></th></tr></thead>
+    <tbody>{% for venta in compras %}
+        <tr><td>{{ venta.fecha_venta|date:"d/m/Y H:i" }}</td><td>{{ venta.folio }}</td>
+            <td>{% for item in venta.items %}{{ item.nombre }} × {{ item.cantidad }} <small class="text-muted">({{ item.categoria|default:"Sin categoría" }})</small>{% if not forloop.last %}<br>{% endif %}{% endfor %}</td>
+            <td>{{ venta.operario.nombre_completo }}</td><td>{{ venta.get_metodo_pago_display }}</td>
+            <td class="fw-bold">${{ venta.total }}</td><td><a href="{% url 'boleta' venta.pk %}">Boleta</a></td></tr>
+    {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">Este cliente todavía no registra compras.</td></tr>{% endfor %}</tbody>
+</table></div>{% include 'base/paginacion.html' with pagina=compras %}</div>
+{% endblock %}

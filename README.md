@@ -61,6 +61,15 @@ python manage.py runserver
 
 Para usar cuentas distintas en ventanas separadas del mismo perfil del navegador, inicia sesión en la primera ventana y abre **Más opciones** en el área de la cuenta; luego elige **Abrir sesión con otro usuario**. La nueva ventana tendrá una sesión independiente; duplicar una pestaña normal seguirá compartiendo la sesión actual.
 
+## Acceso, clientes y reportes
+
+- El personal inicia sesion con correo electronico y contrasena; el nombre de usuario se conserva para compatibilidad con cuentas anteriores.
+- Las fichas de clientes son independientes de las cuentas de empleados. El RUT permite recuperar sus datos, convenio y compras previas desde el POS.
+- Las ventas de productos con receta requieren una receta aprobada y vigente, RUT coincidente y confirmacion de una cuenta Quimico Farmaceutico.
+- Los pagos con tarjeta y BancoEstado son una simulacion local; no se procesa ni almacena informacion de tarjetas reales.
+- Los administradores pueden consultar reportes de ventas y auditoria de sesiones. La auditoria conserva el usuario, nombre, RUT, direccion IP, hora y agente de usuario.
+- Tras actualizar el codigo, ejecutar `python manage.py migrate` para crear las nuevas tablas y campos.
+
 ## Capas del Proyecto
 
 | Capa | Propósito |

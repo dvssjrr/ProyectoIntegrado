@@ -4,6 +4,7 @@ Endpoints API REST y coordinación de solicitudes.
 """
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from farmasur.models import Usuario, LogAuditoria
@@ -60,14 +61,24 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         """Actualizar un usuario."""
         usuario = self.get_object()
+        if usuario.rol == Usuario.Rol.ADMIN:
+            raise PermissionDenied('Las cuentas de administrador no se pueden editar entre administradores.')
         
         # Actualizar con auditoría
-        usuario_actualizado = UsuarioService.actualizar_usuario(usuario.pk, **request.data)
+        usuario_actualizado = UsuarioService.actualizar_usuario(
+            usuario.pk, realizado_por=request.user, **request.data
+        )
         
         return Response(
             UsuarioDetailSerializer(usuario_actualizado).data,
             status=status.HTTP_200_OK
         )
+
+    def destroy(self, request, *args, **kwargs):
+        usuario = self.get_object()
+        if usuario.rol == Usuario.Rol.ADMIN:
+            raise PermissionDenied('Las cuentas de administrador no se pueden eliminar entre administradores.')
+        return super().destroy(request, *args, **kwargs)
     
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def cambiar_contrasena(self, request, pk=None):
@@ -78,6 +89,11 @@ class UsuarioViewSet(viewsets.ModelViewSet):
         if usuario != request.user and not es_admin(request.user):
             return Response(
                 {'detail': 'No tienes permiso para cambiar la contraseña de otro usuario.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        if usuario.rol == Usuario.Rol.ADMIN and usuario != request.user:
+            return Response(
+                {'detail': 'No puedes cambiar la contraseña de otra cuenta de administrador.'},
                 status=status.HTTP_403_FORBIDDEN
             )
         

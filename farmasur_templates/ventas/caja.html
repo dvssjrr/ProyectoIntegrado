@@ -17,6 +17,7 @@
         <div class="border rounded p-3 mb-2">
             <strong>{{ c.caja_id }}</strong> · {{ c.turno }} · {{ c.operario.nombre_completo }}<br>
             <small class="text-muted">Inicial ${{ c.monto_inicial }} · Ventas ${{ c.total_ventas }}</small>
+            {% if c.resumen_pagos %}<div class="small mt-1">Por medio: {% for pago in c.resumen_pagos %}<span class="badge text-bg-light border text-dark">{{ pago.metodo }} ${{ pago.total }}</span> {% endfor %}</div>{% endif %}
             <form method="post" class="row g-2 mt-1" novalidate>{% csrf_token %}
                 <input type="hidden" name="caja_pk" value="{{ c.pk }}">
                 <div class="col-md-5"><input class="form-control" type="number" min="0" name="cerrar-monto_cierre" placeholder="Monto contado" required></div>
@@ -28,9 +29,11 @@
     </div></div>
 </div>
 <div class="tarjeta"><strong>Cierres recientes</strong>
-    <table class="table table-sm mt-2"><thead><tr><th>Caja</th><th>Fecha</th><th>Turno</th><th>Ventas</th><th>Cierre</th><th>Diferencia</th></tr></thead><tbody>
-    {% for c in recientes %}<tr><td>{{ c.caja_id }}</td><td>{{ c.fecha|date:"d/m/Y" }}</td><td>{{ c.turno }}</td><td>${{ c.total_ventas }}</td><td>${{ c.monto_cierre|default_if_none:"-" }}</td><td>${{ c.diferencia|default_if_none:"-" }}</td></tr>
-    {% empty %}<tr><td colspan="6" class="text-muted">Sin cierres.</td></tr>{% endfor %}
+    <table class="table table-sm mt-2"><thead><tr><th>Caja</th><th>Fecha</th><th>Turno</th><th>Ventas</th><th>Pagos</th><th>Cierre</th><th>Diferencia</th></tr></thead><tbody>
+    {% for c in recientes %}<tr><td>{{ c.caja_id }}</td><td>{{ c.fecha|date:"d/m/Y" }}</td><td>{{ c.turno }}</td><td>${{ c.total_ventas }}</td>
+        <td>{% for pago in c.resumen_pagos %}<span class="badge text-bg-light border text-dark">{{ pago.metodo }} ${{ pago.total }}</span> {% empty %}—{% endfor %}</td>
+        <td>${{ c.monto_cierre|default_if_none:"-" }}</td><td>${{ c.diferencia|default_if_none:"-" }}</td></tr>
+    {% empty %}<tr><td colspan="7" class="text-muted">Sin cierres.</td></tr>{% endfor %}
     </tbody></table>
 </div>
 {% endblock %}

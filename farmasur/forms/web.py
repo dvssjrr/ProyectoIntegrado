@@ -2,7 +2,7 @@ from django import forms
 
 from farmasur.models.inventario.models import Laboratorio, Lote, Merma, Producto
 from farmasur.models.usuarios.models import Usuario
-from farmasur.models.ventas.models import ConvenioIsapre
+from farmasur.models.ventas.models import Cliente, ConvenioIsapre
 
 
 class BootstrapMixin:
@@ -173,20 +173,56 @@ class UsuarioWebForm(BForm):
     username = forms.CharField(max_length=150, label='Usuario')
     nombre_completo = forms.CharField(max_length=255)
     rut = forms.CharField(max_length=12)
-    email = forms.EmailField(required=False)
+    email = forms.EmailField(required=True, label='Correo Gmail / email')
     rol = forms.ChoiceField(choices=Usuario.Rol.choices)
-    password = forms.CharField(widget=forms.PasswordInput, min_length=8, label='Contraseña')
+    password = forms.CharField(widget=forms.PasswordInput, min_length=8, required=False, label='Contraseña')
+
+    def __init__(self, *args, **kwargs):
+        self.instance = kwargs.pop('instance', None) or Usuario()
+        super().__init__(*args, **kwargs)
+        if not self.instance.pk:
+            self.fields['password'].required = True
+        else:
+            self.fields['password'].help_text = 'Deja en blanco para conservar la contraseña actual.'
 
     def clean_rut(self):
         valido, msg = Usuario.validar_rut(self.cleaned_data['rut'])
         if not valido:
             raise forms.ValidationError(msg)
         rut = msg
-        if Usuario.objects.filter(rut=rut).exists():
+        if Usuario.objects.filter(rut=rut).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError('Ya existe un usuario con ese RUT.')
         return rut
 
     def clean_username(self):
-        if Usuario.objects.filter(username=self.cleaned_data['username']).exists():
+        if Usuario.objects.filter(username=self.cleaned_data['username']).exclude(pk=self.instance.pk).exists():
             raise forms.ValidationError('Ese nombre de usuario ya existe.')
         return self.cleaned_data['username']
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].strip()
+        if Usuario.objects.filter(email__iexact=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError('Ese correo ya está asociado a un usuario.')
+        return email
+
+
+class ClienteWebForm(BForm):
+    rut = forms.CharField(max_length=12, label='RUT')
+    nombre_completo = forms.CharField(max_length=255, label='Nombre completo')
+    email = forms.EmailField(required=False, label='Correo electrónico')
+    telefono = forms.CharField(max_length=30, required=False)
+    convenio = forms.ModelChoiceField(
+        ConvenioIsapre.objects.none(), required=False, label='Beneficio / convenio'
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['convenio'].queryset = ConvenioIsapre.objects.filter(activo=True)
+
+    def clean_rut(self):
+        valido, valor = Usuario.validar_rut(self.cleaned_data['rut'])
+        if not valido:
+            raise forms.ValidationError(valor)
+        if Cliente.objects.filter(rut=valor).exists():
+            raise forms.ValidationError('Ya existe un cliente con ese RUT.')
+        return valor

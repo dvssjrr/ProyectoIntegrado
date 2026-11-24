@@ -66,12 +66,32 @@ class POS(models.Model):
         FACTURA = 'FACTURA', 'Factura'
         VOUCHER = 'VOUCHER', 'Voucher'
 
+    class MetodoPago(models.TextChoices):
+        EFECTIVO = 'EFECTIVO', 'Efectivo'
+        TARJETA = 'TARJETA', 'Tarjeta'
+        TRANSFERENCIA = 'TRANSFERENCIA', 'Transferencia'
+
     caja = models.ForeignKey(CajaDiaria, on_delete=models.PROTECT, related_name='ventas')
     
     folio = models.CharField(max_length=50, unique=True, db_index=True)
     fecha_venta = models.DateTimeField(auto_now_add=True, db_index=True)
     
     operario = models.ForeignKey('farmasur.Usuario', on_delete=models.PROTECT)
+    cliente = models.ForeignKey(
+        'farmasur.Cliente', on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='compras'
+    )
+    metodo_pago = models.CharField(max_length=20, choices=MetodoPago.choices, default=MetodoPago.EFECTIVO)
+    banco_tarjeta = models.CharField(max_length=50, blank=True)
+    referencia_pago = models.CharField(max_length=40, blank=True)
+    receta = models.ForeignKey(
+        'farmasur.Receta', on_delete=models.PROTECT, null=True, blank=True,
+        related_name='ventas'
+    )
+    autorizado_por_qf = models.ForeignKey(
+        'farmasur.Usuario', on_delete=models.PROTECT, null=True, blank=True,
+        related_name='ventas_autorizadas'
+    )
     
     rut_cliente = models.CharField(max_length=12, blank=True, db_index=True)
     nombre_cliente = models.CharField(max_length=255, blank=True)
@@ -169,6 +189,28 @@ class ConvenioIsapre(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.porcentaje_descuento}%)"
+
+
+class Cliente(models.Model):
+    """Ficha de clientes, independiente de las cuentas del personal."""
+    rut = models.CharField(max_length=12, unique=True, db_index=True)
+    nombre_completo = models.CharField(max_length=255)
+    email = models.EmailField(blank=True)
+    telefono = models.CharField(max_length=30, blank=True)
+    convenio = models.ForeignKey(
+        ConvenioIsapre, on_delete=models.SET_NULL, null=True, blank=True,
+        related_name='clientes'
+    )
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'ventas_cliente'
+        verbose_name = 'Cliente'
+        verbose_name_plural = 'Clientes'
+        ordering = ['nombre_completo']
+
+    def __str__(self):
+        return f"{self.nombre_completo} ({self.rut})"
 
 
 class Comprobante(models.Model):

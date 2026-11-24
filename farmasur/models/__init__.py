@@ -12,7 +12,7 @@ from farmasur.models.inventario.models import (
     Merma,
 )
 from farmasur.models.recetas.models import Receta, DetalleReceta, RecetaRetenidaISP, UnidosisAsistencial
-from farmasur.models.ventas.models import CajaDiaria, POS, ConvenioIsapre, Comprobante
+from farmasur.models.ventas.models import CajaDiaria, POS, ConvenioIsapre, Cliente, Comprobante
 
 __all__ = [
     # Usuarios
@@ -33,5 +33,6 @@ __all__ = [
     'CajaDiaria',
     'POS',
     'ConvenioIsapre',
+    'Cliente',
     'Comprobante',
 ]

@@ -3,11 +3,30 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-start mb-3">
     <div>
-        <h1 class="h3 mb-0">Dashboard de inventario</h1>
-        <small class="text-muted">Control de stock, vencimientos y trazabilidad sanitaria.</small>
+        <h1 class="h3 mb-0">Inicio · {{ user.get_rol_display }}</h1>
+        <small class="text-muted">Accesos directos a las funciones principales de tu puesto.</small>
     </div>
     {% if acceso.inventario_gestion %}<a class="btn btn-rojo" href="{% url 'transferir' %}">+ Registrar movimiento</a>{% endif %}
 </div>
+<div class="row g-2 mb-4">
+    {% if acceso.admin %}
+    <div class="col-md-4"><a class="btn btn-rojo w-100 py-3" href="{% url 'reportes_ventas' %}">Abrir reportes de ventas</a></div>
+    <div class="col-md-4"><a class="btn btn-outline-rojo w-100 py-3" href="{% url 'configuracion' %}">Gestionar empleados y clientes</a></div>
+    <div class="col-md-4"><a class="btn btn-outline-rojo w-100 py-3" href="{% url 'auditoria' %}">Revisar accesos del sistema</a></div>
+    {% elif acceso.qf %}
+    <div class="col-md-4"><a class="btn btn-rojo w-100 py-3" href="{% url 'pos' %}">Iniciar venta / autorizar receta</a></div>
+    <div class="col-md-4"><a class="btn btn-outline-rojo w-100 py-3" href="{% url 'libro' %}">Gestionar recetas y libro ISP</a></div>
+    <div class="col-md-4"><a class="btn btn-outline-rojo w-100 py-3" href="{% url 'caja' %}">Revisar caja</a></div>
+    {% elif acceso.tecnico %}
+    <div class="col-md-6"><a class="btn btn-rojo w-100 py-3" href="{% url 'pos' %}">Iniciar venta en POS</a></div>
+    <div class="col-md-6"><a class="btn btn-outline-rojo w-100 py-3" href="{% url 'libro' %}">Registrar / consultar recetas</a></div>
+    {% elif acceso.bodeguero %}
+    <div class="col-md-4"><a class="btn btn-rojo w-100 py-3" href="{% url 'lote_nuevo' %}">Ingresar lote recibido</a></div>
+    <div class="col-md-4"><a class="btn btn-outline-rojo w-100 py-3" href="{% url 'transferir' %}">Mover stock</a></div>
+    <div class="col-md-4"><a class="btn btn-outline-rojo w-100 py-3" href="{% url 'inventario' %}">Consultar inventario</a></div>
+    {% endif %}
+</div>
+<h2 class="h5 mb-3">Resumen de inventario</h2>
 
 <div class="row g-3 mb-4">
     <div class="col-md-4"><div class="tarjeta">

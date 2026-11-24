@@ -23,12 +23,19 @@ urlpatterns = [
 
     path('ventas/', web.pos, name='pos'),
     path('ventas/buscar-producto/', web.buscar_producto_codigo, name='buscar_producto_codigo'),
+    path('ventas/buscar-cliente/', web.buscar_cliente_rut, name='buscar_cliente_rut'),
+    path('ventas/reportes/', web.reportes_ventas, name='reportes_ventas'),
     path('ventas/boleta/<int:venta_id>/', web.ver_boleta, name='boleta'),
     path('caja/', web.caja, name='caja'),
 
     path('configuracion/', web.configuracion, name='configuracion'),
     path('configuracion/usuarios/nuevo/', web.usuario_nuevo, name='usuario_nuevo'),
+    path('configuracion/usuarios/<int:pk>/editar/', web.usuario_editar, name='usuario_editar'),
     path('configuracion/usuarios/<int:pk>/activar/', web.usuario_toggle, name='usuario_toggle'),
+    path('configuracion/auditoria/', web.auditoria, name='auditoria'),
+    path('configuracion/clientes/', web.clientes, name='clientes'),
+    path('configuracion/clientes/nuevo/', web.cliente_nuevo, name='cliente_nuevo'),
+    path('configuracion/clientes/<int:pk>/compras/', web.historial_compras_cliente, name='historial_compras_cliente'),
     path('configuracion/laboratorios/nuevo/', web.laboratorio_nuevo, name='laboratorio_nuevo'),
     path('configuracion/convenios/nuevo/', web.convenio_nuevo, name='convenio_nuevo'),
 ]

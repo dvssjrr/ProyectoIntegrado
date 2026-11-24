@@ -26,13 +26,32 @@ class UsuarioAdmin(admin.ModelAdmin):
     search_fields = ('username', 'email', 'nombre_completo')
     readonly_fields = ('fecha_creacion', 'fecha_ultima_modificacion')
 
+    def has_change_permission(self, request, obj=None):
+        if obj and obj.rol == Usuario.Rol.ADMIN:
+            return False
+        return super().has_change_permission(request, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        if obj and obj.rol == Usuario.Rol.ADMIN:
+            return False
+        return super().has_delete_permission(request, obj)
+
 
 @admin.register(LogAuditoria)
 class LogAuditoriaAdmin(admin.ModelAdmin):
     list_display = ('usuario', 'tipo_evento', 'timestamp')
     list_filter = ('tipo_evento', 'timestamp')
     search_fields = ('usuario__username', 'descripcion')
-    readonly_fields = ('hash_sha256', 'hash_anterior', 'timestamp')
+    readonly_fields = (
+        'usuario', 'tipo_evento', 'descripcion', 'datos_adicionales',
+        'hash_sha256', 'hash_anterior', 'direccion_ip', 'user_agent', 'timestamp',
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 # ============================================================================

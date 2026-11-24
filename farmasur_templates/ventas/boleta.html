@@ -170,6 +170,8 @@
                 <div><strong>Caja:</strong> {{ venta.caja.caja_id }} (Turno: {{ venta.caja.turno }})</div>
                 <div><strong>Atendido por:</strong> {{ venta.operario.nombre_completo|default:venta.operario.username }}</div>
                 <div><strong>Folio Venta:</strong> {{ venta.folio }}</div>
+                <div><strong>Medio de pago:</strong> {{ venta.get_metodo_pago_display }}{% if venta.banco_tarjeta %} · {{ venta.banco_tarjeta }} · {{ venta.referencia_pago }}{% endif %}</div>
+                {% if venta.autorizado_por_qf %}<div><strong>Dispensación confirmada por QF:</strong> {{ venta.autorizado_por_qf.nombre_completo }}{% if venta.receta %} · Receta {{ venta.receta.folio }}{% endif %}</div>{% endif %}
                 <div class="border-top mt-1 pt-1">
                     <strong>Cliente:</strong> {{ comprobante.nombre_receptor }}<br>
                     {% if comprobante.rut_receptor %}<strong>RUT:</strong> {{ comprobante.rut_receptor }}<br>{% endif %}

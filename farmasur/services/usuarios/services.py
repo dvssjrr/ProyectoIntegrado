@@ -36,7 +36,7 @@ class UsuarioService:
     
     @staticmethod
     @transaction.atomic
-    def actualizar_usuario(usuario_id, **datos):
+    def actualizar_usuario(usuario_id, realizado_por=None, **datos):
         """
         Actualiza un usuario con auditoría.
         """
@@ -54,9 +54,10 @@ class UsuarioService:
         # Registrar cambios en auditoría
         if cambios:
             LogAuditoria.registrar(
-                usuario=usuario,
+                usuario=realizado_por or usuario,
                 tipo_evento=LogAuditoria.TipoEvento.CAMBIO_USUARIO,
-                descripcion=f'Cambios: {"; ".join(cambios)}'
+                descripcion=f'Cambios en {usuario.username}: {"; ".join(cambios)}',
+                datos_adicionales={'usuario_id': usuario.pk, 'rut': usuario.rut},
             )
         
         return usuario

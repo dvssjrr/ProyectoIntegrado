@@ -8,23 +8,24 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction
-from django.db.models import F, Q, Sum
+from django.db.models import Count, F, Q, Sum
 from django.db.models.functions import Coalesce, TruncDate
-from django.http import HttpResponseForbidden, JsonResponse
+from django.http import HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 from django.views.decorators.http import require_POST
 import json
 
 from farmasur.forms.web import (
-    AbrirCajaForm, CerrarCajaForm, ConvenioForm, LaboratorioForm, LoteForm,
+    AbrirCajaForm, CerrarCajaForm, ClienteWebForm, ConvenioForm, LaboratorioForm, LoteForm,
     MermaWebForm, ProductoForm, RechazoForm, RecetaWebForm, TransferirForm,
     UsuarioWebForm, VentaForm,
 )
 from farmasur.models.inventario.models import Laboratorio, Lote, Merma, Producto
 from farmasur.models.recetas.models import Receta, RecetaRetenidaISP, UnidosisAsistencial
-from farmasur.models.usuarios.models import Usuario
-from farmasur.models.ventas.models import CajaDiaria, ConvenioIsapre, POS, Comprobante
+from farmasur.models.usuarios.models import LogAuditoria, Usuario
+from farmasur.models.ventas.models import CajaDiaria, Cliente, ConvenioIsapre, POS, Comprobante
 from farmasur.services.inventario.services import MermaService, StockService
 from farmasur.services.recetas.services import RecetaService
 from farmasur.services.ventas.services import CajaService, POSService
@@ -128,12 +129,17 @@ def inicio(request):
 @login_required
 def productos(request):
     q = request.GET.get('q', '').strip()
+    categoria = request.GET.get('categoria', '')
     lista = Producto.objects.select_related('laboratorio').order_by('nombre_comercial')
     if q:
         lista = lista.filter(Q(nombre_comercial__icontains=q) | Q(sku_codigo_barra__icontains=q)
                              | Q(principio_activo__icontains=q))
+    if categoria in Producto.Categoria.values:
+        lista = lista.filter(categoria=categoria)
     pagina = Paginator(lista, 12).get_page(request.GET.get('page'))
-    return render(request, 'inventario/productos.html', {'pagina': pagina, 'q': q})
+    return render(request, 'inventario/productos.html', {
+        'pagina': pagina, 'q': q, 'categoria': categoria, 'categorias': Producto.Categoria.choices,
+    })
 
 
 @rol_requerido(R.ADMIN)
@@ -292,9 +298,27 @@ def caja(request):
                     return redirect('caja')
                 except ERRORES as exc:
                     _mensaje_error(request, exc)
+    abiertas = list(CajaDiaria.objects.filter(
+        estado=CajaDiaria.Estado.ABIERTA
+    ).select_related('operario'))
+    recientes = list(CajaDiaria.objects.exclude(
+        estado=CajaDiaria.Estado.ABIERTA
+    ).order_by('-hora_apertura')[:8])
+    etiquetas_pago = dict(POS.MetodoPago.choices)
+    for caja_resumen in abiertas + recientes:
+        caja_resumen.resumen_pagos = [
+            {
+                'metodo': etiquetas_pago[item['metodo_pago']],
+                'total': item['total'],
+                'cantidad': item['cantidad'],
+            }
+            for item in POS.objects.filter(caja=caja_resumen).values('metodo_pago').annotate(
+                total=Sum('total'), cantidad=Count('id')
+            )
+        ]
     return render(request, 'ventas/caja.html', {
-        'abiertas': CajaDiaria.objects.filter(estado=CajaDiaria.Estado.ABIERTA).select_related('operario'),
-        'recientes': CajaDiaria.objects.exclude(estado=CajaDiaria.Estado.ABIERTA).order_by('-hora_apertura')[:8],
+        'abiertas': abiertas,
+        'recientes': recientes,
         'abrir': abrir, 'cerrar': cerrar,
     })
 
@@ -322,6 +346,8 @@ def buscar_producto_codigo(request):
         'stock_bodega': prod.stock_total_bodega,
         'condicion_venta': prod.condicion_venta,
         'condicion_display': prod.get_condicion_venta_display(),
+        'categoria': prod.categoria,
+        'categoria_display': prod.get_categoria_display(),
         'frio': prod.requiere_cadena_frio,
     })
 
@@ -370,7 +396,12 @@ def pos(request):
                         caja=caja_abierta, folio=f'V-{uuid.uuid4().hex[:8].upper()}',
                         operario=request.user, items=items, tipo_comprobante=tipo_comprobante,
                         rut_cliente=rut_cliente, nombre_cliente=nombre_cliente,
-                        convenio_id=int(convenio_id) if convenio_id else None
+                        convenio_id=int(convenio_id) if convenio_id else None,
+                        metodo_pago=request.POST.get('medio_pago', 'EFECTIVO'),
+                        banco_tarjeta=request.POST.get('banco_tarjeta', ''),
+                        receta_folio=request.POST.get('receta_folio', ''),
+                        autorizado_por_qf=request.user if request.user.rol == R.FARMACEUTICO else None,
+                        confirmacion_qf=request.POST.get('confirmacion_qf') == 'on',
                     )
                 messages.success(request, f'¡Venta {venta.folio} registrada exitosamente! Boleta emitida.')
                 return redirect('boleta', venta_id=venta.id)
@@ -385,7 +416,12 @@ def pos(request):
                         caja=caja_abierta, folio=f'V-{uuid.uuid4().hex[:8].upper()}',
                         operario=request.user, items=d['items'], tipo_comprobante=d['tipo_comprobante'],
                         rut_cliente=d['rut_cliente'], nombre_cliente=d['nombre_cliente'],
-                        convenio_id=d['convenio'].pk if d['convenio'] else None)
+                        convenio_id=d['convenio'].pk if d['convenio'] else None,
+                        metodo_pago=request.POST.get('medio_pago', 'EFECTIVO'),
+                        banco_tarjeta=request.POST.get('banco_tarjeta', ''),
+                        receta_folio=request.POST.get('receta_folio', ''),
+                        autorizado_por_qf=request.user if request.user.rol == R.FARMACEUTICO else None,
+                        confirmacion_qf=request.POST.get('confirmacion_qf') == 'on')
                 messages.success(request, f'Venta {venta.folio} registrada por ${venta.total}. Boleta emitida.')
                 return redirect('boleta', venta_id=venta.id)
             except ERRORES as exc:
@@ -403,6 +439,28 @@ def pos(request):
         'total_hoy': ventas.aggregate(t=Sum('total'))['t'] or 0,
         'convenios': convenios,
         'productos_rapidos': productos_rapidos,
+        'es_qf': request.user.rol == R.FARMACEUTICO,
+    })
+
+
+@rol_requerido(R.FARMACEUTICO, R.TECNICO)
+def buscar_cliente_rut(request):
+    rut = request.GET.get('rut', '').strip().replace('.', '').replace('-', '').upper()
+    if not rut:
+        return JsonResponse({'ok': False, 'error': 'Ingresa un RUT.'}, status=400)
+    cliente = Cliente.objects.select_related('convenio').filter(rut=rut).first()
+    if not cliente:
+        return JsonResponse({'ok': False, 'error': 'No hay una ficha de cliente registrada con ese RUT.'}, status=404)
+    compras = POS.objects.filter(Q(cliente=cliente) | Q(rut_cliente=cliente.rut))
+    return JsonResponse({
+        'ok': True,
+        'rut': cliente.rut,
+        'nombre': cliente.nombre_completo,
+        'email': cliente.email,
+        'telefono': cliente.telefono,
+        'convenio_id': cliente.convenio_id,
+        'convenio': cliente.convenio.nombre if cliente.convenio else '',
+        'compras': compras.count(),
     })
 
 
@@ -491,6 +549,7 @@ def configuracion(request):
         'usuarios': Usuario.objects.order_by('rol', 'nombre_completo'),
         'laboratorios': Laboratorio.objects.order_by('nombre'),
         'convenios': ConvenioIsapre.objects.order_by('nombre'),
+        'clientes': Cliente.objects.select_related('convenio').order_by('nombre_completo'),
     })
 
 
@@ -499,25 +558,218 @@ def usuario_nuevo(request):
     form = UsuarioWebForm(request.POST or None)
     if request.method == 'POST' and form.is_valid():
         d = form.cleaned_data
-        Usuario.objects.create_user(
+        usuario = Usuario.objects.create_user(
             username=d['username'], email=d['email'], password=d['password'],
             nombre_completo=d['nombre_completo'], rut=d['rut'], rol=d['rol'])
+        LogAuditoria.registrar(
+            request.user, LogAuditoria.TipoEvento.CAMBIO_USUARIO,
+            f'Creó usuario {usuario.username}.',
+            {'usuario_id': usuario.pk, 'rut': usuario.rut},
+            request.META.get('REMOTE_ADDR'), request.META.get('HTTP_USER_AGENT', ''))
         messages.success(request, 'Usuario creado.')
         return redirect('configuracion')
     return _formulario(request, form, 'Nuevo usuario', 'configuracion')
+
+
+@rol_requerido()
+def usuario_editar(request, pk):
+    usuario = get_object_or_404(Usuario, pk=pk)
+    if usuario.rol == R.ADMIN:
+        return HttpResponseForbidden('Las cuentas de administrador no se pueden editar desde otra cuenta.')
+    form = UsuarioWebForm(request.POST or None, instance=usuario, initial={
+        'username': usuario.username, 'nombre_completo': usuario.nombre_completo,
+        'rut': usuario.rut, 'email': usuario.email, 'rol': usuario.rol,
+    })
+    if request.method == 'POST' and form.is_valid():
+        datos = form.cleaned_data
+        usuario.username = datos['username']
+        usuario.nombre_completo = datos['nombre_completo']
+        usuario.rut = datos['rut']
+        usuario.email = datos['email']
+        usuario.rol = datos['rol']
+        if datos['password']:
+            usuario.set_password(datos['password'])
+        usuario.save()
+        LogAuditoria.registrar(
+            request.user, LogAuditoria.TipoEvento.CAMBIO_USUARIO,
+            f'Editó usuario {usuario.username}.',
+            {'usuario_id': usuario.pk, 'rut': usuario.rut},
+            request.META.get('REMOTE_ADDR'), request.META.get('HTTP_USER_AGENT', ''))
+        messages.success(request, 'Usuario actualizado.')
+        return redirect('configuracion')
+    return _formulario(request, form, 'Editar usuario', 'configuracion')
 
 
 @require_POST
 @rol_requerido()
 def usuario_toggle(request, pk):
     usuario = get_object_or_404(Usuario, pk=pk)
-    if usuario == request.user:
+    if usuario.rol == R.ADMIN:
+        messages.error(request, 'Las cuentas de administrador no se pueden activar o desactivar desde otra cuenta.')
+    elif usuario == request.user:
         messages.error(request, 'No puedes desactivar tu propio usuario.')
     else:
         usuario.activo = usuario.is_active = not usuario.activo
         usuario.save()
+        LogAuditoria.registrar(
+            request.user, LogAuditoria.TipoEvento.CAMBIO_USUARIO,
+            f'{"Activó" if usuario.activo else "Desactivó"} usuario {usuario.username}.',
+            {'usuario_id': usuario.pk, 'rut': usuario.rut, 'activo': usuario.activo},
+            request.META.get('REMOTE_ADDR'), request.META.get('HTTP_USER_AGENT', ''))
         messages.success(request, f'Usuario {"activado" if usuario.activo else "desactivado"}.')
     return redirect('configuracion')
+
+
+@rol_requerido()
+def clientes(request):
+    query = request.GET.get('q', '').strip()
+    lista = Cliente.objects.select_related('convenio').order_by('nombre_completo')
+    if query:
+        lista = lista.filter(
+            Q(nombre_completo__icontains=query) | Q(rut__icontains=query) | Q(email__icontains=query)
+        )
+    pagina = Paginator(lista, 20).get_page(request.GET.get('page'))
+    for cliente in pagina:
+        cliente.compras_total = POS.objects.filter(
+            Q(cliente=cliente) | Q(rut_cliente=cliente.rut)
+        ).count()
+    return render(request, 'usuarios/clientes.html', {
+        'pagina': pagina,
+        'q': query,
+    })
+
+
+@rol_requerido()
+def cliente_nuevo(request):
+    form = ClienteWebForm(request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        Cliente.objects.create(**form.cleaned_data)
+        messages.success(request, 'Cliente registrado. Su ficha y beneficios estarán disponibles en el POS.')
+        return redirect('clientes')
+    return _formulario(request, form, 'Registrar cliente', 'clientes')
+
+
+@rol_requerido()
+def historial_compras_cliente(request, pk):
+    cliente = get_object_or_404(Cliente, pk=pk)
+    compras = POS.objects.filter(
+        Q(cliente=cliente) | Q(rut_cliente=cliente.rut)
+    ).select_related('operario').order_by('-fecha_venta')
+    return render(request, 'usuarios/historial_compras.html', {
+        'cliente': cliente,
+        'compras': Paginator(compras, 30).get_page(request.GET.get('page')),
+        'total_compras': compras.count(),
+        'monto_total': compras.aggregate(total=Sum('total'))['total'] or 0,
+    })
+
+
+@rol_requerido()
+def auditoria(request):
+    registros = LogAuditoria.objects.select_related('usuario').order_by('-timestamp')
+    tipo = request.GET.get('tipo', '').strip()
+    usuario = request.GET.get('usuario', '').strip()
+    desde_raw, hasta_raw = request.GET.get('desde', ''), request.GET.get('hasta', '')
+    desde, hasta = parse_date(desde_raw), parse_date(hasta_raw)
+    if (desde_raw and not desde) or (hasta_raw and not hasta):
+        return HttpResponseBadRequest('Formato de fecha inválido.')
+    if tipo:
+        registros = registros.filter(tipo_evento=tipo)
+    if usuario:
+        registros = registros.filter(
+            Q(usuario__nombre_completo__icontains=usuario) | Q(usuario__rut__icontains=usuario)
+            | Q(usuario__username__icontains=usuario)
+        )
+    if desde:
+        registros = registros.filter(timestamp__date__gte=desde)
+    if hasta:
+        registros = registros.filter(timestamp__date__lte=hasta)
+    return render(request, 'usuarios/auditoria.html', {
+        'pagina': Paginator(registros, 30).get_page(request.GET.get('page')),
+        'tipos': LogAuditoria.TipoEvento.choices, 'tipo': tipo, 'usuario': usuario,
+        'desde': desde_raw, 'hasta': hasta_raw,
+    })
+
+
+@rol_requerido()
+def reportes_ventas(request):
+    desde_raw = request.GET.get('desde', '')
+    hasta_raw = request.GET.get('hasta', '')
+    desde, hasta = parse_date(desde_raw), parse_date(hasta_raw)
+    if (desde_raw and not desde) or (hasta_raw and not hasta):
+        return HttpResponseBadRequest('Formato de fecha inválido.')
+    if not desde and not hasta:
+        desde = timezone.localdate() - timedelta(days=29)
+        desde_raw = desde.isoformat()
+
+    ventas = POS.objects.select_related('operario', 'caja', 'cliente').order_by('-fecha_venta')
+    if desde:
+        ventas = ventas.filter(fecha_venta__date__gte=desde)
+    if hasta:
+        ventas = ventas.filter(fecha_venta__date__lte=hasta)
+    metodo = request.GET.get('metodo_pago', '')
+    if metodo in POS.MetodoPago.values:
+        ventas = ventas.filter(metodo_pago=metodo)
+    busqueda = request.GET.get('q', '').strip()
+    if busqueda:
+        ventas = ventas.filter(
+            Q(folio__icontains=busqueda) | Q(rut_cliente__icontains=busqueda)
+            | Q(nombre_cliente__icontains=busqueda) | Q(operario__nombre_completo__icontains=busqueda)
+        )
+
+    categoria = request.GET.get('categoria', '')
+    detalle = []
+    totales_categoria = {}
+    ventas_base = list(ventas)
+    ventas_por_categoria = set()
+    skus_sin_categoria = {
+        str(item.get('sku', ''))
+        for venta in ventas_base for item in (venta.items or [])
+        if not item.get('categoria') and item.get('sku')
+    }
+    categoria_por_sku = {
+        producto.sku_codigo_barra: producto.get_categoria_display()
+        for producto in Producto.objects.filter(sku_codigo_barra__in=skus_sin_categoria)
+    }
+    for venta in ventas_base:
+        for item in venta.items or []:
+            nombre_categoria = item.get('categoria') or categoria_por_sku.get(
+                item.get('sku'), 'Sin categoría'
+            )
+            totales_categoria[nombre_categoria] = totales_categoria.get(nombre_categoria, 0) + int(
+                item.get('cantidad', 0)
+            )
+            if categoria == nombre_categoria:
+                ventas_por_categoria.add(venta.pk)
+            if not categoria or categoria == nombre_categoria:
+                detalle.append({
+                    'venta': venta,
+                    'item': item,
+                    'total_linea': int(item.get('cantidad', 0)) * int(item.get('precio_unitario', 0)),
+                })
+    if categoria:
+        ventas = ventas.filter(pk__in=ventas_por_categoria)
+    categorias = sorted(totales_categoria)
+    ventas_pagina = Paginator(ventas, 30).get_page(request.GET.get('page'))
+    detalle_pagina = Paginator(detalle, 50).get_page(request.GET.get('linea_page'))
+    resumen = ventas.aggregate(total=Sum('total'), unidades=Sum('descuento_total'))
+    return render(request, 'ventas/reportes.html', {
+        'ventas': ventas_pagina,
+        'detalle': detalle_pagina,
+        'categorias': categorias,
+        'categoria': categoria,
+        'desde': desde_raw,
+        'hasta': hasta_raw,
+        'metodo_pago': metodo,
+        'q': busqueda,
+        'metodos_pago': POS.MetodoPago.choices,
+        'cantidad_ventas': ventas.count(),
+        'total_ventas': resumen['total'] or 0,
+        'total_descuentos': resumen['unidades'] or 0,
+        'total_items': (
+            totales_categoria.get(categoria, 0) if categoria else sum(totales_categoria.values())
+        ),
+        'totales_categoria': totales_categoria,
+    })
 
 
 @rol_requerido()

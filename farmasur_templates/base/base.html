@@ -19,7 +19,8 @@
         .avatar { display: inline-block; width: 34px; height: 34px; line-height: 34px; text-align: center; border-radius: 50%; background: var(--rojo); color: #fff; font-weight: 600; margin-right: 8px; }
         .contenido { margin-left: 230px; }
         .topbar { background: #fff; border-bottom: 1px solid #e5dede; padding: 10px 28px; display: flex; justify-content: space-between; align-items: center; }
-        .pagina { padding: 24px 28px; }
+        .pagina { padding: 24px 28px; width: 100%; }
+        .formulario-ancho { width: 100%; max-width: 100%; }
         .tarjeta { background: #fff; border: 1px solid #e8e0e0; border-radius: 12px; padding: 18px; }
         .kpi-valor { font-size: 2rem; font-weight: 700; }
         .btn-rojo { background: var(--rojo); border-color: var(--rojo); color: #fff; }
@@ -43,19 +44,28 @@
 {% with actual=request.resolver_match.url_name %}
 <aside class="lateral">
     <div class="marca"><span>+</span>farmasur</div>
-    <div class="seccion">Gestión farmacéutica</div>
+    <div class="seccion">Inicio</div>
     <a class="item {% if actual == 'inicio' %}activo{% endif %}" href="{% url 'inicio' %}">Inicio</a>
+    <div class="seccion">Catálogo e inventario</div>
     <a class="item {% if actual == 'productos' or actual == 'producto_nuevo' or actual == 'producto_editar' %}activo{% endif %}" href="{% url 'productos' %}">Productos</a>
     <a class="item {% if actual == 'inventario' or actual == 'lote_nuevo' or actual == 'transferir' %}activo{% endif %}" href="{% url 'inventario' %}">Inventario Dual</a>
     {% if acceso.mermas %}
     <a class="item {% if actual == 'mermas' or actual == 'merma_nueva' %}activo{% endif %}" href="{% url 'mermas' %}">Reportes Mermas</a>
     {% endif %}
     {% if acceso.libro %}
+    <div class="seccion">Recetas</div>
     <a class="item {% if actual == 'libro' or actual == 'receta_nueva' %}activo{% endif %}" href="{% url 'libro' %}">Libro Recetas / ISP</a>
     {% endif %}
     {% if acceso.ventas %}
+    <div class="seccion">Ventas y caja</div>
     <a class="item {% if actual == 'pos' %}activo{% endif %}" href="{% url 'pos' %}">Ventas (POS)</a>
     <a class="item {% if actual == 'caja' %}activo{% endif %}" href="{% url 'caja' %}">Caja</a>
+    {% endif %}
+    {% if acceso.admin %}
+    <a class="item {% if actual == 'reportes_ventas' %}activo{% endif %}" href="{% url 'reportes_ventas' %}">Reportes de ventas</a>
+    <div class="seccion">Administración</div>
+    <a class="item {% if actual == 'clientes' or actual == 'cliente_nuevo' %}activo{% endif %}" href="{% url 'clientes' %}">Clientes</a>
+    <a class="item {% if actual == 'auditoria' %}activo{% endif %}" href="{% url 'auditoria' %}">Auditoría de accesos</a>
     {% endif %}
     {% if acceso.config %}
     <a class="item {% if actual == 'configuracion' %}activo{% endif %}" href="{% url 'configuracion' %}">Configuración</a>

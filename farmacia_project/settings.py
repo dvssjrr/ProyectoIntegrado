@@ -148,6 +148,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Modelo de usuario personalizado
 AUTH_USER_MODEL = 'farmasur.Usuario'
+AUTHENTICATION_BACKENDS = ['farmasur.auth_backends.EmailOrUsernameBackend']
 
 # Configuración de Django REST Framework
 REST_FRAMEWORK = {

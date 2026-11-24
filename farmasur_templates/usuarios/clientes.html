@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% block title %}Clientes - Farmasur{% endblock %}
+{% block migas %}Clientes{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div><h1 class="h3 mb-1">Clientes</h1><p class="text-muted mb-0">Fichas separadas de las cuentas de empleados, con convenios y compras relacionadas.</p></div>
+    <a class="btn btn-rojo" href="{% url 'cliente_nuevo' %}">+ Registrar cliente</a>
+</div>
+<div class="tarjeta">
+    <form method="get" class="row g-2 mb-3">
+        <div class="col-md-9"><input class="form-control" name="q" value="{{ q }}" placeholder="Buscar por nombre, RUT o correo"></div>
+        <div class="col-md-3"><button class="btn btn-outline-rojo w-100">Buscar</button></div>
+    </form>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>Nombre</th><th>RUT</th><th>Correo</th><th>Teléfono</th><th>Beneficio</th><th>Compras registradas</th><th></th></tr></thead>
+        <tbody>{% for cliente in pagina %}
+            <tr><td>{{ cliente.nombre_completo }}</td><td>{{ cliente.rut }}</td><td>{{ cliente.email|default:"—" }}</td>
+                <td>{{ cliente.telefono|default:"—" }}</td><td>{{ cliente.convenio|default:"Sin convenio" }}</td>
+                <td>{{ cliente.compras_total }}</td><td><a class="btn btn-sm btn-outline-rojo" href="{% url 'historial_compras_cliente' cliente.pk %}">Historial</a></td></tr>
+        {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">No hay clientes registrados.</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% include 'base/paginacion.html' %}
+</div>
+{% endblock %}

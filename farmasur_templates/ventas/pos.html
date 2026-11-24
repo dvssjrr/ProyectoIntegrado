@@ -226,6 +226,14 @@
                         <label class="btn btn-outline-danger" for="pago_transfer">📲 Transf.</label>
                     </div>
                 </div>
+                <div id="seccion-tarjeta" class="mb-3 d-none">
+                    <label class="form-label small fw-bold" for="banco_tarjeta">Banco (simulación)</label>
+                    <select class="form-select" name="banco_tarjeta" id="banco_tarjeta">
+                        <option value="">Selecciona un banco</option>
+                        <option value="BANCO_ESTADO">BancoEstado</option>
+                    </select>
+                    <div class="form-text">Simulación local: no se realiza un cargo real ni se guardan datos de tarjeta.</div>
+                </div>
 
                 <!-- SECCIÓN EFECTIVO: PAGO Y VUELTO -->
                 <div id="seccion-efectivo" class="mb-3 p-3 bg-light rounded border">
@@ -266,14 +274,32 @@
                 </div>
 
                 <div class="row g-2 mb-3">
-                    <div class="col-6">
-                        <input type="text" class="form-control form-control-sm" name="rut_cliente" id="rut_cliente"
-                            placeholder="RUT Cliente (opcional)">
+                    <div class="col-md-4">
+                        <label class="form-label small" for="rut_cliente">RUT cliente</label>
+                        <input type="text" class="form-control" name="rut_cliente" id="rut_cliente"
+                            placeholder="RUT (opcional)" autocomplete="off">
                     </div>
-                    <div class="col-6">
-                        <input type="text" class="form-control form-control-sm" name="nombre_cliente"
-                            id="nombre_cliente" placeholder="Nombre Cliente">
+                    <div class="col-md-8">
+                        <label class="form-label small" for="nombre_cliente">Nombre cliente</label>
+                        <input type="text" class="form-control" name="nombre_cliente"
+                            id="nombre_cliente" placeholder="Nombre completo">
                     </div>
+                    <div class="col-12"><small id="cliente-historial" class="text-muted"></small></div>
+                </div>
+
+                <div id="seccion-receta" class="border rounded p-3 mb-3 d-none">
+                    <h3 class="h6 fw-bold">Validación de receta obligatoria</h3>
+                    <p class="small text-muted mb-2">La venta de productos con receta requiere una receta vigente y aprobación presencial de un Químico Farmacéutico.</p>
+                    <label class="form-label small" for="receta_folio">Folio de receta aprobada</label>
+                    <input class="form-control mb-2" name="receta_folio" id="receta_folio" maxlength="50">
+                    {% if es_qf %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="confirmacion_qf" id="confirmacion_qf">
+                        <label class="form-check-label" for="confirmacion_qf">Confirmo como Químico Farmacéutico esta dispensación.</label>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning py-2 mb-0 small">Debe iniciar sesión un Químico Farmacéutico para confirmar esta venta.</div>
+                    {% endif %}
                 </div>
 
                 <!-- BOTÓN PARA EMITIR BOLETA -->
@@ -354,7 +380,7 @@
 
 <script>
     // --- ESTADO DEL CARRITO ---
-    let carrito = []; // { sku, nombre, presentacion, precio, cantidad, condicion_venta }
+    let carrito = [];
     let temporizadorEscaneo = null;
     let escaneoEnCurso = false;
     let colaEscaneos = [];
@@ -443,6 +469,7 @@
                 stock_vitrina: producto.stock_vitrina || 0,
                 condicion: producto.condicion_venta,
                 condicion_display: producto.condicion_display,
+                categoria: producto.categoria,
                 cantidad: 1
             });
         }
@@ -477,6 +504,10 @@
         const tbody = document.getElementById('cart-body');
         const btnCobrar = document.getElementById('btn-cobrar');
         const inputHidden = document.getElementById('input_items_json');
+        const seccionReceta = document.getElementById('seccion-receta');
+        const requiereReceta = carrito.some(
+            item => item.condicion === 'RECETA_SIMPLE' || item.condicion === 'RECETA_RETENIDA'
+        );
 
         if (!tbody) return;
 
@@ -492,12 +523,20 @@
         `;
             btnCobrar.disabled = true;
             inputHidden.value = '[]';
+            seccionReceta.classList.add('d-none');
+            document.getElementById('rut_cliente').required = false;
+            document.getElementById('receta_folio').required = false;
             recalcularTotales();
             return;
         }
 
         btnCobrar.disabled = false;
         inputHidden.value = JSON.stringify(carrito);
+        seccionReceta.classList.toggle('d-none', !requiereReceta);
+        document.getElementById('rut_cliente').required = requiereReceta;
+        document.getElementById('receta_folio').required = requiereReceta;
+        const confirmacionQf = document.getElementById('confirmacion_qf');
+        if (confirmacionQf) confirmacionQf.required = requiereReceta;
 
         let html = '';
         carrito.forEach((item, idx) => {
@@ -583,13 +622,16 @@
     // --- PAGO EN EFECTIVO Y VUELTO ---
     function toggleMedioPago() {
         const esEfectivo = document.getElementById('pago_efectivo').checked;
+        const esTarjeta = document.getElementById('pago_tarjeta').checked;
         const seccionEfectivo = document.getElementById('seccion-efectivo');
+        const seccionTarjeta = document.getElementById('seccion-tarjeta');
         if (esEfectivo) {
             seccionEfectivo.classList.remove('d-none');
             calcularVuelto();
         } else {
             seccionEfectivo.classList.add('d-none');
         }
+        seccionTarjeta.classList.toggle('d-none', !esTarjeta);
     }
 
     function calcularVuelto() {
@@ -623,6 +665,32 @@
     document.addEventListener('DOMContentLoaded', function () {
         const inputScan = document.getElementById('codigo_barra_input');
         const btnAgregar = document.getElementById('btn-agregar-manual');
+        toggleMedioPago();
+
+        const rutCliente = document.getElementById('rut_cliente');
+        rutCliente.addEventListener('blur', function () {
+            const rut = rutCliente.value.trim();
+            if (!rut) return;
+            fetch(`{% url 'buscar_cliente_rut' %}?rut=${encodeURIComponent(rut)}`)
+                .then(response => response.json().then(data => ({ response, data })))
+                .then(({ response, data }) => {
+                    const historial = document.getElementById('cliente-historial');
+                    if (!response.ok || !data.ok) {
+                        historial.textContent = '';
+                        return;
+                    }
+                    rutCliente.value = data.rut;
+                    document.getElementById('nombre_cliente').value = data.nombre;
+                    historial.textContent = `Cliente registrado · ${data.compras} compras anteriores${data.convenio ? ` · Beneficio: ${data.convenio}` : ''}`;
+                    if (data.convenio_id) {
+                        document.getElementById('select-convenio').value = data.convenio_id;
+                        recalcularTotales();
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('cliente-historial').textContent = 'No se pudo consultar la ficha del cliente.';
+                });
+        });
 
         if (inputScan) {
             // Algunos lectores envían Enter o Tab; otros solo escriben el código.

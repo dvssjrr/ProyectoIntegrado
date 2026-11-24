@@ -4,8 +4,9 @@ Lógica de negocio reutilizable y operaciones transaccionales.
 """
 from django.db import transaction
 from django.utils import timezone
-from farmasur.models import CajaDiaria, POS, ConvenioIsapre, Comprobante
+from farmasur.models import CajaDiaria, POS, ConvenioIsapre, Cliente, Comprobante
 from farmasur.models import Lote, Producto
+from farmasur.models import Receta, Usuario
 from farmasur.services.inventario.services import LoteService, StockService
 from datetime import datetime, timedelta
 
@@ -83,13 +84,66 @@ class POSService:
     @transaction.atomic
     def crear_venta(caja, folio, operario, items, tipo_comprobante='BOLETA',
                     rut_cliente='', nombre_cliente='', convenio_id=None,
-                    requiere_receta=False, requiere_unidosis=False):
+                    requiere_receta=False, requiere_unidosis=False,
+                    metodo_pago='EFECTIVO', banco_tarjeta='', receta_folio='',
+                    autorizado_por_qf=None, confirmacion_qf=False):
         """Crea una nueva venta POS con actualización de lotes."""
         
         # Validar que caja esté abierta
         if caja.estado != CajaDiaria.Estado.ABIERTA:
             raise ValueError("La caja debe estar abierta")
         
+        productos = {
+            producto.sku_codigo_barra: producto
+            for producto in Producto.objects.filter(
+                sku_codigo_barra__in=[item.get('sku') for item in items]
+            )
+        }
+        medicamentos_con_receta = [
+            item for item in items
+            if item.get('sku') in productos
+            and productos[item['sku']].condicion_venta != Producto.CondicionVenta.LIBRE
+        ]
+        receta = None
+        if medicamentos_con_receta:
+            if not confirmacion_qf or not autorizado_por_qf or autorizado_por_qf.rol != Usuario.Rol.FARMACEUTICO:
+                raise ValueError('Un Químico Farmacéutico debe confirmar la venta de medicamentos con receta.')
+            if not receta_folio:
+                raise ValueError('Ingresa el folio de una receta aprobada para vender estos medicamentos.')
+            receta = Receta.objects.filter(
+                folio=receta_folio.strip(), estado=Receta.Estado.APROBADA
+            ).first()
+            if not receta or not receta.esta_vigente:
+                raise ValueError('La receta no existe, no está aprobada o está vencida.')
+            rut_cliente_normalizado = rut_cliente.replace('.', '').replace('-', '').upper()
+            rut_paciente_normalizado = receta.rut_paciente.replace('.', '').replace('-', '').upper()
+            if not rut_cliente_normalizado or rut_cliente_normalizado != rut_paciente_normalizado:
+                raise ValueError('El RUT del cliente debe coincidir con el paciente de la receta.')
+            cantidades_recetadas = {}
+            for medicamento in receta.medicamentos:
+                sku = str(medicamento.get('sku', '')).strip()
+                cantidades_recetadas[sku] = cantidades_recetadas.get(sku, 0) + int(
+                    medicamento.get('cantidad', 0)
+                )
+            for item in medicamentos_con_receta:
+                sku = item['sku']
+                cantidad = sum(
+                    int(linea.get('cantidad', 0)) for linea in medicamentos_con_receta
+                    if linea.get('sku') == sku
+                )
+                if sku not in cantidades_recetadas or cantidad > cantidades_recetadas[sku]:
+                    raise ValueError(f'La receta no autoriza la cantidad solicitada de {productos[sku].nombre_comercial}.')
+
+        if metodo_pago not in POS.MetodoPago.values:
+            raise ValueError('Selecciona un medio de pago válido.')
+        if metodo_pago == POS.MetodoPago.TARJETA and banco_tarjeta != 'BANCO_ESTADO':
+            raise ValueError('Selecciona un banco válido para la simulación de pago con tarjeta.')
+
+        cliente = None
+        if rut_cliente:
+            rut_normalizado = rut_cliente.strip().replace('.', '').replace('-', '').upper()
+            cliente = Cliente.objects.filter(rut=rut_normalizado).first()
+
         # Calcular totales
         subtotal = 0
         descuento_convenio = 0
@@ -117,6 +171,12 @@ class POSService:
             caja=caja,
             folio=folio,
             operario=operario,
+            cliente=cliente,
+            metodo_pago=metodo_pago,
+            banco_tarjeta=banco_tarjeta if metodo_pago == POS.MetodoPago.TARJETA else '',
+            referencia_pago=f"SIM-{folio}" if metodo_pago == POS.MetodoPago.TARJETA else '',
+            receta=receta,
+            autorizado_por_qf=autorizado_por_qf if receta else None,
             rut_cliente=rut_cliente,
             nombre_cliente=nombre_cliente,
             tipo_comprobante=tipo_comprobante,
@@ -129,6 +189,10 @@ class POSService:
             requiere_unidosis=requiere_unidosis,
             items=items
         )
+        for item in venta.items:
+            producto = productos.get(item.get('sku'))
+            if producto:
+                item['categoria'] = producto.get_categoria_display()
         
         # Actualizar totales de caja
         caja.total_ventas += total

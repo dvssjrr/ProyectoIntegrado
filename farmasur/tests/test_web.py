@@ -1,11 +1,15 @@
+import json
+
 from django.core.management import call_command
 from django.test import Client, TestCase
 from django.urls import reverse
+from django.utils import timezone
 
 from farmasur.models.inventario.models import Lote, Merma, Producto
 from farmasur.models.recetas.models import Receta
-from farmasur.models.usuarios.models import Usuario
-from farmasur.models.ventas.models import CajaDiaria, POS
+from farmasur.models.usuarios.models import LogAuditoria, Usuario
+from farmasur.models.ventas.models import CajaDiaria, Cliente, POS
+from farmasur.services.ventas.services import POSService
 
 RUTS = {
     Usuario.Rol.ADMIN: '11111111-1',
@@ -15,7 +19,7 @@ RUTS = {
 }
 PAGINAS = ['inicio', 'productos', 'producto_nuevo', 'inventario', 'lote_nuevo', 'transferir', 'mermas',
            'merma_nueva', 'libro', 'receta_nueva', 'pos', 'caja', 'configuracion', 'usuario_nuevo',
-           'laboratorio_nuevo', 'convenio_nuevo']
+           'laboratorio_nuevo', 'convenio_nuevo', 'reportes_ventas', 'auditoria', 'clientes']
 
 
 class WebTests(TestCase):
@@ -146,9 +150,115 @@ class WebTests(TestCase):
         self.entrar()
         resp = self.client.post(reverse('usuario_nuevo'), {
             'username': 'nuevo', 'nombre_completo': 'Nuevo Usuario', 'rut': '2.277.185-k',
-            'rol': 'TECNICO', 'password': 'clave12345'})
+            'email': 'nuevo@gmail.com', 'rol': 'TECNICO', 'password': 'clave12345'})
         self.assertRedirects(resp, reverse('configuracion'))
-        self.assertTrue(Usuario.objects.filter(username='nuevo', rut='2277185K').exists())
+        self.assertTrue(Usuario.objects.filter(
+            username='nuevo', rut='2277185K', email='nuevo@gmail.com'
+        ).exists())
+
+    def test_admin_accede_a_reportes_auditoria_y_clientes(self):
+        self.entrar()
+        for nombre in ('reportes_ventas', 'auditoria', 'clientes'):
+            with self.subTest(pagina=nombre):
+                self.assertEqual(self.client.get(reverse(nombre)).status_code, 200)
+
+    def test_login_con_correo_genera_auditoria_con_identidad_e_ip(self):
+        usuario = self.usuarios[Usuario.Rol.ADMIN]
+        usuario.email = 'admin@gmail.com'
+        usuario.save()
+        respuesta = self.client.post(reverse('login'), {
+            'username': usuario.email, 'password': 'x',
+        })
+        self.assertEqual(respuesta.status_code, 302)
+        evento = LogAuditoria.objects.get(usuario=usuario, tipo_evento=LogAuditoria.TipoEvento.LOGIN)
+        self.assertEqual(evento.direccion_ip, '127.0.0.1')
+        self.assertEqual(evento.datos_adicionales['rut'], usuario.rut)
+        self.assertEqual(evento.datos_adicionales['nombre_completo'], usuario.nombre_completo)
+
+    def test_admin_no_puede_editar_otra_cuenta_admin(self):
+        self.entrar()
+        usuario_admin = self.usuarios[Usuario.Rol.ADMIN]
+        respuesta = self.client.get(reverse('usuario_editar', args=[usuario_admin.pk]))
+        self.assertEqual(respuesta.status_code, 403)
+        api_respuesta = self.client.patch(
+            reverse('usuario-detail', args=[usuario_admin.pk]),
+            data=json.dumps({'nombre_completo': 'Cambio no autorizado'}),
+            content_type='application/json',
+        )
+        self.assertEqual(api_respuesta.status_code, 403)
+
+    def test_registrar_ficha_de_cliente_separada_de_empleados(self):
+        self.entrar()
+        respuesta = self.client.post(reverse('cliente_nuevo'), {
+            'rut': '2.277.185-k', 'nombre_completo': 'Cliente de prueba',
+            'email': 'cliente@gmail.com', 'telefono': '912345678', 'convenio': '',
+        })
+        self.assertRedirects(respuesta, reverse('clientes'))
+        cliente = Cliente.objects.get(rut='2277185K', nombre_completo='Cliente de prueba')
+        historial = self.client.get(reverse('historial_compras_cliente', args=[cliente.pk]))
+        self.assertEqual(historial.status_code, 200)
+        self.client.logout()
+        self.entrar(Usuario.Rol.TECNICO)
+        ficha = self.client.get(reverse('buscar_cliente_rut'), {'rut': '2.277.185-k'})
+        self.assertEqual(ficha.status_code, 200)
+        self.assertEqual(ficha.json()['nombre'], cliente.nombre_completo)
+        self.assertEqual(ficha.json()['compras'], 0)
+
+    def test_pago_tarjeta_se_guarda_como_simulacion_banco_estado(self):
+        self.entrar(Usuario.Rol.TECNICO)
+        producto = Producto.objects.get(sku_codigo_barra='7800000000011')
+        respuesta = self.client.post(reverse('pos'), {
+            'tipo_comprobante': 'BOLETA', 'producto_0': producto.pk, 'cantidad_0': 1,
+            'medio_pago': 'TARJETA', 'banco_tarjeta': 'BANCO_ESTADO',
+        })
+        self.assertEqual(respuesta.status_code, 302)
+        venta = POS.objects.latest('id')
+        self.assertEqual(venta.metodo_pago, POS.MetodoPago.TARJETA)
+        self.assertEqual(venta.banco_tarjeta, 'BANCO_ESTADO')
+        self.assertTrue(venta.referencia_pago.startswith('SIM-'))
+
+    def test_caja_muestra_resumen_de_medios_de_pago(self):
+        self.entrar(Usuario.Rol.FARMACEUTICO)
+        respuesta = self.client.get(reverse('caja'))
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertContains(respuesta, 'Por medio:')
+
+    def test_venta_con_receta_exige_autorizacion_de_quimico_farmaceutico(self):
+        self.entrar(Usuario.Rol.TECNICO)
+        producto = Producto.objects.get(sku_codigo_barra='7800000000042')
+        caja = CajaDiaria.objects.filter(estado=CajaDiaria.Estado.ABIERTA).first()
+        self.assertIsNotNone(caja)
+        with self.assertRaisesMessage(ValueError, 'Químico Farmacéutico'):
+            POSService.crear_venta(
+                caja=caja, folio='V-TEST-RECETA', operario=self.usuarios[Usuario.Rol.TECNICO],
+                items=[{'sku': producto.sku_codigo_barra, 'cantidad': 1,
+                        'precio_unitario': producto.precio_clp}],
+                receta_folio='RECETA-TEST', confirmacion_qf=True,
+                autorizado_por_qf=self.usuarios[Usuario.Rol.TECNICO],
+            )
+
+    def test_quimico_confirma_receta_aprobada_y_rut_del_paciente(self):
+        qf = self.usuarios[Usuario.Rol.FARMACEUTICO]
+        producto = Producto.objects.get(sku_codigo_barra='7800000000042')
+        caja = CajaDiaria.objects.filter(estado=CajaDiaria.Estado.ABIERTA).first()
+        receta = Receta.objects.create(
+            folio='RECETA-QF-TEST', rut_paciente=qf.rut, nombre_paciente=qf.nombre_completo,
+            rut_medico='11111111-1', nombre_medico='Medico de prueba',
+            fecha_emision=timezone.localdate(), estado=Receta.Estado.APROBADA,
+            medicamentos=[{'sku': producto.sku_codigo_barra, 'cantidad': 1}],
+        )
+        argumentos = {
+            'caja': caja, 'folio': 'VENTA-QF-TEST', 'operario': qf,
+            'items': [{'sku': producto.sku_codigo_barra, 'cantidad': 1,
+                       'precio_unitario': producto.precio_clp}],
+            'rut_cliente': qf.rut, 'nombre_cliente': qf.nombre_completo,
+            'receta_folio': receta.folio, 'autorizado_por_qf': qf, 'confirmacion_qf': True,
+        }
+        with self.assertRaisesMessage(ValueError, 'RUT del cliente'):
+            POSService.crear_venta(**{**argumentos, 'rut_cliente': '99999999-9'})
+        venta = POSService.crear_venta(**argumentos)
+        self.assertEqual(venta.receta, receta)
+        self.assertEqual(venta.autorizado_por_qf, qf)
 
     def test_buscar_producto_para_lector_usa_codigo_exacto(self):
         self.entrar(Usuario.Rol.TECNICO)

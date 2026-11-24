@@ -5,16 +5,34 @@
 <h1 class="h3 mb-3">Configuración</h1>
 <div class="tarjeta mb-4">
     <div class="d-flex justify-content-between mb-2"><h2 class="h5">Usuarios</h2><a class="btn btn-rojo btn-sm" href="{% url 'usuario_nuevo' %}">+ Nuevo usuario</a></div>
+    {% regroup usuarios by get_rol_display as grupos_usuarios %}
+    {% for grupo in grupos_usuarios %}
+    <h3 class="h6 mt-3">{{ grupo.grouper }}</h3>
     <div class="table-responsive"><table class="table align-middle">
-        <thead><tr><th>Nombre</th><th>Usuario</th><th>RUT</th><th>Rol</th><th>Estado</th><th></th></tr></thead><tbody>
-        {% for u in usuarios %}
-        <tr><td>{{ u.nombre_completo }}</td><td>{{ u.username }}</td><td>{{ u.rut }}</td><td>{{ u.get_rol_display }}</td>
+        <thead><tr><th>Nombre</th><th>Correo de acceso</th><th>Usuario</th><th>RUT</th><th>Estado</th><th></th></tr></thead><tbody>
+        {% for u in grupo.list %}
+        <tr><td>{{ u.nombre_completo }}</td><td>{{ u.email }}</td><td>{{ u.username }}</td><td>{{ u.rut }}</td>
             <td>{% if u.activo %}<span class="badge text-bg-success">Activo</span>{% else %}<span class="badge text-bg-secondary">Inactivo</span>{% endif %}</td>
-            <td class="text-end"><form method="post" action="{% url 'usuario_toggle' u.pk %}">{% csrf_token %}
-                <button class="btn btn-sm btn-outline-secondary">{% if u.activo %}Desactivar{% else %}Activar{% endif %}</button></form></td></tr>
+            <td class="text-end">{% if u.rol == 'ADMIN' %}
+                <span class="text-muted small">Cuenta protegida</span>
+                {% else %}
+                <a class="btn btn-sm btn-outline-rojo" href="{% url 'usuario_editar' u.pk %}">Editar</a>
+                <form method="post" action="{% url 'usuario_toggle' u.pk %}" class="d-inline">{% csrf_token %}
+                    <button class="btn btn-sm btn-outline-secondary">{% if u.activo %}Desactivar{% else %}Activar{% endif %}</button></form>
+                {% endif %}</td></tr>
         {% endfor %}
         </tbody></table></div>
+    {% empty %}<p class="text-muted">No hay usuarios registrados.</p>{% endfor %}
 </div>
+
+<div class="tarjeta mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div><h2 class="h5 mb-1">Clientes</h2><p class="text-muted mb-0">{{ clientes|length }} fichas independientes de los usuarios empleados.</p></div>
+        <div class="d-flex gap-2"><a class="btn btn-outline-rojo btn-sm" href="{% url 'clientes' %}">Ver clientes</a>
+            <a class="btn btn-rojo btn-sm" href="{% url 'cliente_nuevo' %}">+ Registrar cliente</a></div>
+    </div>
+</div>
+<div class="d-flex justify-content-end mb-4"><a class="btn btn-outline-secondary" href="{% url 'auditoria' %}">Consultar auditoría de accesos</a></div>
 
 <!-- ── Permisos por Rol (RBAC) ── -->
 <h2 class="h5 mb-3">Permisos por Rol</h2>

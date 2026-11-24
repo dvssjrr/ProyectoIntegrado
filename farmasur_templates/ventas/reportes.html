@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+{% block title %}Reportes de ventas - Farmasur{% endblock %}
+{% block migas %}Reportes de ventas{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+    <div><h1 class="h3 mb-1">Reportes de ventas</h1><p class="text-muted mb-0">Detalle por periodo, producto, categoría, cliente, operario y medio de pago.</p></div>
+    <a class="btn btn-outline-rojo" href="{% url 'pos' %}">Ir al POS</a>
+</div>
+<div class="tarjeta mb-3">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-lg-2"><label class="form-label">Desde</label><input class="form-control" type="date" name="desde" value="{{ desde }}"></div>
+        <div class="col-lg-2"><label class="form-label">Hasta</label><input class="form-control" type="date" name="hasta" value="{{ hasta }}"></div>
+        <div class="col-lg-2"><label class="form-label">Categoría</label><select class="form-select" name="categoria"><option value="">Todas</option>
+            {% for valor in categorias %}<option value="{{ valor }}" {% if categoria == valor %}selected{% endif %}>{{ valor }}</option>{% endfor %}
+        </select></div>
+        <div class="col-lg-2"><label class="form-label">Medio de pago</label><select class="form-select" name="metodo_pago"><option value="">Todos</option>
+            {% for valor, etiqueta in metodos_pago %}<option value="{{ valor }}" {% if metodo_pago == valor %}selected{% endif %}>{{ etiqueta }}</option>{% endfor %}
+        </select></div>
+        <div class="col-lg-2"><label class="form-label">Buscar</label><input class="form-control" name="q" value="{{ q }}" placeholder="Folio, cliente, RUT"></div>
+        <div class="col-lg-2"><button class="btn btn-rojo w-100">Aplicar</button></div>
+    </form>
+</div>
+<div class="row g-3 mb-3">
+    <div class="col-md-3"><div class="tarjeta"><small class="text-muted">Ventas</small><div class="kpi-valor">{{ cantidad_ventas }}</div></div></div>
+    <div class="col-md-3"><div class="tarjeta"><small class="text-muted">Total vendido</small><div class="kpi-valor">${{ total_ventas }}</div></div></div>
+    <div class="col-md-3"><div class="tarjeta"><small class="text-muted">Descuentos</small><div class="kpi-valor">${{ total_descuentos }}</div></div></div>
+    <div class="col-md-3"><div class="tarjeta"><small class="text-muted">Unidades</small><div class="kpi-valor">{{ total_items }}</div></div></div>
+</div>
+<div class="tarjeta mb-3">
+    <h2 class="h5">Ventas y comprobantes</h2>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>Fecha</th><th>Folio</th><th>Cliente / RUT</th><th>Operario</th><th>Pago</th><th>Productos</th><th>Descuento</th><th>Total</th><th></th></tr></thead>
+        <tbody>{% for venta in ventas %}
+            <tr><td>{{ venta.fecha_venta|date:"d/m/Y H:i" }}</td><td>{{ venta.folio }}</td>
+                <td>{{ venta.nombre_cliente|default:"Cliente General" }}<br><small class="text-muted">{{ venta.rut_cliente }}</small></td>
+                <td>{{ venta.operario.nombre_completo }}</td><td>{{ venta.get_metodo_pago_display }}{% if venta.banco_tarjeta %}<br><small>{{ venta.banco_tarjeta }} · {{ venta.referencia_pago }}</small>{% endif %}</td>
+                <td>{% for item in venta.items %}{{ item.nombre }} ({{ item.cantidad }}){% if not forloop.last %}, {% endif %}{% endfor %}</td>
+                <td>${{ venta.descuento_total }}</td><td class="fw-bold">${{ venta.total }}</td>
+                <td><a class="btn btn-sm btn-outline-rojo" href="{% url 'boleta' venta.pk %}">Boleta</a></td></tr>
+        {% empty %}<tr><td colspan="9" class="text-center text-muted py-4">No hay ventas en este periodo.</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% if ventas.paginator.num_pages > 1 %}
+    <nav class="d-flex justify-content-between align-items-center" aria-label="Paginación del reporte">
+        <small class="text-muted">Página {{ ventas.number }} de {{ ventas.paginator.num_pages }}</small>
+        <div class="btn-group btn-group-sm">
+            {% if ventas.has_previous %}<a class="btn btn-outline-secondary" href="?page={{ ventas.previous_page_number }}&desde={{ desde|urlencode }}&hasta={{ hasta|urlencode }}&categoria={{ categoria|urlencode }}&metodo_pago={{ metodo_pago|urlencode }}&q={{ q|urlencode }}">Anterior</a>{% endif %}
+            {% if ventas.has_next %}<a class="btn btn-outline-secondary" href="?page={{ ventas.next_page_number }}&desde={{ desde|urlencode }}&hasta={{ hasta|urlencode }}&categoria={{ categoria|urlencode }}&metodo_pago={{ metodo_pago|urlencode }}&q={{ q|urlencode }}">Siguiente</a>{% endif %}
+        </div>
+    </nav>
+    {% endif %}
+</div>
+<div class="tarjeta">
+    <h2 class="h5">Detalle por producto y categoría</h2>
+    <div class="table-responsive"><table class="table align-middle">
+        <thead><tr><th>Fecha / folio</th><th>Producto</th><th>Categoría</th><th>Unidades</th><th>Precio unitario</th><th>Subtotal</th><th>Pago</th></tr></thead>
+        <tbody>{% for linea in detalle %}
+            <tr><td>{{ linea.venta.fecha_venta|date:"d/m/Y H:i" }} · {{ linea.venta.folio }}</td>
+                <td>{{ linea.item.nombre }}<br><small class="text-muted">{{ linea.item.sku }}</small></td>
+                <td>{{ linea.item.categoria|default:"Sin categoría" }}</td><td>{{ linea.item.cantidad }}</td>
+                <td>${{ linea.item.precio_unitario }}</td><td>${{ linea.total_linea }}</td><td>{{ linea.venta.get_metodo_pago_display }}</td></tr>
+        {% empty %}<tr><td colspan="7" class="text-center text-muted py-4">Sin detalle para mostrar.</td></tr>{% endfor %}</tbody>
+    </table></div>
+    {% if detalle.paginator.num_pages > 1 %}
+    <nav class="d-flex justify-content-between align-items-center" aria-label="Paginación del detalle">
+        <small class="text-muted">Página de detalle {{ detalle.number }} de {{ detalle.paginator.num_pages }}</small>
+        <div class="btn-group btn-group-sm">
+            {% if detalle.has_previous %}<a class="btn btn-outline-secondary" href="?linea_page={{ detalle.previous_page_number }}&page={{ ventas.number }}&desde={{ desde|urlencode }}&hasta={{ hasta|urlencode }}&categoria={{ categoria|urlencode }}&metodo_pago={{ metodo_pago|urlencode }}&q={{ q|urlencode }}">Anterior</a>{% endif %}
+            {% if detalle.has_next %}<a class="btn btn-outline-secondary" href="?linea_page={{ detalle.next_page_number }}&page={{ ventas.number }}&desde={{ desde|urlencode }}&hasta={{ hasta|urlencode }}&categoria={{ categoria|urlencode }}&metodo_pago={{ metodo_pago|urlencode }}&q={{ q|urlencode }}">Siguiente</a>{% endif %}
+        </div>
+    </nav>
+    {% endif %}
+    {% if totales_categoria %}<h3 class="h6 mt-3">Unidades por categoría</h3>
+    <div class="d-flex flex-wrap gap-2">{% for nombre, unidades in totales_categoria.items %}
+        <span class="badge text-bg-light border text-dark">{{ nombre }}: {{ unidades }} unidades</span>
+    {% endfor %}</div>{% endif %}
+</div>
+{% endblock %}

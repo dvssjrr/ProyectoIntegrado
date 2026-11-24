@@ -13,4 +13,4 @@ class FarmasurConfig(AppConfig):
         """
         Importar señales y realizar inicializaciones cuando la app esté lista.
         """
-        pass
+        from farmasur import signals  # noqa: F401
