@@ -44,6 +44,42 @@ class WebTests(TestCase):
         self.assertEqual(ventana_uno.get(reverse('inicio')).status_code, 200)
         self.assertEqual(ventana_dos.get(reverse('inicio')).status_code, 200)
 
+    def test_abrir_otra_ventana_a_isla_la_sesion(self):
+        ventana_uno = Client(enforce_csrf_checks=True)
+        ventana_uno.force_login(self.usuarios[Usuario.Rol.ADMIN])
+        pagina_uno = ventana_uno.get(reverse('inicio'))
+        self.assertContains(pagina_uno, 'Usuario ADMIN')
+
+        ventana_dos = ventana_uno
+        nueva_ventana = ventana_dos.get('/__new-window__/')
+        self.assertEqual(nueva_ventana.status_code, 302)
+        url_login = nueva_ventana['Location']
+        self.assertRegex(url_login, r'^/_window/[0-9a-f]{32}/login/$')
+
+        pagina_login = ventana_dos.get(url_login)
+        csrf_token = pagina_login.context['csrf_token']
+        respuesta = ventana_dos.post(url_login, {
+            'username': self.usuarios[Usuario.Rol.TECNICO].username,
+            'password': 'x',
+            'csrfmiddlewaretoken': csrf_token,
+        }, follow=True)
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertContains(respuesta, 'Usuario TECNICO')
+        self.assertContains(respuesta, 'Abrir otra ventana (otro usuario)')
+        self.assertContains(respuesta, f'href="{url_login.rsplit("login/", 1)[0]}productos/"')
+
+        pagina_uno = ventana_uno.get(reverse('inicio'))
+        self.assertContains(pagina_uno, 'Usuario ADMIN')
+        self.assertNotContains(pagina_uno, 'Usuario TECNICO')
+
+        logout = ventana_dos.post(
+            url_login.replace('/login/', '/logout/'),
+            {'csrfmiddlewaretoken': respuesta.context['csrf_token']},
+        )
+        self.assertEqual(logout.status_code, 302)
+        pagina_uno = ventana_uno.get(reverse('inicio'))
+        self.assertContains(pagina_uno, 'Usuario ADMIN')
+
     def test_admin_ve_todas_las_paginas(self):
         self.entrar()
         for nombre in PAGINAS:

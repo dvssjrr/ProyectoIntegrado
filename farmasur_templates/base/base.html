@@ -44,6 +44,7 @@
 <aside class="lateral">
     <div class="marca"><span>+</span>farmasur</div>
     <div class="seccion">Gestión farmacéutica</div>
+    <a class="item" href="/__new-window__/" target="_blank" rel="noopener">Abrir otra ventana (otro usuario)</a>
     <a class="item {% if actual == 'inicio' %}activo{% endif %}" href="{% url 'inicio' %}">Inicio</a>
     <a class="item {% if actual == 'productos' or actual == 'producto_nuevo' or actual == 'producto_editar' %}activo{% endif %}" href="{% url 'productos' %}">Productos</a>
     <a class="item {% if actual == 'inventario' or actual == 'lote_nuevo' or actual == 'transferir' %}activo{% endif %}" href="{% url 'inventario' %}">Inventario Dual</a>
@@ -59,7 +60,7 @@
     {% endif %}
     {% if acceso.config %}
     <a class="item {% if actual == 'configuracion' %}activo{% endif %}" href="{% url 'configuracion' %}">Configuración</a>
-    <a class="item" href="/admin/">Administración Django</a>
+    <a class="item" href="{% url 'admin:index' %}">Administración Django</a>
     {% endif %}
     <div class="usuario">
         <span class="avatar">{{ user.nombre_completo|slice:":1"|default:user.username|slice:":1"|upper }}</span>

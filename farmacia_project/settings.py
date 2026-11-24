@@ -65,13 +65,16 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'farmasur.middleware.WindowRoutingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'farmasur.middleware.WindowSessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+CSRF_USE_SESSIONS = True
 
 ROOT_URLCONF = 'farmacia_project.urls'
 
