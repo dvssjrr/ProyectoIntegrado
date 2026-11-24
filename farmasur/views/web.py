@@ -307,10 +307,6 @@ def buscar_producto_codigo(request):
         return JsonResponse({'ok': False, 'error': 'Código no proporcionado.'}, status=400)
     
     prod = Producto.objects.filter(activo=True, sku_codigo_barra=codigo).first()
-    if not prod:
-        prod = Producto.objects.filter(activo=True).filter(
-            Q(sku_codigo_barra__icontains=codigo) | Q(nombre_comercial__icontains=codigo)
-        ).first()
 
     if not prod:
         return JsonResponse({'ok': False, 'error': f'No se encontró producto con código "{codigo}".'}, status=404)

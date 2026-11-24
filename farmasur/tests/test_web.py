@@ -149,3 +149,14 @@ class WebTests(TestCase):
             'rol': 'TECNICO', 'password': 'clave12345'})
         self.assertRedirects(resp, reverse('configuracion'))
         self.assertTrue(Usuario.objects.filter(username='nuevo', rut='2277185K').exists())
+
+    def test_buscar_producto_para_lector_usa_codigo_exacto(self):
+        self.entrar(Usuario.Rol.TECNICO)
+        codigo = '7800000000011'
+
+        respuesta = self.client.get(reverse('buscar_producto_codigo'), {'codigo': codigo})
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(respuesta.json()['sku'], codigo)
+
+        parcial = self.client.get(reverse('buscar_producto_codigo'), {'codigo': codigo[:-1]})
+        self.assertEqual(parcial.status_code, 404)

@@ -111,7 +111,7 @@
             </div>
 
             <div id="scan-feedback" class="mt-2 text-muted small" style="min-height: 20px;">
-                <em>Listo para escanear. El lector USB detecta automáticamente al presionar el gatillo.</em>
+                <em>Enfoca este campo y escanea. El código leído debe coincidir con el SKU del producto; se agrega al carro al terminar la lectura.</em>
             </div>
 
             <!-- BOTONES RÁPIDOS DE PRUEBA / DEMOSTRACIÓN -->
@@ -355,6 +355,9 @@
 <script>
     // --- ESTADO DEL CARRITO ---
     let carrito = []; // { sku, nombre, presentacion, precio, cantidad, condicion_venta }
+    let temporizadorEscaneo = null;
+    let escaneoEnCurso = false;
+    let colaEscaneos = [];
 
     // --- SONIDO BEEP DEL ESCÁNER ---
     function reproducirBeep() {
@@ -379,6 +382,18 @@
     function escanearCodigo(codigo) {
         if (!codigo || !codigo.trim()) return;
         codigo = codigo.trim();
+        if (temporizadorEscaneo) {
+            clearTimeout(temporizadorEscaneo);
+            temporizadorEscaneo = null;
+        }
+
+        const input = document.getElementById('codigo_barra_input');
+        if (escaneoEnCurso) {
+            colaEscaneos.push(codigo);
+            input.value = '';
+            return;
+        }
+        escaneoEnCurso = true;
 
         const feedback = document.getElementById('scan-feedback');
         feedback.innerHTML = `<span class="spinner-border spinner-border-sm text-danger"></span> Buscando código <strong>${codigo}</strong>...`;
@@ -402,6 +417,15 @@
             })
             .catch(err => {
                 feedback.innerHTML = `<span class="text-danger">Error de comunicación al buscar el código.</span>`;
+            })
+            .finally(() => {
+                escaneoEnCurso = false;
+                if (input.value.trim() === codigo) input.value = '';
+                if (colaEscaneos.length) {
+                    escanearCodigo(colaEscaneos.shift());
+                } else {
+                    input.focus();
+                }
             });
     }
 
@@ -601,12 +625,21 @@
         const btnAgregar = document.getElementById('btn-agregar-manual');
 
         if (inputScan) {
-            // Detectar Enter del lector de código de barras
+            // Algunos lectores envían Enter o Tab; otros solo escriben el código.
             inputScan.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' || (e.key === 'Tab' && inputScan.value.trim())) {
                     e.preventDefault();
                     escanearCodigo(inputScan.value);
                 }
+            });
+
+            inputScan.addEventListener('input', function () {
+                if (temporizadorEscaneo) clearTimeout(temporizadorEscaneo);
+                if (!inputScan.value.trim()) return;
+                temporizadorEscaneo = setTimeout(function () {
+                    temporizadorEscaneo = null;
+                    escanearCodigo(inputScan.value);
+                }, 400);
             });
 
             if (btnAgregar) {
