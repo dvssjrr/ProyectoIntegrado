@@ -25,6 +25,7 @@ urlpatterns = [
     path('ventas/buscar-producto/', web.buscar_producto_codigo, name='buscar_producto_codigo'),
     path('ventas/buscar-cliente/', web.buscar_cliente_rut, name='buscar_cliente_rut'),
     path('ventas/reportes/', web.reportes_ventas, name='reportes_ventas'),
+    path('ventas/reportes/exportar/', web.reportes_ventas_exportar, name='reportes_ventas_exportar'),
     path('ventas/boleta/<int:venta_id>/', web.ver_boleta, name='boleta'),
     path('caja/', web.caja, name='caja'),
 

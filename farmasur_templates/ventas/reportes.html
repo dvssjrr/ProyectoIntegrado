@@ -1,6 +1,18 @@
 {% extends 'base/base.html' %}
 {% block title %}Reportes de ventas - Farmasur{% endblock %}
 {% block migas %}Reportes de ventas{% endblock %}
+{% block extra_css %}
+<style>
+    @media print {
+        .lateral, .topbar, .no-print, .pagination, nav[aria-label] { display: none !important; }
+        .contenido { margin: 0 !important; }
+        .pagina { padding: 0 !important; }
+        body { background: #fff; }
+        .tarjeta { border: 0; box-shadow: none; padding: 6px 0; }
+        table { font-size: 9pt; }
+    }
+</style>
+{% endblock %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-start mb-3">
     <div><h1 class="h3 mb-1">Reportes de ventas</h1><p class="text-muted mb-0">Detalle por periodo, producto, categoría, cliente, operario y medio de pago.</p></div>
@@ -28,17 +40,37 @@
 </div>
 <div class="tarjeta mb-3">
     <h2 class="h5">Ventas y comprobantes</h2>
+    <form method="post" action="{% url 'reportes_ventas_exportar' %}" id="form-exportar-reporte" class="no-print" target="_blank">
+        {% csrf_token %}
+        <input type="hidden" name="desde" value="{{ desde }}">
+        <input type="hidden" name="hasta" value="{{ hasta }}">
+        <input type="hidden" name="categoria" value="{{ categoria }}">
+        <input type="hidden" name="metodo_pago" value="{{ metodo_pago }}">
+        <input type="hidden" name="q" value="{{ q }}">
+        <input type="hidden" name="modo" id="modo-exportacion">
+        <input type="hidden" name="formato" id="formato-exportacion">
+        <input type="hidden" name="disposicion" id="disposicion-exportacion">
+        <p class="small text-muted mb-2">Marca ventas de esta página para exportar solo esas; para incluir todos los resultados del filtro, usa las opciones de reporte completo.</p>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <button type="submit" class="btn btn-outline-rojo btn-sm" onclick="configurarExportacion('seleccionadas', 'pdf', 'descargar')">PDF seleccionadas</button>
+            <button type="submit" class="btn btn-outline-rojo btn-sm" onclick="configurarExportacion('seleccionadas', 'excel', 'descargar')">Excel seleccionadas</button>
+            <button type="submit" class="btn btn-rojo btn-sm" onclick="configurarExportacion('completo', 'pdf', 'descargar')">PDF reporte completo</button>
+            <button type="submit" class="btn btn-rojo btn-sm" onclick="configurarExportacion('completo', 'excel', 'descargar')">Excel reporte completo</button>
+            <button type="submit" class="btn btn-outline-secondary btn-sm" onclick="configurarExportacion('completo', 'pdf', 'imprimir')">Imprimir reporte completo</button>
+        </div>
     <div class="table-responsive"><table class="table align-middle">
-        <thead><tr><th>Fecha</th><th>Folio</th><th>Cliente / RUT</th><th>Operario</th><th>Pago</th><th>Productos</th><th>Descuento</th><th>Total</th><th></th></tr></thead>
+        <thead><tr><th><input type="checkbox" class="form-check-input" id="seleccionar-todo" aria-label="Seleccionar todas las ventas visibles"></th><th>Fecha</th><th>Folio</th><th>Cliente / RUT</th><th>Operario</th><th>Pago</th><th>Productos</th><th>Descuento</th><th>Total</th><th></th></tr></thead>
         <tbody>{% for venta in ventas %}
-            <tr><td>{{ venta.fecha_venta|date:"d/m/Y H:i" }}</td><td>{{ venta.folio }}</td>
+            <tr><td><input type="checkbox" class="form-check-input venta-seleccionada" name="venta_ids" value="{{ venta.pk }}" aria-label="Seleccionar venta {{ venta.folio }}"></td>
+                <td>{{ venta.fecha_venta|date:"d/m/Y H:i" }}</td><td>{{ venta.folio }}</td>
                 <td>{{ venta.nombre_cliente|default:"Cliente General" }}<br><small class="text-muted">{{ venta.rut_cliente }}</small></td>
                 <td>{{ venta.operario.nombre_completo }}</td><td>{{ venta.get_metodo_pago_display }}{% if venta.banco_tarjeta %}<br><small>{{ venta.banco_tarjeta }} · {{ venta.referencia_pago }}</small>{% endif %}</td>
                 <td>{% for item in venta.items %}{{ item.nombre }} ({{ item.cantidad }}){% if not forloop.last %}, {% endif %}{% endfor %}</td>
                 <td>${{ venta.descuento_total }}</td><td class="fw-bold">${{ venta.total }}</td>
                 <td><a class="btn btn-sm btn-outline-rojo" href="{% url 'boleta' venta.pk %}">Boleta</a></td></tr>
-        {% empty %}<tr><td colspan="9" class="text-center text-muted py-4">No hay ventas en este periodo.</td></tr>{% endfor %}</tbody>
+        {% empty %}<tr><td colspan="10" class="text-center text-muted py-4">No hay ventas en este periodo.</td></tr>{% endfor %}</tbody>
     </table></div>
+    </form>
     {% if ventas.paginator.num_pages > 1 %}
     <nav class="d-flex justify-content-between align-items-center" aria-label="Paginación del reporte">
         <small class="text-muted">Página {{ ventas.number }} de {{ ventas.paginator.num_pages }}</small>
@@ -74,4 +106,23 @@
         <span class="badge text-bg-light border text-dark">{{ nombre }}: {{ unidades }} unidades</span>
     {% endfor %}</div>{% endif %}
 </div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    function configurarExportacion(modo, formato, disposicion) {
+        document.getElementById('modo-exportacion').value = modo;
+        document.getElementById('formato-exportacion').value = formato;
+        document.getElementById('disposicion-exportacion').value = disposicion;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const seleccionarTodo = document.getElementById('seleccionar-todo');
+        if (!seleccionarTodo) return;
+        seleccionarTodo.addEventListener('change', function () {
+            document.querySelectorAll('.venta-seleccionada').forEach(function (casilla) {
+                casilla.checked = seleccionarTodo.checked;
+            });
+        });
+    });
+</script>
 {% endblock %}

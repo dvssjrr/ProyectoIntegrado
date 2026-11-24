@@ -1,5 +1,8 @@
 import json
+from datetime import timedelta
+from io import BytesIO
 
+from openpyxl import load_workbook
 from django.core.management import call_command
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -161,6 +164,79 @@ class WebTests(TestCase):
         for nombre in ('reportes_ventas', 'auditoria', 'clientes'):
             with self.subTest(pagina=nombre):
                 self.assertEqual(self.client.get(reverse(nombre)).status_code, 200)
+
+    def test_exportar_reporte_completo_pdf(self):
+        self.entrar()
+        hoy = timezone.localdate().isoformat()
+        venta = POS.objects.first()
+        POS.objects.filter(pk=venta.pk).update(fecha_venta=timezone.now())
+        respuesta = self.client.post(reverse('reportes_ventas_exportar'), {
+            'modo': 'completo', 'formato': 'pdf', 'disposicion': 'imprimir',
+            'desde': hoy, 'hasta': hoy, 'categoria': '', 'metodo_pago': '', 'q': '',
+        })
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(respuesta['Content-Type'], 'application/pdf')
+        self.assertTrue(respuesta['Content-Disposition'].startswith('inline;'))
+        self.assertTrue(respuesta.content.startswith(b'%PDF'))
+
+    def test_exportar_ventas_seleccionadas_excel(self):
+        self.entrar()
+        hoy = timezone.localdate().isoformat()
+        venta = POS.objects.first()
+        POS.objects.filter(pk=venta.pk).update(fecha_venta=timezone.now())
+        respuesta = self.client.post(reverse('reportes_ventas_exportar'), {
+            'modo': 'seleccionadas', 'formato': 'excel', 'disposicion': 'descargar',
+            'desde': hoy, 'hasta': hoy, 'categoria': '', 'metodo_pago': '', 'q': '',
+            'venta_ids': [str(venta.pk)],
+        })
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(
+            respuesta['Content-Type'],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        )
+        libro = load_workbook(BytesIO(respuesta.content), read_only=True)
+        self.assertEqual(libro.sheetnames, ['Resumen', 'Ventas', 'Detalle por producto'])
+        self.assertEqual(libro['Ventas'].max_row, 2)
+        libro.close()
+
+    def test_exportar_reporte_excel_incluye_ventas_de_todas_las_paginas(self):
+        self.entrar()
+        hoy = timezone.localdate().isoformat()
+        caja = CajaDiaria.objects.first()
+        POS.objects.bulk_create([
+            POS(
+                caja=caja, folio=f'EXPORT-PAGINA-{indice}',
+                operario=self.usuarios[Usuario.Rol.ADMIN],
+                subtotal=1000, total=1000, fecha_venta=timezone.now(), items=[],
+            )
+            for indice in range(35)
+        ])
+        respuesta = self.client.post(reverse('reportes_ventas_exportar'), {
+            'modo': 'completo', 'formato': 'excel', 'disposicion': 'descargar',
+            'desde': hoy, 'hasta': hoy, 'categoria': '', 'metodo_pago': '', 'q': '',
+        })
+        libro = load_workbook(BytesIO(respuesta.content), read_only=True)
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertEqual(libro['Ventas'].max_row, 37)
+        libro.close()
+
+    def test_exportar_ventas_seleccionadas_respeta_los_filtros(self):
+        self.entrar()
+        venta = POS.objects.first()
+        manana = (timezone.localdate() + timedelta(days=1)).isoformat()
+        respuesta = self.client.post(reverse('reportes_ventas_exportar'), {
+            'modo': 'seleccionadas', 'formato': 'excel', 'disposicion': 'descargar',
+            'desde': manana, 'hasta': manana, 'categoria': '', 'metodo_pago': '', 'q': '',
+            'venta_ids': [str(venta.pk)],
+        })
+        self.assertEqual(respuesta.status_code, 400)
+
+    def test_exportar_reportes_solo_para_administradores(self):
+        self.entrar(Usuario.Rol.FARMACEUTICO)
+        respuesta = self.client.post(reverse('reportes_ventas_exportar'), {
+            'modo': 'completo', 'formato': 'pdf',
+        })
+        self.assertEqual(respuesta.status_code, 403)
 
     def test_login_con_correo_genera_auditoria_con_identidad_e_ip(self):
         usuario = self.usuarios[Usuario.Rol.ADMIN]

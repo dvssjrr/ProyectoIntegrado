@@ -68,6 +68,7 @@ Para usar cuentas distintas en ventanas separadas del mismo perfil del navegador
 - Las ventas de productos con receta requieren una receta aprobada y vigente, RUT coincidente y confirmacion de una cuenta Quimico Farmaceutico.
 - Los pagos con tarjeta y BancoEstado son una simulacion local; no se procesa ni almacena informacion de tarjetas reales.
 - Los administradores pueden consultar reportes de ventas y auditoria de sesiones. La auditoria conserva el usuario, nombre, RUT, direccion IP, hora y agente de usuario.
+- Los reportes permiten imprimir el PDF completo o exportar a PDF/Excel todas las ventas filtradas o solo las seleccionadas.
 - Tras actualizar el codigo, ejecutar `python manage.py migrate` para crear las nuevas tablas y campos.
 
 ## Capas del Proyecto

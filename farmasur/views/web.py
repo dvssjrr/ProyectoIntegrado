@@ -10,12 +10,14 @@ from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Count, F, Q, Sum
 from django.db.models.functions import Coalesce, TruncDate
-from django.http import HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.dateparse import parse_date
 from django.views.decorators.http import require_POST
 import json
+from urllib.parse import urlencode
 
 from farmasur.forms.web import (
     AbrirCajaForm, CerrarCajaForm, ClienteWebForm, ConvenioForm, LaboratorioForm, LoteForm,
@@ -29,6 +31,7 @@ from farmasur.models.ventas.models import CajaDiaria, Cliente, ConvenioIsapre, P
 from farmasur.services.inventario.services import MermaService, StockService
 from farmasur.services.recetas.services import RecetaService
 from farmasur.services.ventas.services import CajaService, POSService
+from farmasur.services.ventas.reportes import exportar_excel_ventas, exportar_pdf_ventas
 
 R = Usuario.Rol
 INVENTARIO = (R.FARMACEUTICO, R.BODEGUERO)
@@ -690,37 +693,46 @@ def auditoria(request):
     })
 
 
-@rol_requerido()
-def reportes_ventas(request):
-    desde_raw = request.GET.get('desde', '')
-    hasta_raw = request.GET.get('hasta', '')
+def _consulta_reporte_ventas(parametros):
+    desde_raw = parametros.get('desde', '')
+    hasta_raw = parametros.get('hasta', '')
     desde, hasta = parse_date(desde_raw), parse_date(hasta_raw)
     if (desde_raw and not desde) or (hasta_raw and not hasta):
-        return HttpResponseBadRequest('Formato de fecha inválido.')
+        return None, None
     if not desde and not hasta:
         desde = timezone.localdate() - timedelta(days=29)
         desde_raw = desde.isoformat()
 
-    ventas = POS.objects.select_related('operario', 'caja', 'cliente').order_by('-fecha_venta')
+    ventas = POS.objects.select_related(
+        'operario', 'caja', 'cliente', 'autorizado_por_qf', 'receta'
+    ).order_by('-fecha_venta')
     if desde:
         ventas = ventas.filter(fecha_venta__date__gte=desde)
     if hasta:
         ventas = ventas.filter(fecha_venta__date__lte=hasta)
-    metodo = request.GET.get('metodo_pago', '')
+    metodo = parametros.get('metodo_pago', '')
     if metodo in POS.MetodoPago.values:
         ventas = ventas.filter(metodo_pago=metodo)
-    busqueda = request.GET.get('q', '').strip()
+    busqueda = parametros.get('q', '').strip()
     if busqueda:
         ventas = ventas.filter(
             Q(folio__icontains=busqueda) | Q(rut_cliente__icontains=busqueda)
             | Q(nombre_cliente__icontains=busqueda) | Q(operario__nombre_completo__icontains=busqueda)
         )
+    return ventas, {
+        'desde': desde_raw,
+        'hasta': hasta_raw,
+        'metodo_pago': metodo,
+        'q': busqueda,
+        'categoria': parametros.get('categoria', ''),
+    }
 
-    categoria = request.GET.get('categoria', '')
+
+def _detalle_reporte_ventas(ventas):
+    ventas_base = list(ventas)
     detalle = []
     totales_categoria = {}
-    ventas_base = list(ventas)
-    ventas_por_categoria = set()
+    ventas_por_categoria = {}
     skus_sin_categoria = {
         str(item.get('sku', ''))
         for venta in ventas_base for item in (venta.items or [])
@@ -738,29 +750,41 @@ def reportes_ventas(request):
             totales_categoria[nombre_categoria] = totales_categoria.get(nombre_categoria, 0) + int(
                 item.get('cantidad', 0)
             )
-            if categoria == nombre_categoria:
-                ventas_por_categoria.add(venta.pk)
-            if not categoria or categoria == nombre_categoria:
-                detalle.append({
-                    'venta': venta,
-                    'item': item,
-                    'total_linea': int(item.get('cantidad', 0)) * int(item.get('precio_unitario', 0)),
-                })
+            ventas_por_categoria.setdefault(nombre_categoria, set()).add(venta.pk)
+            item_datos = dict(item)
+            item_datos['categoria'] = nombre_categoria
+            detalle.append({
+                'venta': venta,
+                'item': item_datos,
+                'categoria': nombre_categoria,
+                'total_linea': int(item.get('cantidad', 0)) * int(item.get('precio_unitario', 0)),
+            })
+    return ventas_base, detalle, totales_categoria, ventas_por_categoria
+
+
+@rol_requerido()
+def reportes_ventas(request):
+    ventas, filtros = _consulta_reporte_ventas(request.GET)
+    if ventas is None:
+        return HttpResponseBadRequest('Formato de fecha inválido.')
+    ventas_base, detalle_completo, totales_categoria, ventas_por_categoria = _detalle_reporte_ventas(ventas)
+    categoria = filtros['categoria']
+    detalle = [
+        linea for linea in detalle_completo
+        if not categoria or linea['categoria'] == categoria
+    ]
     if categoria:
-        ventas = ventas.filter(pk__in=ventas_por_categoria)
-    categorias = sorted(totales_categoria)
+        ventas = ventas.filter(pk__in=ventas_por_categoria.get(categoria, set()))
     ventas_pagina = Paginator(ventas, 30).get_page(request.GET.get('page'))
     detalle_pagina = Paginator(detalle, 50).get_page(request.GET.get('linea_page'))
     resumen = ventas.aggregate(total=Sum('total'), unidades=Sum('descuento_total'))
     return render(request, 'ventas/reportes.html', {
         'ventas': ventas_pagina,
         'detalle': detalle_pagina,
-        'categorias': categorias,
+        'categorias': sorted(totales_categoria),
         'categoria': categoria,
-        'desde': desde_raw,
-        'hasta': hasta_raw,
-        'metodo_pago': metodo,
-        'q': busqueda,
+        'categorias': sorted(totales_categoria),
+        **filtros,
         'metodos_pago': POS.MetodoPago.choices,
         'cantidad_ventas': ventas.count(),
         'total_ventas': resumen['total'] or 0,
@@ -770,6 +794,65 @@ def reportes_ventas(request):
         ),
         'totales_categoria': totales_categoria,
     })
+
+
+@require_POST
+@rol_requerido()
+def reportes_ventas_exportar(request):
+    modo = request.POST.get('modo', '')
+    formato = request.POST.get('formato', '')
+    if modo not in ('seleccionadas', 'completo') or formato not in ('pdf', 'excel'):
+        return HttpResponseBadRequest('Selecciona el alcance y formato de exportación.')
+
+    ventas_consulta, filtros = _consulta_reporte_ventas(request.POST)
+    if ventas_consulta is None:
+        return HttpResponseBadRequest('Formato de fecha inválido.')
+    filtros['alcance'] = (
+        'Ventas seleccionadas' if modo == 'seleccionadas' else 'Reporte completo filtrado'
+    )
+    _, _, _, ventas_por_categoria = _detalle_reporte_ventas(ventas_consulta)
+    categoria = filtros['categoria']
+    if categoria:
+        ventas_consulta = ventas_consulta.filter(
+            pk__in=ventas_por_categoria.get(categoria, set())
+        )
+
+    if modo == 'seleccionadas':
+        ids_recibidos = request.POST.getlist('venta_ids')
+        if not ids_recibidos:
+            messages.error(request, 'Marca al menos una venta o elige exportar el reporte completo.')
+            filtros_url = urlencode({k: v for k, v in filtros.items() if v})
+            return redirect(f"{reverse('reportes_ventas')}?{filtros_url}")
+        try:
+            ids = [int(value) for value in ids_recibidos]
+        except ValueError:
+            return HttpResponseBadRequest('La selección de ventas no es válida.')
+        if len(set(ids)) != len(ids):
+            return HttpResponseBadRequest('La selección contiene ventas duplicadas.')
+        ventas_consulta = ventas_consulta.filter(pk__in=ids)
+        if ventas_consulta.count() != len(ids):
+            return HttpResponseBadRequest('La selección incluye ventas fuera de los filtros aplicados.')
+
+    ventas = list(ventas_consulta)
+    ventas, detalle, _, _ = _detalle_reporte_ventas(ventas)
+    if categoria:
+        detalle = [linea for linea in detalle if linea['categoria'] == categoria]
+
+    if formato == 'excel':
+        contenido = exportar_excel_ventas(ventas, detalle, filtros)
+        content_type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        extension = 'xlsx'
+    else:
+        contenido = exportar_pdf_ventas(ventas, detalle, filtros)
+        content_type = 'application/pdf'
+        extension = 'pdf'
+    fecha_inicio = filtros['desde'] or 'completo'
+    fecha_termino = filtros['hasta'] or 'completo'
+    nombre = f'reporte_ventas_{fecha_inicio}_{fecha_termino}.{extension}'
+    respuesta = HttpResponse(contenido, content_type=content_type)
+    disposicion = 'inline' if request.POST.get('disposicion') == 'imprimir' and formato == 'pdf' else 'attachment'
+    respuesta['Content-Disposition'] = f'{disposicion}; filename="{nombre}"'
+    return respuesta
 
 
 @rol_requerido()
